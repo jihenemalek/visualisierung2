@@ -78,9 +78,11 @@ namespace Vesseltree
 	// Root node of the vessel tree
 	//
 	typedef struct Root {
-		Point   *dataSize;		// Meta information, currently not used
-		Point   *dataSpacing;	// Meta information, currently not used
+		Point   dataSize;		// Meta information, currently not used
+		Point   dataSpacing;	// Meta information, currently not used
 		Segment *child;			// First segment of the tree
+
+		Root() { dataSize = Point(); dataSpacing = Point(); }
 	} Root;
 };
 

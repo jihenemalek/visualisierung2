@@ -52,10 +52,18 @@ Vesseltree::Root * Vesseltree::Parser::parseDocument(const char *documentPath, H
 			if (strcmp((char *)element->name, "cps") == 0) {
 				// We have the control points section
 				controlPoints = parseControlPoints(element);
-			} else if (xmlStrEqual(element->name, xmlCharStrdup("segments"))) {
+			} else if (strcmp((char *)element->name, "segments") == 0) {
 				// We have a segment
 				segments = parseSegments(element, controlPoints);
-			} else {
+			} else if (strcmp((char *)element->name, "header") == 0) {
+				std::map<std::string, std::string>elements = parseElements(element);
+				
+				rootNode->dataSize.x = strToFlt(elements["nx"]);
+				rootNode->dataSize.y = strToFlt(elements["ny"]);
+				rootNode->dataSize.z = strToFlt(elements["nz"]);
+				rootNode->dataSpacing.x = strToFlt(elements["px"]);
+				rootNode->dataSpacing.y = strToFlt(elements["py"]);
+				rootNode->dataSpacing.z = strToFlt(elements["pz"]);
 			}
 		}
 	}
@@ -129,11 +137,11 @@ std::vector<Vesseltree::Segment *> Vesseltree::Parser::parseSegments(xmlNode *aN
 			seg->startNode = controlPoints[startNodeId];
 			seg->endNode = controlPoints[endNodeId];
 
-			if (strcmp(type.c_str(), "centered")) {
+			if (strcmp(type.c_str(), "centered") == 0) {
 				seg->type = kSegmentTypeCentered;
-			} else if (strcmp(type.c_str(), "tracked")) {
+			} else if (strcmp(type.c_str(), "tracked") == 0) {
 				seg->type = kSegmentTypeTracked;
-			} else if (strcmp(type.c_str(), "interpolated")) {
+			} else if (strcmp(type.c_str(), "interpolated") == 0) {
 				seg->type = kSegmentTypeInterpolated;
 			}
 
@@ -142,7 +150,7 @@ std::vector<Vesseltree::Segment *> Vesseltree::Parser::parseSegments(xmlNode *aN
 				xmlNodePtr pointsPtr = aNode->children;
 				while(pointsPtr) {
 					if (pointsPtr->type == XML_ELEMENT_NODE) {
-						if (strcmp((char *)pointsPtr->name, "points")) {
+						if (strcmp((char *)pointsPtr->name, "points") == 0) {
 							seg->points = parseSegmentPoints(pointsPtr);
 							break;
 						}
