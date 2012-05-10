@@ -3,6 +3,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 #include "systemclass.h"
 
+#include "Vesseltree/Parser.hpp"
 
 SystemClass::SystemClass()
 {
@@ -40,6 +41,8 @@ bool SystemClass::Initialize()
 	{
 		return false;
 	}
+	
+	Vesseltree::Root *tree0 = Vesseltree::Parser::parseDocument("Resources/vesselTree0.xml", m_hwnd);
 
 	// Initialize the input object.
 	m_Input->Initialize();
