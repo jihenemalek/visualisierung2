@@ -85,8 +85,8 @@ xcopy /Y "$(ProjectDir)..\Resources" "$(OutDir)Resources\"</Command>
       <AdditionalDependencies>libxml2.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>cp "$(ProjectDir)..\Libraries\bin\libxml2.dll" "$(OutDir)"
-cp "$(ProjectDir)..\Resources" "$(OutDir)Resources"</Command>
+      <Command>copy /Y "$(ProjectDir)..\Libraries\bin\*.dll" "$(OutDir)"
+xcopy /Y "$(ProjectDir)..\Resources" "$(OutDir)Resources\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
