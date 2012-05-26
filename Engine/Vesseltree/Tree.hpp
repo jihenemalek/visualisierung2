@@ -9,6 +9,9 @@
 #ifndef Visualisierung2_Vesseltree_Tree_hpp
 #define Visualisierung2_Vesseltree_Tree_hpp
 
+#include <d3d11.h>
+#include <d3dx10math.h>
+#include <fstream>
 #include <vector>
 
 namespace Vesseltree
@@ -35,6 +38,8 @@ namespace Vesseltree
 		float offset;		// An offset adde to the radius
 		Node  *parent;		// The parent element of the node
 		Node  *child;		// The child element of the node
+		D3DXVECTOR3 direction; //saves direction of the cross-section
+		D3DXVECTOR3 normal; // normal of the cross-section
 
 		Node() { position = Point(); };
 	} Node;
@@ -71,6 +76,7 @@ namespace Vesseltree
 		SegmentType					type;			// Type of the segment
 		std::vector<Segment *>		parents;		// Parent nodes of the segment
 		std::vector<Segment *>		children;		// Child nodes of the segment
+		int classification; //0 for backward and 1 for forward
 	} Segment;
 
 

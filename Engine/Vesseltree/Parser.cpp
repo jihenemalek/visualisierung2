@@ -144,10 +144,13 @@ std::vector<Vesseltree::Segment *> Vesseltree::Parser::parseSegments(xmlNode *aN
 			} else if (strcmp(type.c_str(), "interpolated") == 0) {
 				seg->type = kSegmentTypeInterpolated;
 			}
+			
+			
+			
 
 			// Parse the points if the type is correct
 			if (seg->type == kSegmentTypeCentered || seg->type == kSegmentTypeTracked) {
-				xmlNodePtr pointsPtr = aNode->children;
+				xmlNodePtr pointsPtr = currentSegment->children;
 				while(pointsPtr) {
 					if (pointsPtr->type == XML_ELEMENT_NODE) {
 						if (strcmp((char *)pointsPtr->name, "points") == 0) {
@@ -211,6 +214,27 @@ std::vector<Vesseltree::SegmentPoint *> Vesseltree::Parser::parseSegmentPoints(x
 		currentSegmentPoint = currentSegmentPoint->next;
 	}
 
+	for (int i = 0; i < segmentPoints.size(); i++) 
+	{
+		
+		if (i > 0) 
+		{
+			segmentPoints.at(i)->parent = segmentPoints.at(i - 1);
+		}
+		else
+		{
+			segmentPoints.at(i)->parent = NULL;
+		}
+
+		 if (i < segmentPoints.size() - 1) 
+		 {
+			segmentPoints.at(i)->child = segmentPoints.at(i + 1);
+		}
+		 else
+		 {
+			 segmentPoints.at(i)->child = NULL;
+		 }
+	}
 	return segmentPoints;
 }
 

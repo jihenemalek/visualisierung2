@@ -22,6 +22,7 @@
 ///////////////////////
 #include "inputclass.h"
 #include "graphicsclass.h"
+#include "Mesh.h"
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -52,6 +53,7 @@ private:
 
 	InputClass* m_Input;
 	GraphicsClass* m_Graphics;
+	Mesh* mesh0;
 };
 
 

@@ -43,6 +43,8 @@ bool SystemClass::Initialize()
 	}
 	
 	Vesseltree::Root *tree0 = Vesseltree::Parser::parseDocument("Resources/vesselTree0.xml", m_hwnd);
+	mesh0 = new Mesh;
+	mesh0->calculateMesh(tree0);
 
 	// Initialize the input object.
 	m_Input->Initialize();
