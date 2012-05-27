@@ -32,6 +32,18 @@ void Mesh:: calculateMesh(Root* root)
 		averageNormals(seg);
 		//Classify the segments in forward and backward
 		classifySegments(seg);
+
+		//Calculate up-Vectors
+		//first choose up vector perpendicular to direction of first cross section of the first segment
+		direction = seg->startNode->direction;
+		D3DXVECTOR3 up_vector;
+		up_vector.z = 0;
+		up_vector.x = 1;
+		up_vector.y = -(direction.x*up_vector.x)/direction.y;
+		seg->startNode->upVector = up_vector;
+		calculateUpVectors(seg);
+
+	
 	}
 	else
 	{
@@ -181,4 +193,88 @@ void Mesh:: classifySegments(Segment* seg)
 			
 		}
 	}
+}
+
+void Mesh::calculateUpVectors(Segment* seg)
+{
+	D3DXVECTOR3 up_vector;
+	if(seg->points.size()!=0)
+	{
+		//Über Segment iterieren
+		D3DXVECTOR3 pu, position;
+		pu.x = seg->startNode->position.x + seg->startNode->upVector.x;
+		pu.y = seg->startNode->position.y + seg->startNode->upVector.y;
+		pu.z = seg->startNode->position.z + seg->startNode->upVector.z;
+
+		
+		position.x = seg->points.at(0)->position.x;
+		position.y = seg->points.at(0)->position.y;
+		position.z = seg->points.at(0)->position.z;
+
+		up_vector = calculateUp(pu,seg->startNode->direction,position,seg->points.at(0)->normal);
+		seg->points.at(0)->upVector = up_vector;
+
+
+		for(int i = 0; i < (seg->points.size()-1); i++)
+		{
+			pu.x = seg->points.at(i)->position.x + seg->points.at(i)->upVector.x;
+			pu.y = seg->points.at(i)->position.y + seg->points.at(i)->upVector.y;
+			pu.z = seg->points.at(i)->position.z + seg->points.at(i)->upVector.z;
+
+			position.x = seg->points.at(i+1)->position.x;
+			position.y = seg->points.at(i+1)->position.y;
+			position.z = seg->points.at(i+1)->position.z;
+		
+			up_vector = calculateUp(pu,seg->points.at(i)->direction,position,seg->points.at(i+1)->normal);
+			seg->points.at(i+1)->upVector = up_vector;
+		}
+
+		//letzer Control Point
+		pu.x = seg->points.back()->position.x + seg->points.back()->upVector.x;
+		pu.y = seg->points.back()->position.y + seg->points.back()->upVector.y;
+		pu.z = seg->points.back()->position.z + seg->points.back()->upVector.z;
+
+		position.x = seg->endNode->position.x;
+		position.y = seg->endNode->position.y;
+		position.z = seg->endNode->position.z;
+
+		up_vector = calculateUp(pu,seg->points.back()->direction,position,seg->endNode->normal);
+		seg->endNode->upVector = up_vector;
+
+		//An jeden StartNode der Children weitergeben und die Funktion nochmals aufrufen
+		if(seg->children.size() != 0)
+		{
+			for(int i = 0; i < seg->children.size(); i++)
+			{
+				Segment* seg2 = seg->children.at(i);
+				pu.x = seg->endNode->position.x + seg->endNode->upVector.x;
+				pu.y = seg->endNode->position.y + seg->endNode->upVector.y;
+				pu.z = seg->endNode->position.z + seg->endNode->upVector.z;
+
+				position.x = seg2->startNode->position.x;
+				position.y = seg2->startNode->position.y;
+				position.z = seg2->startNode->position.z;
+
+				up_vector = calculateUp(pu,seg->endNode->direction,position,seg2->startNode->normal);
+				seg2->startNode->upVector = up_vector;
+				calculateUpVectors(seg2);
+			}
+		}
+
+	}
+
+}
+D3DXVECTOR3 Mesh::calculateUp(D3DXVECTOR3 pu, D3DXVECTOR3 direction, D3DXVECTOR3 position, D3DXVECTOR3 normal)
+{
+	D3DXVECTOR3 temp,up_vector;
+	FLOAT product,product2,s;
+	temp = position-(pu+direction);
+	product = D3DXVec3Dot(&temp, &(normal));
+	product2 = D3DXVec3Dot(&direction,&normal);
+	s = product / product2;
+	temp = (s*direction) + pu;
+	up_vector = temp-position;
+	D3DXVec3Normalize(&up_vector,&up_vector);
+	return up_vector;
+
 }

@@ -40,6 +40,7 @@ namespace Vesseltree
 		Node  *child;		// The child element of the node
 		D3DXVECTOR3 direction; //saves direction of the cross-section
 		D3DXVECTOR3 normal; // normal of the cross-section
+		D3DXVECTOR3 upVector;
 
 		Node() { position = Point(); };
 	} Node;
