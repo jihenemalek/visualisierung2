@@ -278,3 +278,107 @@ D3DXVECTOR3 Mesh::calculateUp(D3DXVECTOR3 pu, D3DXVECTOR3 direction, D3DXVECTOR3
 	return up_vector;
 
 }
+void Mesh::tileTree(Segment* seg)
+{
+	
+	//for root segment den TileTrivially Algorithmus anwenden
+	D3DXVECTOR3 position, up_vector;
+	float radius;
+	std::vector<D3DXVECTOR3> vertex_list;
+	position.x = seg->startNode->position.x;
+	position.y = seg->startNode->position.y;
+	position.z = seg->startNode->position.z;
+
+	vertex_list = tileTrivial(position, radius, up_vector, seg->startNode->direction);
+	seg->startNode->vertices = vertex_list;
+
+	//für alle non-branching segmente den Tile Trivially Algorithmus anwenden
+	tileTrivially(seg);
+}
+
+void Mesh::tileTrivially(Segment* seg)
+{
+	
+	D3DXVECTOR3 position, up_vector;
+	float radius;
+	std::vector<D3DXVECTOR3> vertex_list;
+
+	//für segmente ausserhalb der Branchings berechnen
+	if(seg->points.size() != 0)
+	{
+		for(int i = 0; i < seg->points.size(); i++)
+		{
+			position.x = seg->points.at(i)->position.x;
+			position.y = seg->points.at(i)->position.y;
+			position.z = seg->points.at(i)->position.z;
+
+			radius = seg->points.at(i)->radius;
+
+			up_vector = seg->points.at(i)->upVector;
+			
+			vertex_list = tileTrivial(position, radius, up_vector, seg->points.at(i)->direction);
+			seg->points.at(i)->vertices = vertex_list;
+		}
+
+	}
+	if(seg->children.size() != 0)
+	{
+		for(int i = 0; i < seg->children.size(); i++)
+		{
+			tileTrivially(seg->children.at(i));
+		}
+	}
+	else
+	{
+		position.x = seg->endNode->position.x;
+		position.y = seg->endNode->position.y;
+		position.z = seg->endNode->position.z;
+		
+		radius = seg->endNode->radius;
+		up_vector = seg->endNode->upVector;
+
+		vertex_list = tileTrivial(position,radius,up_vector, seg->endNode->direction);
+		seg->endNode->vertices = vertex_list;
+	}
+
+}
+
+std::vector<D3DXVECTOR3> Mesh:: tileTrivial(D3DXVECTOR3 position, float radius, D3DXVECTOR3 up_vector,  D3DXVECTOR3 direction)
+{
+	D3DXVECTOR3 temp_vertex;
+	std::vector<D3DXVECTOR3> vertex_list;
+	temp_vertex = position + (radius * up_vector);
+	vertex_list.push_back(temp_vertex);
+
+	//rotate up_vector to calculate the other 3 vectors
+	for(int i = 0; i< 3; i++)
+	{
+		up_vector = rotateVector(up_vector,direction);
+		temp_vertex = position + (radius * up_vector);
+		vertex_list.push_back(temp_vertex);
+	}
+	
+
+	return vertex_list;
+}
+
+//Function to rotate up_vector around direction_vector
+D3DXVECTOR3 Mesh:: rotateVector(D3DXVECTOR3 up_vector, D3DXVECTOR3 direction_vector)
+{
+	
+	FLOAT x = up_vector.x;
+	FLOAT y = up_vector.y;
+	FLOAT z = up_vector.z;
+	FLOAT u = direction_vector.x;
+	FLOAT v = direction_vector.y;
+	FLOAT w = direction_vector.z;
+	D3DXVECTOR3 rotated_vec;
+
+	rotated_vec.x =u*(u*x+v*y+w*z)+(x*(v*v+w*w)-u*(v*y+w*z))*0+(-w*y+v*z)*1;
+	rotated_vec.y =v*(u*x+v*y+w*z)+(y*(u*u+w*w)-v*(u*x+w*z))*0+(w*x-u*z)*1;
+	rotated_vec.z =w*(u*x+v*y+w*z)+(z*(u*u+v*v)-w*(u*x+v*y))*0+(-v*x+u*y)*1;
+
+	D3DXVec3Normalize(&rotated_vec,&rotated_vec);
+
+	return rotated_vec;
+}

@@ -41,6 +41,8 @@ namespace Vesseltree
 		D3DXVECTOR3 direction; //saves direction of the cross-section
 		D3DXVECTOR3 normal; // normal of the cross-section
 		D3DXVECTOR3 upVector;
+		std::vector<D3DXVECTOR3> vertices;
+
 
 		Node() { position = Point(); };
 	} Node;
