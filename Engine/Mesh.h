@@ -3,6 +3,7 @@
 using namespace Vesseltree;
 class Mesh
 {
+
 	
 public:
 	Mesh(void);
@@ -18,6 +19,27 @@ public:
 	void Mesh::tileTrivially(Segment*);
 	std::vector<D3DXVECTOR3> Mesh:: tileTrivial(D3DXVECTOR3, float, D3DXVECTOR3, D3DXVECTOR3);
 	D3DXVECTOR3 Mesh:: rotateVector(D3DXVECTOR3, D3DXVECTOR3);
+	void Mesh::generatePatches(Segment*);
+	void Mesh::generatePatchesNonBranching(Segment*);
+	void Mesh:: processLastSections(Segment*);
+	void Mesh:: TileJoint(std::vector<Segment*>, D3DXVECTOR3);
+
+	void Mesh::triangulate(void);
+	typedef struct Patch
+	{
+		D3DXVECTOR3 vertex0;
+		D3DXVECTOR3 vertex1;
+		D3DXVECTOR3 vertex2;
+		D3DXVECTOR3 vertex3;
+	} Patch;
+	std::vector<Patch> patches;
 	
+	typedef struct Triangle
+	{
+		D3DXVECTOR3 vertex0;
+		D3DXVECTOR3 vertex1;
+		D3DXVECTOR3 vertex2;
+	} Trianlge;
+	std::vector<Triangle> triangles;
 };
 
