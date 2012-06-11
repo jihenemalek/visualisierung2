@@ -19,7 +19,7 @@ using namespace std;
 // MY CLASS INCLUDES //
 ///////////////////////
 #include "textureclass.h"
-
+#include "Mesh.h"
 
 
 
@@ -49,7 +49,7 @@ public:
 	ModelClass(const ModelClass&);
 	~ModelClass();
 
-	bool Initialize(ID3D11Device*, char*, WCHAR*);
+	bool Initialize(ID3D11Device*, char*, WCHAR*,HWND);
 	void Shutdown();
 	void Render(ID3D11DeviceContext*);
 
@@ -73,6 +73,7 @@ private:
 	int m_vertexCount, m_indexCount;
 	TextureClass* m_Texture;
 	ModelType* m_model;
+	Mesh* mesh0;
 };
 
 #endif

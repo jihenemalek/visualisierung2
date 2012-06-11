@@ -1,8 +1,4 @@
-////////////////////////////////////////////////////////////////////////////////
-// Filename: cameraclass.cpp
-////////////////////////////////////////////////////////////////////////////////
 #include "cameraclass.h"
-
 
 CameraClass::CameraClass()
 {
@@ -25,12 +21,19 @@ CameraClass::~CameraClass()
 {
 }
 
-
 void CameraClass::SetPosition(float x, float y, float z)
 {
 	m_positionX = x;
 	m_positionY = y;
 	m_positionZ = z;
+	return;
+}
+
+void CameraClass::SetPosition(D3DXVECTOR3 Position)
+{
+	m_positionX = Position.x;
+	m_positionY = Position.y;
+	m_positionZ = Position.z;
 	return;
 }
 
@@ -43,7 +46,6 @@ void CameraClass::SetRotation(float x, float y, float z)
 	return;
 }
 
-
 D3DXVECTOR3 CameraClass::GetPosition()
 {
 	return D3DXVECTOR3(m_positionX, m_positionY, m_positionZ);
@@ -54,7 +56,6 @@ D3DXVECTOR3 CameraClass::GetRotation()
 {
 	return D3DXVECTOR3(m_rotationX, m_rotationY, m_rotationZ);
 }
-
 
 void CameraClass::Render()
 {
@@ -99,9 +100,10 @@ void CameraClass::Render()
 	return;
 }
 
-
 void CameraClass::GetViewMatrix(D3DXMATRIX& viewMatrix)
 {
 	viewMatrix = m_viewMatrix;
 	return;
 }
+
+

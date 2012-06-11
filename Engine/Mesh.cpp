@@ -15,19 +15,17 @@ void Mesh:: calculateMesh(Root* root)
 	Segment* seg = root->child;
 	if(root->child != NULL)
 	{
+		
+		
+
 		//Calculate Normal + Direction for the first cross-section (control point)
 		D3DXVECTOR3 direction;
-		direction.x = seg->points.back()->position.x - seg->startNode->position.x;
-		direction.y = seg->points.back()->position.y - seg ->startNode->position.y;
-		direction.z = seg->points.back()->position.z - seg->startNode->position.z;
-		seg->startNode->direction = direction;
-		seg->startNode->normal = direction;
+		
+
 		//Calculate Normals + Directions for all cross-sections (segment points)
 		calculateDirectionsNormals(seg);
 		//calculate Normal + Direction for last cross-section (control point)
-		seg->endNode->direction = seg->points.back()->direction;
-		seg->endNode->normal = seg->endNode->direction;
-
+		
 		//Calculate average normals at the branchings
 		averageNormals(seg);
 		//Classify the segments in forward and backward
@@ -37,9 +35,10 @@ void Mesh:: calculateMesh(Root* root)
 		//first choose up vector perpendicular to direction of first cross section of the first segment
 		direction = seg->startNode->direction;
 		D3DXVECTOR3 up_vector;
-		up_vector.z = 0;
+		up_vector.z = 1;
 		up_vector.x = 1;
-		up_vector.y = -(direction.x*up_vector.x)/direction.y;
+		up_vector.y = 1;
+		//up_vector.y = -(direction.x*up_vector.x)/direction.y;!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		seg->startNode->upVector = up_vector;
 		//Calculate remaining up-Vectors
 		calculateUpVectors(seg);
@@ -56,8 +55,8 @@ void Mesh:: calculateMesh(Root* root)
 	}
 	else
 	{
-		HWND hwnd;
-		MessageBox(hwnd, L"no segments", L"Error", MB_OK);
+		//HWND hwnd;
+		//MessageBox(hwnd, L"no segments", L"Error", MB_OK);
 	}
 }
 
@@ -66,10 +65,46 @@ void Mesh:: calculateMesh(Root* root)
 //This function is called for each segment
 void Mesh:: calculateDirectionsNormals(Segment* seg)
 {
-	if(seg->points.size() != 0)
+	if(seg->points.size() != 0 && seg->startNode != NULL)
 	{
+		//Calculate Normal + Direction for the first cross-section (control point)
+		D3DXVECTOR3 direction;
+		direction.x = seg->points.at(0)->position.x - seg->startNode->position.x;
+		direction.y = seg->points.at(0)->position.y - seg ->startNode->position.y;
+		direction.z = seg->points.at(0)->position.z - seg->startNode->position.z;
+
+		D3DXVec3Normalize(&direction,&direction);
+
+		seg->startNode->direction = direction;
+		seg->startNode->normal = direction;
+
 		SegmentPoint* node = seg->points.at(0);
+
+		//Es muss erst mal die direction und Normale für die erste cross-section berechnet werden, weil sich die Normale mit dem Vorgänger zusammensetzt (control point!)
+		D3DXVECTOR3 normal;
+		
+		direction.x = seg->points.at(1)->position.x - node->position.x;
+		direction.y = seg->points.at(1)->position.y - node->position.y;
+		direction.z = seg->points.at(1)->position.z - node->position.z;
+		D3DXVec3Normalize(&direction,&direction);
+		seg->points.at(0)->direction = direction;
+
+		normal.x = seg->startNode->direction.x + seg->points.at(0)->direction.x;
+		normal.y = seg->startNode->direction.y + seg->points.at(0)->direction.y;
+		normal.z = seg->startNode->direction.z + seg->points.at(0)->direction.z;
+		D3DXVec3Normalize(&normal,&normal);
+		seg->points.at(0)->normal = normal;
+
+		//jetzt für die anderen:
 		calculateDirNorm(node);
+
+		if(seg->endNode != NULL)
+		{
+			//calculate Normal + Direction for last cross-section (control point)
+			seg->endNode->direction = seg->points.back()->direction;
+			seg->endNode->normal = seg->endNode->direction;
+
+		}
 	}
 	std::vector<Segment*> seg_list = seg->children;
 	for (int i = 0; i < seg_list.size(); i++)
@@ -95,9 +130,9 @@ void Mesh:: calculateDirNorm(SegmentPoint* seg_point)
 	if(seg_point->child != NULL)
 	{
 		seg_point2 = seg_point->child;
-		direction.x = seg_point2->direction.x - seg_point->direction.x;
-		direction.y = seg_point2->direction.y - seg_point->direction.y;
-		direction.z = seg_point2->direction.z - seg_point->direction.z;
+		direction.x = seg_point2->position.x - seg_point->position.x;
+		direction.y = seg_point2->position.y - seg_point->position.y;
+		direction.z = seg_point2->position.z - seg_point->position.z;
 		D3DXVec3Normalize(&direction,&direction);
 		seg_point->direction = direction;
 	}
@@ -111,7 +146,7 @@ void Mesh:: calculateDirNorm(SegmentPoint* seg_point)
 		seg_point->normal = normal;
 
 	}
-	
+
 	
 	if(seg_point->child != NULL)
 	{
@@ -130,6 +165,7 @@ void Mesh:: averageNormals(Segment* seg)
 
 		std::vector<Segment*> seg_list = seg->children;
 		D3DXVECTOR3 average = end_node->normal;
+		D3DXVECTOR3 normal1 = end_node->normal;
 		int average_counter = 1;
 		for (int i = 0; i < seg_list.size(); i++)
 		{
@@ -141,11 +177,11 @@ void Mesh:: averageNormals(Segment* seg)
 				{
 					
 					ControlPoint* a = seg_list.at(i)->startNode;
-					D3DXVECTOR3 average2 = a->normal;
-					FLOAT product = D3DXVec3Dot(&average,&average2);
+					D3DXVECTOR3 normal2 = a->normal;
+					FLOAT product = D3DXVec3Dot(&normal1,&normal2);
 					if(product > 0) //take only positive results
 					{
-						average = average + average2; 
+						average = average + normal2; 
 						average_counter = average_counter + 1;
 					}
 				}
@@ -153,6 +189,7 @@ void Mesh:: averageNormals(Segment* seg)
 			average = average / average_counter;
 		}
 
+		D3DXVec3Normalize(&average,&average);
 		end_node->normal = average;
 		for(int i = 0; i < seg_list.size();i++)
 		{
@@ -420,48 +457,7 @@ void Mesh::generatePatches(Segment* seg)
 
 			patches.push_back(temp_patch);
 
-			//Generate patches for the first segment points
-			if(seg->points.size() != 0)
-			{
-				if(seg->points.at(0)->vertices.size() != 0)
-				{
-					temp_patch.vertex0 = seg->points.at(0)->vertices.at(0);
-					temp_patch.vertex1 = seg->points.at(0)->vertices.at(1);
-					temp_patch.vertex2 = seg->points.at(0)->vertices.at(2);
-					temp_patch.vertex3 = seg->points.at(0)->vertices.at(3);
-
-					patches.push_back(temp_patch);
-				}
-
-				//create 4 sides of the cube between root segment and first segment point
-				//back side
-				temp_patch.vertex0 = seg->startNode->vertices.at(0);
-				temp_patch.vertex1 = seg->startNode->vertices.at(1);
-				temp_patch.vertex2 = seg->points.at(0)->vertices.at(1);
-				temp_patch.vertex3 = seg->points.at(0)->vertices.at(0);
-				patches.push_back(temp_patch);
-
-				//left side
-				temp_patch.vertex0 = seg->startNode->vertices.at(1);
-				temp_patch.vertex1 = seg->startNode->vertices.at(2);
-				temp_patch.vertex2 = seg->points.at(0)->vertices.at(2);
-				temp_patch.vertex3 = seg->points.at(0)->vertices.at(1);
-				patches.push_back(temp_patch);
-
-				//front side
-				temp_patch.vertex0 = seg->startNode->vertices.at(3);
-				temp_patch.vertex1 = seg->startNode->vertices.at(2);
-				temp_patch.vertex2 = seg->points.at(0)->vertices.at(2);
-				temp_patch.vertex3 = seg->points.at(0)->vertices.at(3);
-				patches.push_back(temp_patch);
-
-				//right side
-				temp_patch.vertex0 = seg->startNode->vertices.at(0);
-				temp_patch.vertex1 = seg->startNode->vertices.at(3);
-				temp_patch.vertex2 = seg->points.at(0)->vertices.at(3);
-				temp_patch.vertex3 = seg->points.at(0)->vertices.at(0);
-				patches.push_back(temp_patch);
-			}
+			
 			
 		}
 
@@ -500,7 +496,7 @@ void Mesh::generatePatchesNonBranching(Segment* seg)
 				temp_patch.vertex3 = seg->points.at(i)->vertices.at(0);
 				patches.push_back(temp_patch);
 
-				//left side
+				/*//left side
 				temp_patch.vertex0 = seg->points.at(i-1)->vertices.at(1);
 				temp_patch.vertex1 = seg->points.at(i-1)->vertices.at(2);
 				temp_patch.vertex2 = seg->points.at(i)->vertices.at(2);
@@ -519,7 +515,7 @@ void Mesh::generatePatchesNonBranching(Segment* seg)
 				temp_patch.vertex1 = seg->points.at(i-1)->vertices.at(3);
 				temp_patch.vertex2 = seg->points.at(i)->vertices.at(3);
 				temp_patch.vertex3 = seg->points.at(i)->vertices.at(0);
-				patches.push_back(temp_patch);
+				patches.push_back(temp_patch);*/
 			}
 		}
 	}
@@ -577,7 +573,7 @@ void Mesh:: processLastSections(Segment* seg)
 				temp_patch.vertex3 = seg->endNode->vertices.at(0);
 				patches.push_back(temp_patch);
 
-				//left side
+				/*//left side
 				temp_patch.vertex0 = seg->points.back()->vertices.at(1);
 				temp_patch.vertex1 = seg->points.back()->vertices.at(2);
 				temp_patch.vertex2 = seg->endNode->vertices.at(2);
@@ -596,7 +592,7 @@ void Mesh:: processLastSections(Segment* seg)
 				temp_patch.vertex1 = seg->points.back()->vertices.at(3);
 				temp_patch.vertex2 = seg->endNode->vertices.at(3);
 				temp_patch.vertex3 = seg->endNode->vertices.at(0);
-				patches.push_back(temp_patch);
+				patches.push_back(temp_patch);*/
 			}
 
 
@@ -669,5 +665,6 @@ void Mesh::triangulate()
 		temp_triangle.vertex0 = patches.at(i).vertex2;
 		temp_triangle.vertex1 = patches.at(i).vertex3;
 		temp_triangle.vertex2 = patches.at(i).vertex0; 
+		triangles.push_back(temp_triangle);
 	}
 }

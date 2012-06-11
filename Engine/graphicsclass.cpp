@@ -62,7 +62,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	}
 
 	// Initialize the model object.
-	result = m_Model->Initialize(m_D3D->GetDevice(), "../Engine/data/cube.txt", L"../Engine/data/seafloor.dds");
+	result = m_Model->Initialize(m_D3D->GetDevice(), "../Engine/data/cube.txt", L"../Engine/data/seafloor.dds", hwnd);
 	if(!result)
 	{
 		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
@@ -153,7 +153,7 @@ bool GraphicsClass::Frame()
 
 
 	// Update the rotation variable each frame.
-	rotation += (float)D3DX_PI * 0.005f;
+	//rotation += (float)D3DX_PI * 0.005f;
 	if(rotation > 360.0f)
 	{
 		rotation -= 360.0f;
@@ -206,4 +206,34 @@ bool GraphicsClass::Render(float rotation)
 	m_D3D->EndScene();
 
 	return true;
+}
+
+void GraphicsClass::move_camera(float x,float z)
+{
+	D3DXVECTOR3 Position = m_Camera->GetPosition();
+	D3DXVECTOR3 DefaultForward = D3DXVECTOR3(0.0f,0.0f,1.0f);
+	D3DXVECTOR3 DefaultRight = D3DXVECTOR3(1.0f,0.0f,0.0f);
+	D3DXVECTOR3 Forward = DefaultForward;
+	D3DXVECTOR3 Right = DefaultRight;
+
+	D3DXMATRIX RotateYTempMatrix;
+	D3DXMATRIX RotateXTempMatrix;
+	D3DXMatrixRotationY(&RotateYTempMatrix, m_Camera->GetRotation().y * 0.0174532925f);
+	D3DXMatrixRotationX(&RotateXTempMatrix, m_Camera->GetRotation().x * 0.0174532925f);
+
+	D3DXVec3TransformNormal(&Right, &DefaultRight, &RotateYTempMatrix);
+	D3DXVec3TransformNormal(&Forward, &DefaultForward, &RotateXTempMatrix);
+	D3DXVec3TransformNormal(&Forward, &Forward, &RotateYTempMatrix);
+
+	Position += x*Right;
+	Position += z*Forward;
+
+	m_Camera->SetPosition(Position);
+	return;
+}
+
+void GraphicsClass::rotate_camera(float x,float y)
+{
+	D3DXVECTOR3 temp = m_Camera->GetRotation();
+	m_Camera->SetRotation(temp.x+x,temp.y+y,temp.z);
 }

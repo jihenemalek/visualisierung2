@@ -42,12 +42,10 @@ bool SystemClass::Initialize()
 		return false;
 	}
 	
-	Vesseltree::Root *tree0 = Vesseltree::Parser::parseDocument("Resources/vesselTree0.xml", m_hwnd);
-	mesh0 = new Mesh;
-	mesh0->calculateMesh(tree0);
+	
 
 	// Initialize the input object.
-	m_Input->Initialize();
+	m_Input->Initialize(m_hinstance,m_hwnd,screenWidth,screenHeight);
 
 	// Create the graphics object.  This object will handle rendering all the graphics for this application.
 	m_Graphics = new GraphicsClass;
@@ -126,6 +124,9 @@ void SystemClass::Run()
 			}
 		}
 
+		if(m_Input->IsKeyPressed(DIK_ESCAPE) == true)
+			done = true;
+
 	}
 
 	return;
@@ -134,14 +135,43 @@ void SystemClass::Run()
 
 bool SystemClass::Frame()
 {
-	bool result;
-
-
-	// Check if the user pressed escape and wants to exit the application.
-	if(m_Input->IsKeyDown(VK_ESCAPE))
+	bool result, leftclick;
+	int mouseX, mouseY;
+	
+	
+	// Do the input frame processing.
+	result = m_Input->Frame();
+	if(!result)
 	{
 		return false;
 	}
+
+	// Move Camera according to Keyboard Input
+	if(m_Input->IsKeyPressed(DIK_LEFT))
+	{
+		m_Graphics->move_camera(-speed,0);
+	}
+
+	if(m_Input->IsKeyPressed(DIK_RIGHT))
+	{
+		m_Graphics->move_camera(speed,0);
+	}
+	
+	if(m_Input->IsKeyPressed(DIK_UP))
+	{
+		m_Graphics->move_camera(0,speed);
+	}
+
+	if(m_Input->IsKeyPressed(DIK_DOWN))
+	{
+		m_Graphics->move_camera(0,-speed);
+	}
+
+	// Get the location of the mouse from the input object,
+	m_Input->GetRelativeMouseLocation(mouseX, mouseY, leftclick);
+	
+	m_Graphics->rotate_camera(mouseY/sensitivity,mouseX/sensitivity);
+
 
 	// Do the frame processing for the graphics object.
 	result = m_Graphics->Frame();
@@ -153,10 +183,9 @@ bool SystemClass::Frame()
 	return true;
 }
 
-
 LRESULT CALLBACK SystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 {
-	switch(umsg)
+/*	switch(umsg)
 	{
 		// Check if a key has been pressed on the keyboard.
 		case WM_KEYDOWN:
@@ -179,7 +208,8 @@ LRESULT CALLBACK SystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wparam
 		{
 			return DefWindowProc(hwnd, umsg, wparam, lparam);
 		}
-	}
+	}*/
+	return DefWindowProc(hwnd, umsg, wparam, lparam);
 }
 
 

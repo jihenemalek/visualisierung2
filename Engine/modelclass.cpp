@@ -2,6 +2,7 @@
 // Filename: modelclass.cpp
 ////////////////////////////////////////////////////////////////////////////////
 #include "modelclass.h"
+#include "Vesseltree/Parser.hpp"
 
 
 ModelClass::ModelClass()
@@ -23,17 +24,20 @@ ModelClass::~ModelClass()
 }
 
 
-bool ModelClass::Initialize(ID3D11Device* device, char* modelFilename, WCHAR* textureFilename)
+bool ModelClass::Initialize(ID3D11Device* device, char* modelFilename, WCHAR* textureFilename, HWND m_hwnd)
 {
 	bool result;
 
-
+	
+	Vesseltree::Root *tree0 = Vesseltree::Parser::parseDocument("Resources/vesselTree0.xml", m_hwnd);
+	mesh0 = new Mesh;
+	mesh0->calculateMesh(tree0);
 	// Load in the model data,
-	result = LoadModel(modelFilename);
+	/*result = LoadModel(modelFilename);
 	if(!result)
 	{
 		return false;
-	}
+	}*/
 
 	// Initialize the vertex and index buffers.
 	result = InitializeBuffers(device);
@@ -48,6 +52,7 @@ bool ModelClass::Initialize(ID3D11Device* device, char* modelFilename, WCHAR* te
 	{
 		return false;
 	}
+	
 
 	return true;
 }
@@ -100,6 +105,8 @@ bool ModelClass::InitializeBuffers(ID3D11Device* device)
 
 
 	// Create the vertex array.
+	m_vertexCount = mesh0->triangles.size()*3;
+	m_indexCount = m_vertexCount / 3;
 	vertices = new VertexType[m_vertexCount];
 	if(!vertices)
 	{
@@ -116,11 +123,15 @@ bool ModelClass::InitializeBuffers(ID3D11Device* device)
 	// Load the vertex array and index array with data.
 	
 	
-	for(i=0; i<m_vertexCount; i++)
+	//for(i=0; i<m_vertexCount; i++)
+	for(int i = 0; i < mesh0->triangles.size(); i++)
 	{
-		vertices[i].position = D3DXVECTOR3(m_model[i].x, m_model[i].y, m_model[i].z);
-		vertices[i].texture = D3DXVECTOR2(m_model[i].tu, m_model[i].tv);
-		vertices[i].normal = D3DXVECTOR3(m_model[i].nx, m_model[i].ny, m_model[i].nz);
+		vertices[(i*3)].position = mesh0->triangles.at(i).vertex0;
+		vertices[1+(i*3)].position = mesh0->triangles.at(i).vertex1;
+		vertices[2+(i*3)].position = mesh0->triangles.at(i).vertex2;
+		//vertices[i].position = D3DXVECTOR3(m_model[i].x, m_model[i].y, m_model[i].z);
+		//vertices[i].texture = D3DXVECTOR2(m_model[i].tu, m_model[i].tv);
+		//vertices[i].normal = D3DXVECTOR3(m_model[i].nx, m_model[i].ny, m_model[i].nz);
 
 		
 
@@ -283,6 +294,7 @@ bool ModelClass::LoadModel(char* filename)
 
 	// Read in the vertex count.
 	fin >> m_vertexCount;
+	
 
 	// Set the number of indices to be the same as the vertex count.
 	m_indexCount = m_vertexCount;
