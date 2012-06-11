@@ -27,6 +27,10 @@ namespace Vesseltree
 
 		Point() { x = 0.0f; y = 0.0f; z = 0.0f; };
 		Point(float _x, float _y, float _z) { x = _x; y = _y; z = _z; };
+		Point operator+(Point p) { Point c; c.x = x + p.x; c.y = y + p.y; c.z = z + p.z; return c; };
+		Point operator/(float c) { Point p; p.x = x / c; p.y = y / c; p.z = z / c; return p; };
+		void operator+=(Point p) { x += p.x; y += p.y; z += p.z; };
+		void operator/=(float c) { x /= c; y /= c; z /= c; };
 	} Point;
 
 	//
@@ -45,6 +49,20 @@ namespace Vesseltree
 
 
 		Node() { position = Point(); };
+
+		Node * combine(Node *n) {
+			Node *node;
+			node->position = (position + n->position) / 2.0f;
+			node->radius = (radius + n->radius) / 2.0f;
+			node->offset = (offset + n->offset) / 2.0f;
+			node->parent = parent;
+			node->child = n->child;
+			node->direction = (direction + n->direction) / 2.0f;
+			node->normal = (normal + n->normal) / 2.0f;
+			node->upVector = (upVector + n->upVector) / 2.0f;
+
+			return node;
+		};
 	} Node;
 	
 	//

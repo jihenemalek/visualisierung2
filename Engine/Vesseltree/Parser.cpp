@@ -214,7 +214,7 @@ std::vector<Vesseltree::SegmentPoint *> Vesseltree::Parser::parseSegmentPoints(x
 		currentSegmentPoint = currentSegmentPoint->next;
 	}
 
-	for (int i = 0; i < segmentPoints.size(); i++) 
+	for (unsigned int i = 0; i < segmentPoints.size(); i++) 
 	{
 		
 		if (i > 0) 

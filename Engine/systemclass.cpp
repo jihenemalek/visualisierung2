@@ -41,11 +41,14 @@ bool SystemClass::Initialize()
 	{
 		return false;
 	}
-	
-	
+
 
 	// Initialize the input object.
 	m_Input->Initialize(m_hinstance,m_hwnd,screenWidth,screenHeight);
+
+	Vesseltree::Root *tree0 = Vesseltree::Parser::parseDocument("Resources/vesselTree0.xml", m_hwnd);
+	mesh0 = new Mesh;
+	mesh0->calculateMesh(tree0);
 
 	// Create the graphics object.  This object will handle rendering all the graphics for this application.
 	m_Graphics = new GraphicsClass;

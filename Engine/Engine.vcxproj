@@ -99,6 +99,7 @@ xcopy /Y "$(ProjectDir)..\Resources" "$(OutDir)Resources\"</Command>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="modelclass.cpp" />
+    <ClCompile Include="Sampling.cpp" />
     <ClCompile Include="systemclass.cpp" />
     <ClCompile Include="textureclass.cpp" />
     <ClCompile Include="Vesseltree\Parser.cpp" />
@@ -112,6 +113,7 @@ xcopy /Y "$(ProjectDir)..\Resources" "$(OutDir)Resources\"</Command>
     <ClInclude Include="lightshaderclass.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="modelclass.h" />
+    <ClInclude Include="Sampling.hpp" />
     <ClInclude Include="systemclass.h" />
     <ClInclude Include="textureclass.h" />
     <ClInclude Include="Vesseltree\Parser.hpp" />
