@@ -19,9 +19,6 @@ void Mesh::calculateMesh(Root* root)
 
 
 		//Calculate Normal + Direction for the first cross-section (control point)
-		D3DXVECTOR3 direction;
-		
-
 		//Calculate Normals + Directions for all cross-sections (segment points)
 		calculateDirectionsNormals(seg);
 		//calculate Normal + Direction for last cross-section (control point)
@@ -33,13 +30,7 @@ void Mesh::calculateMesh(Root* root)
 
 		// Propagate up-vector along the whole tree
 		//first choose up vector perpendicular to direction of first cross section of the first segment
-		direction = seg->startNode->direction;
-		D3DXVECTOR3 up_vector;
-		up_vector.z = 1;
-		up_vector.x = 1;
-		up_vector.y = 1;
-		//up_vector.y = -(direction.x*up_vector.x)/direction.y;!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		seg->startNode->upVector = up_vector;
+		seg->startNode->upVector = D3DXVECTOR3(1, 1, 1);
 
 		//Calculate remaining up-Vectors
 		calculateUpVectors(seg);
@@ -249,14 +240,8 @@ void Mesh::calculateUpVectors(Segment* seg)
 	{
 		//Über Segment iterieren
 		D3DXVECTOR3 pu, position;
-		pu.x = seg->startNode->position.x + seg->startNode->upVector.x;
-		pu.y = seg->startNode->position.y + seg->startNode->upVector.y;
-		pu.z = seg->startNode->position.z + seg->startNode->upVector.z;
-
-		
-		position.x = seg->points.at(0)->position.x;
-		position.y = seg->points.at(0)->position.y;
-		position.z = seg->points.at(0)->position.z;
+		pu = seg->startNode->position + seg->startNode->upVector;
+		position = seg->points.at(0)->position;
 
 		up_vector = calculateUp(pu,seg->startNode->direction,position,seg->points.at(0)->normal);
 		seg->points.at(0)->upVector = up_vector;
@@ -264,26 +249,16 @@ void Mesh::calculateUpVectors(Segment* seg)
 
 		for (unsigned int i = 0; i < (seg->points.size()-1); i++)
 		{
-			pu.x = seg->points.at(i)->position.x + seg->points.at(i)->upVector.x;
-			pu.y = seg->points.at(i)->position.y + seg->points.at(i)->upVector.y;
-			pu.z = seg->points.at(i)->position.z + seg->points.at(i)->upVector.z;
-
-			position.x = seg->points.at(i+1)->position.x;
-			position.y = seg->points.at(i+1)->position.y;
-			position.z = seg->points.at(i+1)->position.z;
+			pu = seg->points.at(i)->position + seg->points.at(i)->upVector;
+			position = seg->points.at(i+1)->position;
 		
 			up_vector = calculateUp(pu,seg->points.at(i)->direction,position,seg->points.at(i+1)->normal);
 			seg->points.at(i+1)->upVector = up_vector;
 		}
 
 		//letzer Control Point
-		pu.x = seg->points.back()->position.x + seg->points.back()->upVector.x;
-		pu.y = seg->points.back()->position.y + seg->points.back()->upVector.y;
-		pu.z = seg->points.back()->position.z + seg->points.back()->upVector.z;
-
-		position.x = seg->endNode->position.x;
-		position.y = seg->endNode->position.y;
-		position.z = seg->endNode->position.z;
+		pu = seg->points.back()->position + seg->points.back()->upVector;
+		position = seg->endNode->position;
 
 		up_vector = calculateUp(pu,seg->points.back()->direction,position,seg->endNode->normal);
 		seg->endNode->upVector = up_vector;
@@ -294,13 +269,8 @@ void Mesh::calculateUpVectors(Segment* seg)
 			for (unsigned int i = 0; i < seg->children.size(); i++)
 			{
 				Segment* seg2 = seg->children.at(i);
-				pu.x = seg->endNode->position.x + seg->endNode->upVector.x;
-				pu.y = seg->endNode->position.y + seg->endNode->upVector.y;
-				pu.z = seg->endNode->position.z + seg->endNode->upVector.z;
-
-				position.x = seg2->startNode->position.x;
-				position.y = seg2->startNode->position.y;
-				position.z = seg2->startNode->position.z;
+				pu = seg->endNode->position + seg->endNode->upVector;
+				position = seg2->startNode->position;
 
 				up_vector = calculateUp(pu,seg->endNode->direction,position,seg2->startNode->normal);
 				seg2->startNode->upVector = up_vector;
@@ -362,15 +332,21 @@ void Mesh::tileTree(Segment* seg)
 		// Classify backward set into quadrants relative to last section
 		std::set<Segment *> quadrants[4];
 		D3DXVECTOR3 upVector[4];
+		D3DXVECTOR3 avgUpVector[4];
 
 		upVector[0] = seg->points.back()->upVector;
 		upVector[1] = this->rotateVector(upVector[0], seg->points.back()->direction);
 		upVector[2] = this->rotateVector(upVector[1], seg->points.back()->direction);
 		upVector[3] = this->rotateVector(upVector[2], seg->points.back()->direction);
+		
+		avgUpVector[0] = (upVector[0] + upVector[1]) / 2.0f;
+		avgUpVector[1] = (upVector[1] + upVector[2]) / 2.0f;
+		avgUpVector[2] = (upVector[2] + upVector[3]) / 2.0f;
+		avgUpVector[3] = (upVector[3] + upVector[0]) / 2.0f;
 
-		for (std::set<Segment *>::iterator it = backward.begin(); it != backward.end(); it++) {
+		for (std::set<Vesseltree::Segment *>::iterator it = backward.begin(); it != backward.end(); it++) {
 			for (unsigned int i = 0; i < 4; i++) {
-				if (D3DXVec3Dot(&((upVector[i] + upVector[(i + 1) % 4]) / 2.0), &((*it)->startNode->direction)) < 1) {
+				if (D3DXVec3Dot(&avgUpVector[i], &((*it)->startNode->direction)) < 1) {
 					quadrants[i].insert(*it);
 					break;
 				}
@@ -379,7 +355,7 @@ void Mesh::tileTree(Segment* seg)
 
 		// Join backward segments to last section for each quadrant
 		for (unsigned int i = 0; i < 4; i++) {
-			this->tileJoint(quadrants[i], seg->endNode->direction, seg);
+			this->tileJoint(quadrants[i], seg->endNode->direction, seg, avgUpVector[i]);
 		}
 
 		// Recursively generate subtrees of all backward segments
@@ -406,15 +382,21 @@ void Mesh::tileTree(Segment* seg)
 		// Classify remaining set into quadrants relative to S	
 		std::set<Segment *> quadrants[4];
 		D3DXVECTOR3 upVector[4];
+		D3DXVECTOR3 avgUpVector[4];
 
 		upVector[0] = S->startNode->upVector;
 		upVector[1] = this->rotateVector(upVector[0], S->startNode->direction);
 		upVector[2] = this->rotateVector(upVector[1], S->startNode->direction);
 		upVector[3] = this->rotateVector(upVector[2], S->startNode->direction);
 		
+		avgUpVector[0] = (upVector[0] + upVector[1]) / 2.0f;
+		avgUpVector[1] = (upVector[1] + upVector[2]) / 2.0f;
+		avgUpVector[2] = (upVector[2] + upVector[3]) / 2.0f;
+		avgUpVector[3] = (upVector[3] + upVector[0]) / 2.0f;
+
 		for (std::set<Segment *>::iterator it = forward.begin(); it != forward.end(); it++) {
 			for (unsigned int i = 0; i < 4; i++) {
-				if (D3DXVec3Dot(&((upVector[i] + upVector[(i + 1) % 4]) / 2.0), &((*it)->startNode->direction)) < 1) {
+				if (D3DXVec3Dot(&avgUpVector[i], &((*it)->startNode->direction)) < 1) {
 					quadrants[i].insert(*it);
 					break;
 				}
@@ -423,7 +405,7 @@ void Mesh::tileTree(Segment* seg)
 		
 		// Join all segments for each quadrant together
 		for (unsigned int i = 0; i < 4; i++) {
-			this->tileJoint(quadrants[i], S->startNode->direction, S);
+			this->tileJoint(quadrants[i], S->startNode->direction, S, avgUpVector[i]);
 		}
 			
 		// Recursively generate subtrees for all forward segments
@@ -438,27 +420,24 @@ void Mesh::tileTrivially(SegmentPoint *p1, SegmentPoint *p2)
 {
 	D3DXVECTOR3 upVector1 = p1->upVector;
 	D3DXVECTOR3 upVector2 = p2->upVector;
-	D3DXVECTOR3 pos1 = D3DXVECTOR3(p1->position.x, p1->position.y, p1->position.z);
-	D3DXVECTOR3 pos2 = D3DXVECTOR3(p2->position.x, p2->position.y, p2->position.z);
 
 	Patch patch[4];
 
 	for (unsigned int i = 0; i < 3; i++) {
-		patch[i].vertex0 = pos1 + (p1->radius * upVector1);
-		patch[i].vertex1 = pos2 + (p2->radius * upVector2);
-	
+		patch[i].vertex0 = p1->position + (p1->radius * upVector1);
 		upVector1 = rotateVector(upVector1, p1->direction);
-		upVector2 = rotateVector(upVector2, p2->direction);
+		patch[i].vertex1 = p1->position + (p1->radius * upVector1);
 
-		patch[i].vertex2 = pos1 + (p1->radius * upVector1);
-		patch[i].vertex3 = pos2 + (p2->radius * upVector2);
+		patch[i].vertex2 = p2->position + (p2->radius * upVector2);
+		upVector2 = rotateVector(upVector2, p2->direction);
+		patch[i].vertex3 = p2->position + (p2->radius * upVector2);
 	}
 
 	// Last section
-	patch[3].vertex0 = pos1 + (p1->radius * upVector1);
-	patch[3].vertex1 = pos2 + (p2->radius * upVector2);
-	patch[3].vertex2 = pos1 + (p1->radius * p1->upVector);
-	patch[3].vertex3 = pos2 + (p2->radius * p2->upVector);
+	patch[3].vertex0 = p1->position + (p1->radius * upVector1);
+	patch[3].vertex1 = p1->position + (p1->radius * p1->upVector);
+	patch[3].vertex2 = p2->position + (p2->radius * upVector2);
+	patch[3].vertex3 = p2->position + (p2->radius * p2->upVector);
 
 	// Any special handling?
 
@@ -481,9 +460,7 @@ void Mesh::tileTrivially(Segment* seg)
 	{
 		for (unsigned int i = 0; i < seg->points.size(); i++)
 		{
-			position.x = seg->points.at(i)->position.x;
-			position.y = seg->points.at(i)->position.y;
-			position.z = seg->points.at(i)->position.z;
+			position = seg->points.at(i)->position;
 
 			radius = seg->points.at(i)->radius;
 
@@ -515,10 +492,47 @@ void Mesh::tileTrivially(Segment* seg)
 	}
 }
 
-void Mesh::tileJoint(std::set<Segment *> segments, D3DXVECTOR3 direction, Segment *caller)
+void Mesh::tileJoint(std::set<Segment *> segments, D3DXVECTOR3 direction, Segment *caller, D3DXVECTOR3 quadDirection)
 {
 	if (segments.size() == 0) {
-		// Create quadrilateral patch
+		// Close this side of the quadrant with a simple patch
+
+		D3DXVECTOR3 upVector[4];
+		D3DXVECTOR3 pUpVector[4];
+		upVector[0] = caller->startNode->upVector;
+		upVector[1] = this->rotateVector(upVector[0], caller->startNode->direction);
+		upVector[2] = this->rotateVector(upVector[1], caller->startNode->direction);
+		upVector[3] = this->rotateVector(upVector[2], caller->startNode->direction);
+
+		if (caller->type == Vesseltree::kSegmentTypeInterpolated) {
+			pUpVector[0] = caller->endNode->upVector;
+			pUpVector[1] = this->rotateVector(upVector[0], caller->endNode->direction);
+			pUpVector[2] = this->rotateVector(upVector[1], caller->endNode->direction);
+			pUpVector[3] = this->rotateVector(upVector[2], caller->endNode->direction);
+		} else {
+			pUpVector[0] = caller->points.front()->upVector;
+			pUpVector[1] = this->rotateVector(upVector[0], caller->points.front()->direction);
+			pUpVector[2] = this->rotateVector(upVector[1], caller->points.front()->direction);
+			pUpVector[3] = this->rotateVector(upVector[2], caller->points.front()->direction);
+		}
+
+		for (unsigned int i = 0; i < 4; i++) {
+			if (D3DXVec3Dot(&quadDirection, &upVector[i]) < 1 && D3DXVec3Dot(&quadDirection, &upVector[(i + 1) % 4])) {
+				Patch p;
+
+				p.vertex0 = caller->startNode->position + caller->startNode->radius * upVector[i];
+				p.vertex1 = caller->startNode->position + caller->startNode->radius * upVector[(i + 1) % 4];
+				
+				if (caller->type == Vesseltree::kSegmentTypeInterpolated) {
+					p.vertex2 = caller->endNode->position + caller->endNode->radius * pUpVector[(i + 1) % 4];
+					p.vertex2 = caller->endNode->position + caller->endNode->radius * pUpVector[i];
+				} else {
+					p.vertex2 = caller->points.front()->position + caller->points.front()->radius * pUpVector[(i + 1) % 4];
+					p.vertex2 = caller->points.front()->position + caller->points.front()->radius * pUpVector[i];
+				}
+				break;
+			}
+		}
 	} else {
 		// Find the closest segment N in the set (smallest angle to direction)
 		Segment *N;
@@ -542,9 +556,14 @@ void Mesh::tileJoint(std::set<Segment *> segments, D3DXVECTOR3 direction, Segmen
 		upVector[2] = this->rotateVector(upVector[1], N->startNode->direction);
 		upVector[3] = this->rotateVector(upVector[2], N->startNode->direction);
 
+		D3DXVECTOR3 avgUpVector[3];
+		avgUpVector[0] = (upVector[0] + upVector[1]) / 2.0f;
+		avgUpVector[1] = (upVector[1] + upVector[2]) / 2.0f;
+		avgUpVector[2] = (upVector[2] + upVector[3]) / 2.0f;
+
 		for (std::set<Segment *>::iterator it = segments.begin(); it != segments.end(); it++) {
 			for (unsigned int i = 0; i < 3; i++) {
-				if (D3DXVec3Dot(&((upVector[i] + upVector[(i + 1) % 4]) / 2.0), &((*it)->startNode->direction)) < 1) {
+				if (D3DXVec3Dot(&avgUpVector[i], &((*it)->startNode->direction)) < 1) {
 					quadrants[i].insert(*it);
 					break;
 				}
@@ -554,8 +573,9 @@ void Mesh::tileJoint(std::set<Segment *> segments, D3DXVECTOR3 direction, Segmen
 		// Create a transition quadrilateral patch between S and N
 		// TODO: Create patch
 
+
 		for (unsigned int i = 0; i < 3; i++) {
-			this->tileJoint(quadrants[i], N->startNode->direction, N);
+			this->tileJoint(quadrants[i], N->startNode->direction, N, avgUpVector[i]);
 		}
 	}
 }
@@ -705,15 +725,10 @@ void Mesh:: processLastSections(Segment* seg)
 
 		if(backward_index.size() == 0) //if no backward branches exist -> process tile trivial and create the patch of the endNode and the patches between the endNode and the last segment point
 		{
-			D3DXVECTOR3 position;
 			std::vector<D3DXVECTOR3> vertex_list;
 			Patch temp_patch;
-
-			position.x = seg->endNode->position.x;
-			position.y = seg->endNode->position.y;
-			position.z = seg->endNode->position.z;
 		
-			vertex_list = tileTrivial(position,seg->endNode->radius,seg->endNode->upVector, seg->endNode->direction);
+			vertex_list = tileTrivial(seg->endNode->position, seg->endNode->radius,seg->endNode->upVector, seg->endNode->direction);
 			seg->endNode->vertices = vertex_list;
 
 			//create Patches

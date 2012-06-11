@@ -16,28 +16,12 @@
 
 namespace Vesseltree
 {
-	//
-	// A point is a simple representation of a vertex. Other values like normal
-	// and extended data may be added in the future
-	//
-	typedef struct Point {
-		float x;
-		float y;
-		float z;
-
-		Point() { x = 0.0f; y = 0.0f; z = 0.0f; };
-		Point(float _x, float _y, float _z) { x = _x; y = _y; z = _z; };
-		Point operator+(Point p) { Point c; c.x = x + p.x; c.y = y + p.y; c.z = z + p.z; return c; };
-		Point operator/(float c) { Point p; p.x = x / c; p.y = y / c; p.z = z / c; return p; };
-		void operator+=(Point p) { x += p.x; y += p.y; z += p.z; };
-		void operator/=(float c) { x /= c; y /= c; z /= c; };
-	} Point;
 
 	//
 	// A node is a generic struct for storing control/segment points
 	//
 	typedef struct Node {
-		Point position;		// Position of the control point center
+		D3DXVECTOR3 position;		// Position of the control point center
 		float radius;		// Radius of the control point
 		float offset;		// An offset adde to the radius
 		Node  *parent;		// The parent element of the node
@@ -48,7 +32,7 @@ namespace Vesseltree
 		std::vector<D3DXVECTOR3> vertices;
 
 
-		Node() { position = Point(); };
+		Node() { position = D3DXVECTOR3(); };
 
 		Node * combine(Node *n) {
 			Node *node;
@@ -105,11 +89,11 @@ namespace Vesseltree
 	// Root node of the vessel tree
 	//
 	typedef struct Root {
-		Point   dataSize;		// Meta information, currently not used
-		Point   dataSpacing;	// Meta information, currently not used
+		D3DXVECTOR3   dataSize;		// Meta information, currently not used
+		D3DXVECTOR3   dataSpacing;	// Meta information, currently not used
 		Segment *child;			// First segment of the tree
 
-		Root() { dataSize = Point(); dataSpacing = Point(); }
+		Root() { dataSize = D3DXVECTOR3(); dataSpacing = D3DXVECTOR3(); }
 	} Root;
 };
 

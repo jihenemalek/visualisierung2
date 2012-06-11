@@ -24,7 +24,7 @@ public:
 	
 	void Mesh::tileTree(Segment*);
 	void Mesh::tileTrivially(Node *firstPoint, Node *secondPoint);
-	void Mesh::tileJoint(std::set<Segment*> segments, D3DXVECTOR3 direction, Segment *caller);
+	void Mesh::tileJoint(std::set<Segment*> segments, D3DXVECTOR3 direction, Segment *caller, D3DXVECTOR3 quadrantDirection);
 
 	void Mesh::tileTrivially(Segment*);
 	std::vector<D3DXVECTOR3> Mesh:: tileTrivial(D3DXVECTOR3, float, D3DXVECTOR3, D3DXVECTOR3);
