@@ -92,6 +92,8 @@ xcopy /Y "$(ProjectDir)..\Resources" "$(OutDir)Resources\"</Command>
   <ItemGroup>
     <ClCompile Include="cameraclass.cpp" />
     <ClCompile Include="d3dclass.cpp" />
+    <ClCompile Include="Font.cpp" />
+    <ClCompile Include="FontEngine.cpp" />
     <ClCompile Include="graphicsclass.cpp" />
     <ClCompile Include="inputclass.cpp" />
     <ClCompile Include="lightclass.cpp" />
@@ -107,6 +109,7 @@ xcopy /Y "$(ProjectDir)..\Resources" "$(OutDir)Resources\"</Command>
   <ItemGroup>
     <ClInclude Include="cameraclass.h" />
     <ClInclude Include="d3dclass.h" />
+    <ClInclude Include="Font.hpp" />
     <ClInclude Include="graphicsclass.h" />
     <ClInclude Include="inputclass.h" />
     <ClInclude Include="lightclass.h" />
@@ -115,11 +118,14 @@ xcopy /Y "$(ProjectDir)..\Resources" "$(OutDir)Resources\"</Command>
     <ClInclude Include="modelclass.h" />
     <ClInclude Include="Sampling.hpp" />
     <ClInclude Include="systemclass.h" />
+    <ClInclude Include="FontEngine.hpp" />
     <ClInclude Include="textureclass.h" />
     <ClInclude Include="Vesseltree\Parser.hpp" />
     <ClInclude Include="Vesseltree\Tree.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="font.ps" />
+    <None Include="font.vs" />
     <None Include="light.ps" />
     <None Include="light.vs" />
   </ItemGroup>

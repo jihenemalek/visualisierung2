@@ -62,19 +62,22 @@ void Mesh::calculateDirectionsNormals(Segment* seg)
 	if(seg->startNode != NULL)
 	{
 		D3DXVECTOR3 direction;
-		if(seg->points.size() != 0)
-		{
-			//Calculate Normal + Direction for the first cross-section (control point)
-			
-			direction.x = seg->points.at(0)->position.x - seg->startNode->position.x;
-			direction.y = seg->points.at(0)->position.y - seg ->startNode->position.y;
-			direction.z = seg->points.at(0)->position.z - seg->startNode->position.z;
 
-			D3DXVec3Normalize(&direction,&direction);
+		if (seg->points.size() > 0) 
+		{
+			direction = seg->points.at(0)->position - seg->startNode->position;
+		} 
+		else 
+		{
+			direction = seg->endNode->position - seg->startNode->position;
+		}
+
+		D3DXVec3Normalize(&direction, &direction);
+
 
 			seg->startNode->direction = direction;
 			seg->startNode->normal = direction;
-		}
+		
 
 		if (seg->points.size() > 0) 
 		{
@@ -500,6 +503,8 @@ void Mesh::tileTrivially(SegmentPoint *p1, SegmentPoint *p2)
 	Patch patch[4];
 
 	for (unsigned int i = 0; i < 3; i++) {
+		D3DXVECTOR3 normal = upVector1 + upVector2;
+		
 		patch[i].vertex0 = p1->position + (p1->radius * upVector1);
 
 		upVector1 = rotateVector(upVector1, p1->direction);
@@ -508,6 +513,8 @@ void Mesh::tileTrivially(SegmentPoint *p1, SegmentPoint *p2)
 		patch[i].vertex3 = p2->position + (p2->radius * upVector2);
 		upVector2 = rotateVector(upVector2, p2->direction);
 		patch[i].vertex2 = p2->position + (p2->radius * upVector2);
+
+		patch[i].normal = (normal + upVector1 + upVector2) / 4.0;
 	}
 
 	// Last section
@@ -515,7 +522,7 @@ void Mesh::tileTrivially(SegmentPoint *p1, SegmentPoint *p2)
 	patch[3].vertex1 = p1->position + (p1->radius * p1->upVector);
 	patch[3].vertex3 = p2->position + (p2->radius * upVector2);
 	patch[3].vertex2 = p2->position + (p2->radius * p2->upVector);
-
+	patch[3].normal = (upVector1 + p1->upVector + upVector2 + p2->upVector) / 4.0f;
 	// Any special handling?
 
 	// Add the patches to the list
@@ -581,7 +588,7 @@ void Mesh::tileJoint(std::set<Segment *> segments, D3DXVECTOR3 direction, Segmen
 		upVector[2] = this->rotateVector(upVector[1], caller->startNode->direction);
 		upVector[3] = this->rotateVector(upVector[2], caller->startNode->direction);
 
-		if (caller->type == Vesseltree::kSegmentTypeInterpolated) {
+		if (caller->type == Vesseltree::kSegmentTypeInterpolated || caller->points.size() == 0) {
 			pUpVector[0] = caller->endNode->upVector;
 			pUpVector[1] = this->rotateVector(upVector[0], caller->endNode->direction);
 			pUpVector[2] = this->rotateVector(upVector[1], caller->endNode->direction);
@@ -600,13 +607,15 @@ void Mesh::tileJoint(std::set<Segment *> segments, D3DXVECTOR3 direction, Segmen
 				p.vertex0 = caller->startNode->position + caller->startNode->radius * upVector[i];
 				p.vertex1 = caller->startNode->position + caller->startNode->radius * upVector[(i + 1) % 4];
 				
-				if (caller->type == Vesseltree::kSegmentTypeInterpolated) {
+				if (caller->type == Vesseltree::kSegmentTypeInterpolated || caller->points.size() == 0) {
 					p.vertex2 = caller->endNode->position + caller->endNode->radius * pUpVector[(i + 1) % 4];
 					p.vertex3 = caller->endNode->position + caller->endNode->radius * pUpVector[i];
 				} else {
 					p.vertex2 = caller->points.front()->position + caller->points.front()->radius * pUpVector[(i + 1) % 4];
 					p.vertex3 = caller->points.front()->position + caller->points.front()->radius * pUpVector[i];
 				}
+
+				p.normal = (upVector[i] + upVector[(i + 1) % 4] + pUpVector[i] + pUpVector[(i + 1) % 4]) / 4.0f;
 
 				patches.push_back(p);
 				break;

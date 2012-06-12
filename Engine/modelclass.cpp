@@ -3,7 +3,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 #include "modelclass.h"
 #include "Vesseltree/Parser.hpp"
-
+#include "Sampling.hpp"
 
 ModelClass::ModelClass()
 {
@@ -29,9 +29,11 @@ bool ModelClass::Initialize(ID3D11Device* device, char* modelFilename, WCHAR* te
 	bool result;
 
 	
+
 	Vesseltree::Root *tree0 = Vesseltree::Parser::parseDocument("Resources/vesselTree0.xml", m_hwnd);
 	Sampling* sampling0 = new Sampling;
-	sampling0->downsample(tree0, 0.5, 0.5); 
+	sampling0->downsample(tree0, 1, 1); 
+
 	mesh0 = new Mesh;
 	mesh0->calculateMesh(tree0);
 	// Load in the model data,

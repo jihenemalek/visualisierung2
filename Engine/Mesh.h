@@ -42,6 +42,8 @@ public:
 		D3DXVECTOR3 vertex1;
 		D3DXVECTOR3 vertex2;
 		D3DXVECTOR3 vertex3;
+
+		D3DXVECTOR3 normal;
 	} Patch;
 	std::vector<Patch> patches;
 	

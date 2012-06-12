@@ -11,6 +11,7 @@ GraphicsClass::GraphicsClass()
 	m_Model = 0;
 	m_LightShader = 0;
 	m_Light = 0;
+	m_Text = 0;
 }
 
 
@@ -27,7 +28,7 @@ GraphicsClass::~GraphicsClass()
 bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 {
 	bool result;
-
+	D3DXMATRIX baseViewMatrix;
 
 	// Create the Direct3D object.
 	m_D3D = new D3DClass;
@@ -53,6 +54,9 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 
 	// Set the initial position of the camera.
 	m_Camera->SetPosition(0.0f, 0.0f, -10.0f);
+	m_Camera->Render();
+	m_Camera->GetViewMatrix(baseViewMatrix);
+	m_Camera->SetRotation(-30.0f, 35.0f, 0.0f);
 	
 	// Create the model object.
 	m_Model = new ModelClass;
@@ -98,12 +102,26 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	m_Light->SetSpecularColor(1.0f, 1.0f, 1.0f, 1.0f);
 	m_Light->SetSpecularPower(32.0f);
 
+	m_Text = new FontEngine();
+	if (!m_Text) return false;
+	result = m_Text->Initialize(m_D3D->GetDevice(), m_D3D->GetDeviceContext(), hwnd, screenHeight, screenWidth, baseViewMatrix);
+	if (!result) {
+		MessageBox(hwnd, L"Could not initialize Font Engine", L"Error", MB_OK);
+		return false;
+	}
+
 	return true;
 }
 
 
 void GraphicsClass::Shutdown()
 {
+	if (m_Text) {
+		m_Text->Shutdown();
+		delete m_Text;
+		m_Text = 0;
+	}
+
 	// Release the light object.
 	if(m_Light)
 	{
@@ -172,7 +190,7 @@ bool GraphicsClass::Frame()
 
 bool GraphicsClass::Render(float rotation)
 {
-	D3DXMATRIX worldMatrix, viewMatrix, projectionMatrix;
+	D3DXMATRIX worldMatrix, viewMatrix, projectionMatrix, orthoMatrix;
 	bool result;
 
 
@@ -186,6 +204,7 @@ bool GraphicsClass::Render(float rotation)
 	m_Camera->GetViewMatrix(viewMatrix);
 	m_D3D->GetWorldMatrix(worldMatrix);
 	m_D3D->GetProjectionMatrix(projectionMatrix);
+	m_D3D->GetOrthoMatrix(orthoMatrix);
 
 	// Rotate the world matrix by the rotation value so that the triangle will spin.
 	D3DXMatrixRotationY(&worldMatrix, rotation);
@@ -197,10 +216,27 @@ bool GraphicsClass::Render(float rotation)
 	result = m_LightShader->Render(m_D3D->GetDeviceContext(), m_Model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, 
 								   m_Model->GetTexture(), m_Light->GetDirection(), m_Light->GetAmbientColor(), m_Light->GetDiffuseColor(), 
 								   m_Camera->GetPosition(), m_Light->GetSpecularColor(), m_Light->GetSpecularPower());
-	if(!result)
-	{
-		return false;
-	}
+	if(!result) return false;
+
+	m_D3D->TurnOffZBuffer();
+	m_D3D->TurnOnAlphaBlending();
+
+	D3DXVECTOR3 camPosition = m_Camera->GetPosition();
+	D3DXVECTOR3 camRotation = m_Camera->GetRotation();
+
+	char sentence1[128], sentence2[128];
+	
+	sprintf(sentence1, "Position: %.2f, %.2f, %.2f", camPosition.x, camPosition.y, camPosition.z);
+	sprintf(sentence2, "Rotation: %.2f, %.2f, %.2f", camRotation.x, camRotation.y, camRotation.z);
+	
+	m_Text->updateSentence(m_Text->m_sentence1, sentence1, -90, 110, 1.0, 1.0, 1.0, m_D3D->GetDeviceContext());
+	m_Text->updateSentence(m_Text->m_sentence2, sentence2, -90, 130, 1.0, 1.0, 1.0, m_D3D->GetDeviceContext());
+
+	result = m_Text->Render(m_D3D->GetDeviceContext(), worldMatrix, orthoMatrix);
+	if (!result) return false;
+
+	m_D3D->TurnOffAlphaBlending();
+	m_D3D->TurnOnZBuffer();
 
 	// Present the rendered scene to the screen.
 	m_D3D->EndScene();
