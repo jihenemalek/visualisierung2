@@ -24,7 +24,7 @@
 #include "graphicsclass.h"
 #include "Mesh.h"
 
-const float speed = 3.1f;
+const float speed = 1.1f;
 const float sensitivity = 15.0f;
 ////////////////////////////////////////////////////////////////////////////////
 // Class name: SystemClass

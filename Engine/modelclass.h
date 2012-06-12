@@ -20,6 +20,7 @@ using namespace std;
 ///////////////////////
 #include "textureclass.h"
 #include "Mesh.h"
+#include "Sampling.hpp"
 
 
 

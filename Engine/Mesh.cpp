@@ -31,6 +31,10 @@ void Mesh::calculateMesh(Root* root)
 
 		averageNormals(seg);
 
+		//Funktion
+		
+		writeSegments(seg);
+
 		// Propagate up-vector along the whole tree
 		//first choose up vector perpendicular to direction of first cross section of the first segment
 		direction = seg->startNode->direction;
@@ -333,30 +337,42 @@ void Mesh::tileTree(Segment* seg)
 	if (seg->points.size() == 0) return;
 
 	// For all non-branching sections (all points between startNode and endNode)
-	for (unsigned int i = 0; i < seg->points.size() - 1; i++) {
+	for (unsigned int i = 0; i < seg->points.size()-1; i++) 
+	{
 		this->tileTrivially(seg->points.at(i), seg->points.at(i + 1));
 	}
 	// Classify branching segments into forward and backward
 	std::set<Segment *> forward;
 	std::set<Segment *> backward;
 
-	for (std::vector<Segment *>::iterator it = seg->children.begin(); it != seg->children.end(); it++) {
+	
+	for (std::vector<Segment *>::iterator it = seg->children.begin(); it != seg->children.end(); it++) 
+	{
+		
 		D3DXVec3Normalize(&seg->endNode->direction, &seg->endNode->direction);
 		D3DXVec3Normalize(&(*it)->startNode->direction, &(*it)->startNode->direction);
+		
 
 		float dotProduct = D3DXVec3Dot(&seg->endNode->direction, &(*it)->startNode->direction);
 
-		if (dotProduct > 0) {
+		if (dotProduct > 0) 
+		{
 			backward.insert(*it);
-		} else {
+		} 
+		else
+		{
 			forward.insert(*it);
 		}
 	}
-
+	
+	
 	// If no backward branches exist, tile trivially
-	if (backward.size() == 0) {
+	if (backward.size() == 0) 
+	{
 		this->tileTrivially(seg->points.back(), seg->endNode);
-	} else {
+	} 
+	else 
+	{
 		// Process backward pointing branches
 		
 		// Classify backward set into quadrants relative to last section
@@ -368,9 +384,12 @@ void Mesh::tileTree(Segment* seg)
 		upVector[2] = this->rotateVector(upVector[1], seg->points.back()->direction);
 		upVector[3] = this->rotateVector(upVector[2], seg->points.back()->direction);
 
-		for (std::set<Segment *>::iterator it = backward.begin(); it != backward.end(); it++) {
-			for (unsigned int i = 0; i < 4; i++) {
-				if (D3DXVec3Dot(&((upVector[i] + upVector[(i + 1) % 4]) / 2.0), &((*it)->startNode->direction)) < 1) {
+		for (std::set<Segment *>::iterator it = backward.begin(); it != backward.end(); it++) 
+		{
+			for (unsigned int i = 0; i < 4; i++) 
+			{
+				if (D3DXVec3Dot(&((upVector[i] + upVector[(i + 1) % 4]) / 2.0), &((*it)->startNode->direction)) < 1) 
+				{
 					quadrants[i].insert(*it);
 					break;
 				}
@@ -378,23 +397,28 @@ void Mesh::tileTree(Segment* seg)
 		}
 
 		// Join backward segments to last section for each quadrant
-		for (unsigned int i = 0; i < 4; i++) {
+		for (unsigned int i = 0; i < 4; i++) 
+		{
 			this->tileJoint(quadrants[i], seg->endNode->direction, seg);
 		}
 
 		// Recursively generate subtrees of all backward segments
-		for (std::set<Segment *>::iterator it = backward.begin(); it != backward.end(); it++) {
+		for (std::set<Segment *>::iterator it = backward.begin(); it != backward.end(); it++) 
+		{
 			this->tileTree(*it);
 		}
 	}
 
-	if (forward.size() > 0) {
+	if (forward.size() > 0)
+	{
 		// Select straightest segment S in the forward set
 		Segment *S;
 		float minAngle = FLT_MAX;
-		for (std::set<Segment *>::iterator it = forward.begin(); it != forward.end(); it++) {
+		for (std::set<Segment *>::iterator it = forward.begin(); it != forward.end(); it++) 
+		{
 			float angle = D3DXVec3Dot(&((*it)->startNode->direction), &(seg->endNode->direction));
-			if (angle < minAngle) {
+			if (angle < minAngle) 
+			{
 				minAngle = angle;
 				S = *it;
 			}
@@ -412,9 +436,12 @@ void Mesh::tileTree(Segment* seg)
 		upVector[2] = this->rotateVector(upVector[1], S->startNode->direction);
 		upVector[3] = this->rotateVector(upVector[2], S->startNode->direction);
 		
-		for (std::set<Segment *>::iterator it = forward.begin(); it != forward.end(); it++) {
-			for (unsigned int i = 0; i < 4; i++) {
-				if (D3DXVec3Dot(&((upVector[i] + upVector[(i + 1) % 4]) / 2.0), &((*it)->startNode->direction)) < 1) {
+		for (std::set<Segment *>::iterator it = forward.begin(); it != forward.end(); it++) 
+		{
+			for (unsigned int i = 0; i < 4; i++)
+			{
+				if (D3DXVec3Dot(&((upVector[i] + upVector[(i + 1) % 4]) / 2.0), &((*it)->startNode->direction)) < 1) 
+				{
 					quadrants[i].insert(*it);
 					break;
 				}
@@ -422,13 +449,15 @@ void Mesh::tileTree(Segment* seg)
 		}
 		
 		// Join all segments for each quadrant together
-		for (unsigned int i = 0; i < 4; i++) {
+		for (unsigned int i = 0; i < 4; i++) 
+		{
 			this->tileJoint(quadrants[i], S->startNode->direction, S);
 		}
 			
 		// Recursively generate subtrees for all forward segments
 		this->tileTree(S);		// S was removed from set and must be processed separately
-		for (std::set<Segment *>::iterator it = forward.begin(); it != forward.end(); it++) {
+		for (std::set<Segment *>::iterator it = forward.begin(); it != forward.end(); it++) 
+		{
 			this->tileTree(*it);
 		}
 	}
@@ -443,7 +472,8 @@ void Mesh::tileTrivially(SegmentPoint *p1, SegmentPoint *p2)
 
 	Patch patch[4];
 
-	for (unsigned int i = 0; i < 3; i++) {
+	for (unsigned int i = 0; i < 3; i++) 
+	{
 		patch[i].vertex0 = pos1 + (p1->radius * upVector1);
 		patch[i].vertex1 = pos2 + (p2->radius * upVector2);
 	
@@ -463,7 +493,8 @@ void Mesh::tileTrivially(SegmentPoint *p1, SegmentPoint *p2)
 	// Any special handling?
 
 	// Add the patches to the list
-	for (unsigned int i = 0; i < 4; i++) {
+	for (unsigned int i = 0; i < 4; i++) 
+	{
 		this->patches.push_back(patch[i]);
 	}
 }
@@ -640,7 +671,7 @@ void Mesh::generatePatchesNonBranching(Segment* seg)
 		{
 			for (unsigned int i = 1; i < seg->points.size(); i++)
 			{
-				//create Patch
+				/*//create Patch
 				temp_patch.vertex0 = seg->points.at(i)->vertices.at(0);
 				temp_patch.vertex1 = seg->points.at(i)->vertices.at(1);
 				temp_patch.vertex2 = seg->points.at(i)->vertices.at(2);
@@ -655,7 +686,7 @@ void Mesh::generatePatchesNonBranching(Segment* seg)
 				temp_patch.vertex3 = seg->points.at(i)->vertices.at(0);
 				patches.push_back(temp_patch);
 
-				/*//left side
+				//left side
 				temp_patch.vertex0 = seg->points.at(i-1)->vertices.at(1);
 				temp_patch.vertex1 = seg->points.at(i-1)->vertices.at(2);
 				temp_patch.vertex2 = seg->points.at(i)->vertices.at(2);
@@ -716,23 +747,23 @@ void Mesh:: processLastSections(Segment* seg)
 			vertex_list = tileTrivial(position,seg->endNode->radius,seg->endNode->upVector, seg->endNode->direction);
 			seg->endNode->vertices = vertex_list;
 
-			//create Patches
+			/*//create Patches
 			temp_patch.vertex0 = seg->endNode->vertices.at(0);
 			temp_patch.vertex1 = seg->endNode->vertices.at(1);
 			temp_patch.vertex2 = seg->endNode->vertices.at(2);
 			temp_patch.vertex3 = seg->endNode->vertices.at(3);
-			patches.push_back(temp_patch);
+			patches.push_back(temp_patch);*/
 
 			if(seg->points.size() != 0)
 			{
-				//back side
+				/*//back side
 				temp_patch.vertex0 = seg->points.back()->vertices.at(0);
 				temp_patch.vertex1 = seg->points.back()->vertices.at(1);
 				temp_patch.vertex2 = seg->endNode->vertices.at(1);
 				temp_patch.vertex3 = seg->endNode->vertices.at(0);
 				patches.push_back(temp_patch);
 
-				/*//left side
+				//left side
 				temp_patch.vertex0 = seg->points.back()->vertices.at(1);
 				temp_patch.vertex1 = seg->points.back()->vertices.at(2);
 				temp_patch.vertex2 = seg->endNode->vertices.at(2);
@@ -827,3 +858,41 @@ void Mesh::triangulate()
 		triangles.push_back(temp_triangle);
 	}
 }
+
+
+//Funktion zum Ausgeben der Anzahl an cross-sections
+void Mesh::writeSegments(Segment* seg)
+{
+	std::ofstream outfile;
+	outfile.open("Ausgabe.txt",std::ios::app );
+	
+	if(seg->children.size() > 0)
+	{
+		outfile << "An diesem Braching sind " << seg->children.size() << " " << "Segmente, die weggehen"<< "\n";
+		for(int i = 0; i < seg->children.size(); i++)
+		{
+			if(seg->children.at(i)->points.size() != 0)
+			{
+				outfile << "Anzahl Punkte: " << seg->points.size() << "\n";
+			}
+			else
+			{
+				outfile << "Segment ohne segmentpoints" << "\n";
+				outfile << seg->startNode->position.x << " " << seg->startNode->position.y << " " << seg->startNode->position.z << "\n";
+				outfile << seg->endNode->position.x << " " << seg->endNode->position.y << " " << seg->endNode->position.z << "\n";
+			}
+		}
+		outfile.close();
+		if(seg->children.size() != 0)
+		{
+			for(int i = 0; i < seg->children.size(); i++)
+			{
+				writeSegments(seg->children.at(i));
+			}
+		}
+	}
+}
+
+
+
+ 

@@ -77,7 +77,7 @@ void Sampling::downsampleSegmentRecursive(Vesseltree::Segment *segment, float al
 
 float Sampling::calculateG(Vesseltree::Node *point, float alpha, float beta)
 {
-	float kappa = 1.0;
+	float kappa = 1 / point->radius; //1.0;
 	// TODO: Calculate real curvature
 	return (alpha * point->radius) / (1 + beta * kappa);
 }

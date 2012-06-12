@@ -6,6 +6,7 @@
 
 #include <set>
 
+
 using namespace Vesseltree;
 class Mesh
 {
@@ -32,6 +33,7 @@ public:
 	void Mesh::generatePatches(Segment*);
 	void Mesh::generatePatchesNonBranching(Segment*);
 	void Mesh:: processLastSections(Segment*);
+	void Mesh::writeSegments(Segment*);
 
 	void Mesh::triangulate(void);
 	typedef struct Patch
