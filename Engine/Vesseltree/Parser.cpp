@@ -101,8 +101,10 @@ std::vector<Vesseltree::ControlPoint *> Vesseltree::Parser::parseControlPoints(x
 			cp->position.x = strToFlt(elements["x"]);
 			cp->position.y = strToFlt(elements["y"]);
 			cp->position.z = strToFlt(elements["z"]);
-			cp->radius =	 strToFlt(elements["r1"]) + strToFlt(elements["offset"]);
-			cp->offset =	 strToFlt(elements["offset"]);
+			cp->radius	   = strToFlt(elements["r1"]) + strToFlt(elements["offset"]);
+			cp->offset	   = strToFlt(elements["offset"]);
+			cp->parent	   = NULL;
+			cp->child	   = NULL;
 
 			controlPoints[cp->identifier - 1] = cp;
 		}
@@ -163,6 +165,11 @@ std::vector<Vesseltree::Segment *> Vesseltree::Parser::parseSegments(xmlNode *aN
 			// Add the segment as start/end points to the control point id
 			startControlPoints[startNodeId].push_back(seg);
 			endControlPoints[endNodeId].push_back(seg);
+			
+			if (seg->points.size() > 0) {
+				seg->points.front()->parent = seg->startNode;
+				seg->points.back()->child = seg->endNode;
+			}
 
 			segments.push_back(seg);
 		}
