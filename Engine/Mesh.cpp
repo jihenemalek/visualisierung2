@@ -921,11 +921,13 @@ void Mesh::triangulate()
 		temp_triangle.vertex0 = patches.at(i).vertex0;
 		temp_triangle.vertex1 = patches.at(i).vertex1;
 		temp_triangle.vertex2 = patches.at(i).vertex2;
+		temp_triangle.normal = patches.at(i).normal;
 		triangles.push_back(temp_triangle);
 
 		temp_triangle.vertex0 = patches.at(i).vertex2;
 		temp_triangle.vertex1 = patches.at(i).vertex3;
 		temp_triangle.vertex2 = patches.at(i).vertex0; 
+		temp_triangle.normal = patches.at(i).normal;
 		triangles.push_back(temp_triangle);
 	}
 }

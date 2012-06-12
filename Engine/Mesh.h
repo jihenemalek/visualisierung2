@@ -52,6 +52,7 @@ public:
 		D3DXVECTOR3 vertex0;
 		D3DXVECTOR3 vertex1;
 		D3DXVECTOR3 vertex2;
+		D3DXVECTOR3 normal;
 	} Trianlge;
 	std::vector<Triangle> triangles;
 };
