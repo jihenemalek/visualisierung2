@@ -82,6 +82,7 @@ namespace Vesseltree
 		std::vector<Segment *>		parents;		// Parent nodes of the segment
 		std::vector<Segment *>		children;		// Child nodes of the segment
 		int classification; //0 for backward and 1 for forward
+		bool processed;
 	} Segment;
 
 

@@ -101,7 +101,7 @@ std::vector<Vesseltree::ControlPoint *> Vesseltree::Parser::parseControlPoints(x
 			cp->position.x = strToFlt(elements["x"]);
 			cp->position.y = strToFlt(elements["y"]);
 			cp->position.z = strToFlt(elements["z"]);
-			cp->radius =	 strToFlt(elements["r1"]);
+			cp->radius =	 strToFlt(elements["r1"]) + strToFlt(elements["offset"]);
 			cp->offset =	 strToFlt(elements["offset"]);
 
 			controlPoints[cp->identifier - 1] = cp;
@@ -128,6 +128,7 @@ std::vector<Vesseltree::Segment *> Vesseltree::Parser::parseSegments(xmlNode *aN
 	while (currentSegment) {
 		if (currentSegment->type == XML_ELEMENT_NODE) {
 			Segment *seg = new Segment();
+			seg->processed = false;
 			std::string type = parseAttributes(currentSegment)["type"];
 			std::map<std::string, std::string> elements = parseElements(currentSegment);
 			
@@ -144,9 +145,6 @@ std::vector<Vesseltree::Segment *> Vesseltree::Parser::parseSegments(xmlNode *aN
 			} else if (strcmp(type.c_str(), "interpolated") == 0) {
 				seg->type = kSegmentTypeInterpolated;
 			}
-			
-			
-			
 
 			// Parse the points if the type is correct
 			if (seg->type == kSegmentTypeCentered || seg->type == kSegmentTypeTracked) {
@@ -205,7 +203,7 @@ std::vector<Vesseltree::SegmentPoint *> Vesseltree::Parser::parseSegmentPoints(x
 			sp->position.x = strToFlt(elements["x"]);
 			sp->position.y = strToFlt(elements["y"]);
 			sp->position.z = strToFlt(elements["z"]);
-			sp->radius = strToFlt(elements["r1"]);
+			sp->radius = strToFlt(elements["r1"]) + strToFlt(elements["offset"]);
 			sp->offset = strToFlt(elements["offset"]);
 
 			segmentPoints.push_back(sp);
