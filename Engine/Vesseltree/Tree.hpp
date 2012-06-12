@@ -20,7 +20,8 @@ namespace Vesseltree
 	//
 	// A node is a generic struct for storing control/segment points
 	//
-	typedef struct Node {
+	typedef struct Node
+	{
 		D3DXVECTOR3 position;		// Position of the control point center
 		float radius;		// Radius of the control point
 		float offset;		// An offset adde to the radius

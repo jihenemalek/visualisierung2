@@ -61,26 +61,34 @@ void Mesh::calculateDirectionsNormals(Segment* seg)
 {
 	if(seg->startNode != NULL)
 	{
-		//Calculate Normal + Direction for the first cross-section (control point)
 		D3DXVECTOR3 direction;
-		direction.x = seg->points.at(0)->position.x - seg->startNode->position.x;
-		direction.y = seg->points.at(0)->position.y - seg ->startNode->position.y;
-		direction.z = seg->points.at(0)->position.z - seg->startNode->position.z;
+		if(seg->points.size() != 0)
+		{
+			//Calculate Normal + Direction for the first cross-section (control point)
+			
+			direction.x = seg->points.at(0)->position.x - seg->startNode->position.x;
+			direction.y = seg->points.at(0)->position.y - seg ->startNode->position.y;
+			direction.z = seg->points.at(0)->position.z - seg->startNode->position.z;
 
-		D3DXVec3Normalize(&direction,&direction);
+			D3DXVec3Normalize(&direction,&direction);
 
-		seg->startNode->direction = direction;
-		seg->startNode->normal = direction;
+			seg->startNode->direction = direction;
+			seg->startNode->normal = direction;
+		}
 
-		if (seg->points.size() > 0) {
+		if (seg->points.size() > 0) 
+		{
 			SegmentPoint* node = seg->points.at(0);
 
 			//Es muss erst mal die direction und Normale für die erste cross-section berechnet werden, weil sich die Normale mit dem Vorgänger zusammensetzt (control point!)
 			D3DXVECTOR3 normal;
 		
-			if (seg->points.size() > 1) {
+			if (seg->points.size() > 1)
+			{
 				direction = seg->points.at(1)->position - node->position;
-			} else {
+			} 
+			else 
+			{
 				direction = seg->endNode->position - node->position;
 			}
 		 
@@ -98,9 +106,12 @@ void Mesh::calculateDirectionsNormals(Segment* seg)
 		if(seg->endNode != NULL)
 		{
 			//calculate Normal + Direction for last cross-section (control point)
-			if (seg->points.size() > 0) {
+			if (seg->points.size() > 0) 
+			{
 				seg->endNode->direction = seg->points.back()->direction;
-			} else {
+			} 
+			else 
+			{
 				seg->endNode->direction = seg->startNode->direction;
 			}
 			

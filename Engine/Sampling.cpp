@@ -75,8 +75,33 @@ void Sampling::downsampleSegmentRecursive(Vesseltree::Segment *segment, float al
 
 float Sampling::calculateG(Vesseltree::Node *point, float alpha, float beta)
 {
-	float kappa = 1 / point->radius; //1.0;
+	float kappa = 1;
+	
 	// TODO: Calculate real curvature
+	D3DXVECTOR3 a, b, c;
+	float length_a, length_b, length_c, s;
+
+	a.x = point->position.x - point->parent->position.x;
+	a.y = point->position.y - point->parent->position.y;
+	a.z = point->position.z - point->parent->position.z;
+
+	b.x = point->child->position.x - point->position.x;
+	b.y = point->child->position.y - point->position.y;
+	b.z = point->child->position.z - point->position.z;
+
+	c.x = point-> parent->position.x - point->child->position.x;
+	c.y = point-> parent->position.y - point->child->position.y;
+	c.z = point-> parent->position.z - point->child->position.z;
+
+	length_a = sqrt(a.x * a.x + a.y * a.y + a.z * a.z);
+	length_b = sqrt(b.x * b.x + b.y * b.y + b.z * b.z);
+	length_c = sqrt(c.x * c.x + c.y * c.y + c.z * c.z);
+
+	s  = (length_a * length_b * length_c) / 2;
+		
+	kappa = (4*sqrt(s*(s-length_a)*(s-length_b)*(s-length_c))) / 2;
+			
+	
 	return (alpha * point->radius) / (1 + beta * kappa);
 }
 
