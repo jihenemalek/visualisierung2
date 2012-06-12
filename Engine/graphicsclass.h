@@ -13,6 +13,7 @@
 #include "modelclass.h"
 #include "lightshaderclass.h"
 #include "lightclass.h"
+#include "FontEngine.hpp"
 
 
 /////////////
@@ -49,6 +50,7 @@ private:
 	ModelClass* m_Model;
 	LightShaderClass* m_LightShader;
 	LightClass* m_Light;
+	FontEngine *m_Text;
 };
 
 #endif
