@@ -16,7 +16,7 @@ class AdaptiveSubdivision
 public:
 	AdaptiveSubdivision(void);
 	~AdaptiveSubdivision(void);
-	std::vector<Mesh::Triangle>  AdaptiveSubdivision::Subdivide(std::vector<Mesh::Triangle>, float);
+	std::vector<Mesh::Triangle>  AdaptiveSubdivision::Subdivide(std::vector<Mesh::Triangle>, float, int);
 	
 
 	typedef struct Tagged

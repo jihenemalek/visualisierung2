@@ -10,7 +10,7 @@ AdaptiveSubdivision::~AdaptiveSubdivision(void)
 
 
 
-std::vector<Mesh::Triangle> AdaptiveSubdivision:: Subdivide(std::vector<Mesh::Triangle> triangles, float treshold)
+std::vector<Mesh::Triangle> AdaptiveSubdivision:: Subdivide(std::vector<Mesh::Triangle> triangles, float treshold, int anzahl)
 {
 	std::vector<Mesh::Triangle> temp_triangles;
 	
@@ -310,20 +310,17 @@ std::vector<Mesh::Triangle> AdaptiveSubdivision:: Subdivide(std::vector<Mesh::Tr
 		}
 
 		//jetzt müssen noch die richtigen Triangles in die original TriangleList geschrieben werden -> und dann nochmals aufgerufen werden, wenn in dem Durchgang mindestens ein Triangle geteilt wurde
-		if(nochmal != 0)
+		
+		
+		if(anzahl != 0)
 		{
 			std::ofstream out;
 			out.open("bla2.txt", std::ios::app);
-			out << nochmal << "\n";
+			out << triangles.size() << "\n";
 			out.close();
 			
 
-			std::vector<Mesh::Triangle> triangles2;
-			for(int i = 0; i < temp_triangles.size(); i++)
-			{
-				triangles2.push_back(temp_triangles.at(i));
-			}
-			int v = tagged.size();
+			std::vector<Mesh::Triangle> list;
 			for(int i = 0; i < tagged.size(); i++)
 			{
 				if(tagged.at(i).geteilt != 1)
@@ -332,13 +329,20 @@ std::vector<Mesh::Triangle> AdaptiveSubdivision:: Subdivide(std::vector<Mesh::Tr
 					tri.vertex0 = tagged.at(i).triangle->vertex0;
 					tri.vertex1 = tagged.at(i).triangle->vertex1;
 					tri.vertex2 = tagged.at(i).triangle->vertex2;
-					triangles2.push_back(tri);
+					list.push_back(tri);
 				}
+			}
+			for(int i = 0; i < temp_triangles.size(); i++)
+			{
+				list.push_back(temp_triangles.at(i));
 			}
 			tagged.clear();
 			temp_triangles.clear();
-
-			Subdivide(triangles2,treshold);
+			anzahl = anzahl - 1;
+			
+			return Subdivide(list,treshold,anzahl);
+			
+			
 		}
 		else
 		{
