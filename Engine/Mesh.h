@@ -33,7 +33,6 @@ public:
 	void Mesh::generatePatches(Segment*);
 	void Mesh::generatePatchesNonBranching(Segment*);
 	void Mesh:: processLastSections(Segment*);
-	void Mesh::writeSegments(Segment*);
 
 	void Mesh::triangulate(void);
 	typedef struct Patch
@@ -44,6 +43,12 @@ public:
 		D3DXVECTOR3 vertex3;
 
 		D3DXVECTOR3 normal;
+
+		D3DXVECTOR3 normal0;
+		D3DXVECTOR3 normal1;
+		D3DXVECTOR3 normal2;
+		D3DXVECTOR3 normal3;
+
 	} Patch;
 	std::vector<Patch> patches;
 	
@@ -52,9 +57,16 @@ public:
 		D3DXVECTOR3 vertex0;
 		D3DXVECTOR3 vertex1;
 		D3DXVECTOR3 vertex2;
+
 		D3DXVECTOR3 normal;
+		
+
 	} Trianlge;
 	std::vector<Triangle> triangles;
+	
+
+		
+	
 };
 
 #endif

@@ -90,6 +90,7 @@ xcopy /Y "$(ProjectDir)..\Resources" "$(OutDir)Resources\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AdaptiveSubdivision.cpp" />
     <ClCompile Include="cameraclass.cpp" />
     <ClCompile Include="d3dclass.cpp" />
     <ClCompile Include="Font.cpp" />
@@ -107,6 +108,7 @@ xcopy /Y "$(ProjectDir)..\Resources" "$(OutDir)Resources\"</Command>
     <ClCompile Include="Vesseltree\Parser.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AdaptiveSubdivision.h" />
     <ClInclude Include="cameraclass.h" />
     <ClInclude Include="d3dclass.h" />
     <ClInclude Include="Font.hpp" />
