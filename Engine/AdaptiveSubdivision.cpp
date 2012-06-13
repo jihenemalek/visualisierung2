@@ -19,7 +19,10 @@ std::vector<Mesh::Triangle> AdaptiveSubdivision:: Subdivide(std::vector<Mesh::Tr
 	Mesh::Triangle temp_triangle;
 	Subdivided temp_subdivided;
 	Tagged temp_tagged;
-	int nochmal = 0;
+	int counter = 0;
+	std::ofstream out;
+	out.open("bla2.txt", std::ios::app);
+	
 
 	for(int i = 0; i < triangles.size(); i++)
 	{
@@ -38,7 +41,7 @@ std::vector<Mesh::Triangle> AdaptiveSubdivision:: Subdivide(std::vector<Mesh::Tr
 			//Wenn Krümmung größer als ein Treshold ->teile das Dreieck in 4 neue Dreiecke
 			if(kappa > treshold)
 			{
-				nochmal = nochmal + 1;
+				
 				mittelpunkta = (triangles.at(i).vertex1 + triangles.at(i).vertex0) / 2;
 				mittelpunktb = (triangles.at(i).vertex2 + triangles.at(i).vertex1) / 2;
 				mittelpunktc = (triangles.at(i).vertex0 + triangles.at(i).vertex2) / 2;
@@ -66,12 +69,22 @@ std::vector<Mesh::Triangle> AdaptiveSubdivision:: Subdivide(std::vector<Mesh::Tr
 				temp_triangle.vertex2 = mittelpunktb;
 
 				temp_triangles.push_back(temp_triangle);
+
+				temp_subdivided.triangle = &triangles.at(i);
+				subdivided.push_back(temp_subdivided);
+				counter = counter + 4;
+			
+
+				
 			}
 			//Ansonsten ist es getaggt
 			else
 			{ 
 				temp_tagged.triangle = &triangles.at(i);
+				temp_tagged.geteilt = 0;
 				tagged.push_back(temp_tagged);
+				//counter = counter + 1;
+				
 			}
 
 			
@@ -105,12 +118,14 @@ std::vector<Mesh::Triangle> AdaptiveSubdivision:: Subdivide(std::vector<Mesh::Tr
 				}
 			}
 
-			//tHier werden die getaggted Triangles geteilt wenn die Anzahl ihrer Nachbarn nicht 0 ist
+			//Hier werden die getaggted Triangles geteilt wenn die Anzahl ihrer Nachbarn nicht 0 ist
 			if(tagged.at(i).number.size() != 0)
 			{
-				tagged.at(i).geteilt = 1;
+				
 				if(tagged.at(i).number.size() == 1)
 				{
+					tagged.at(i).geteilt = 1;
+					//counter = counter + 2;
 					if(tagged.at(i).number.at(0) == 0)
 					{
 						temp_triangle.vertex0 = tagged.at(i).triangle->vertex0;
@@ -159,6 +174,7 @@ std::vector<Mesh::Triangle> AdaptiveSubdivision:: Subdivide(std::vector<Mesh::Tr
 
 				if(tagged.at(i).number.size() == 2)
 				{
+					//counter = counter + 3;
 					if (((tagged.at(i).number.at(0) == 0) && (tagged.at(i).number.at(1) == 1)) || ((tagged.at(i).number.at(0) == 1) && (tagged.at(i).number.at(1) == 0)))
 					{
 						int temp_vertex0, temp_vertex1;
@@ -261,6 +277,7 @@ std::vector<Mesh::Triangle> AdaptiveSubdivision:: Subdivide(std::vector<Mesh::Tr
 				}
 				if(tagged.at(i).number.size() == 3)
 				{
+					//counter = counter + 4;
 					int temp_vertex0, temp_vertex1, temp_vertex2;
 					for(int k = 0; k < tagged.at(i).number.size(); k++)
 					{
@@ -314,16 +331,25 @@ std::vector<Mesh::Triangle> AdaptiveSubdivision:: Subdivide(std::vector<Mesh::Tr
 		
 		if(anzahl != 0)
 		{
-			std::ofstream out;
-			out.open("bla2.txt", std::ios::app);
-			out << triangles.size() << "\n";
-			out.close();
 			
-
+			
+			for(int k = 0; k < tagged.size(); k++)
+			{
+				if(tagged.at(k).geteilt != 1)
+				{
+					counter = counter + 1;
+				}
+			}
+			out << "neu" << "\n";
+			out << counter << "\n";
+			
+	
+			
+			
 			std::vector<Mesh::Triangle> list;
 			for(int i = 0; i < tagged.size(); i++)
 			{
-				if(tagged.at(i).geteilt != 1)
+				if(tagged.at(i).geteilt == 0)
 				{
 					Mesh::Triangle tri;
 					tri.vertex0 = tagged.at(i).triangle->vertex0;
@@ -336,16 +362,24 @@ std::vector<Mesh::Triangle> AdaptiveSubdivision:: Subdivide(std::vector<Mesh::Tr
 			{
 				list.push_back(temp_triangles.at(i));
 			}
+			
+			
 			tagged.clear();
 			temp_triangles.clear();
 			anzahl = anzahl - 1;
-			
+			subdivided.clear();
+
+			tagged.clear();
+			out << list.size() << "\n";
+			out.close();
 			return Subdivide(list,treshold,anzahl);
 			
 			
 		}
 		else
 		{
+			subdivided.clear();
+			tagged.clear();
 			return triangles;
 		}
 		

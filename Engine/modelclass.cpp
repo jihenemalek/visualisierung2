@@ -32,12 +32,12 @@ bool ModelClass::Initialize(ID3D11Device* device, char* modelFilename, WCHAR* te
 
 	Vesseltree::Root *tree0 = Vesseltree::Parser::parseDocument("Resources/vesselTree0.xml", m_hwnd);
 	Sampling* sampling0 = new Sampling;
-	sampling0->downsample(tree0, 1, 1); 
+	sampling0->downsample(tree0, 1, 0.2); 
 
 	mesh0 = new Mesh;
 	mesh0->calculateMesh(tree0);
 	AdaptiveSubdivision* subdiv = new AdaptiveSubdivision;
-	mesh0->triangles = subdiv->Subdivide(mesh0->triangles,1.0,3);
+	mesh0->triangles = subdiv->Subdivide(mesh0->triangles,1,2);
 	
 	// Initialize the vertex and index buffers.
 	result = InitializeBuffers(device);
