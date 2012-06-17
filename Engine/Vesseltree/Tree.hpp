@@ -36,7 +36,7 @@ namespace Vesseltree
 		Node() { position = D3DXVECTOR3(); };
 
 		Node * combine(Node *n) {
-			Node *node;
+			Node *node = new Node();
 			node->position = (position + n->position) / 2.0f;
 			node->radius = (radius + n->radius) / 2.0f;
 			node->offset = (offset + n->offset) / 2.0f;

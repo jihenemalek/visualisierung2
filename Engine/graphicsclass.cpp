@@ -232,9 +232,9 @@ bool GraphicsClass::Render(float rotation)
 	m_Text->updateSentence(m_Text->m_sentence1, sentence1, -90, 110, 1.0, 1.0, 1.0, m_D3D->GetDeviceContext());
 	m_Text->updateSentence(m_Text->m_sentence2, sentence2, -90, 130, 1.0, 1.0, 1.0, m_D3D->GetDeviceContext());
 
-	/*result = m_Text->Render(m_D3D->GetDeviceContext(), worldMatrix, orthoMatrix);
-	if (!result) 
-		return false;*/
+	//result = m_Text->Render(m_D3D->GetDeviceContext(), worldMatrix, orthoMatrix);
+	//if (!result) 
+	//	return false;
 
 	m_D3D->TurnOffAlphaBlending();
 	m_D3D->TurnOnZBuffer();
