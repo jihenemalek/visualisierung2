@@ -156,13 +156,138 @@ std::vector<Mesh::Triangle> AdaptiveSubdivision:: Subdivide(std::vector<Mesh::Tr
 			//Hier wird geschaut wieviele Nachbarn ein triangle hat und der Vertex in die Liste geschrieben
 			for(int j = 0; j < subdivided.size(); j++)
 			{
-				if((tagged.at(i).triangle->vertex0 == subdivided.at(j).triangle->vertex0) && (tagged.at(i).triangle->vertex1 == subdivided.at(j).triangle->vertex1))
+				D3DXVECTOR3 t01, t02,t12,s01,s02,s12;
+				t01 = tagged.at(i).triangle->vertex1 - tagged.at(i).triangle->vertex0;
+				D3DXVec3Normalize(&t01, &t01);
+				t02 = tagged.at(i).triangle->vertex2 - tagged.at(i).triangle->vertex0;
+				D3DXVec3Normalize(&t02, &t02);
+				t12 = tagged.at(i).triangle->vertex2 - tagged.at(i).triangle->vertex1;
+				D3DXVec3Normalize(&t12, &t12);
+
+				s01 = subdivided.at(j).triangle->vertex1 - subdivided.at(j).triangle->vertex0;
+				D3DXVec3Normalize(&s01, &s01);
+				s02 = subdivided.at(j).triangle->vertex2 - subdivided.at(j).triangle->vertex0;
+				D3DXVec3Normalize(&s02, &s02);
+				s12 = subdivided.at(j).triangle->vertex2 - subdivided.at(j).triangle->vertex1;
+				D3DXVec3Normalize(&s12, &s12);
+
+				if(t01 == s01)
+				{
+					Vertex vertex;
+					vertex.vertex = (subdivided.at(j).triangle->vertex0 + subdivided.at(j).triangle->vertex1)/2;
+					vertex.mittelpunkt = (subdivided.at(j).triangle->vertex0_mittelpunkt + subdivided.at(j).triangle->vertex1_mittelpunkt)/2;
+					vertex.radius = (subdivided.at(j).triangle->vertex0_radius + subdivided.at(j).triangle->vertex1_radius)/2;
+					temp_vec = vertex.mittelpunkt - vertex.vertex;
+					D3DXVec3Normalize(&temp_vec, &temp_vec);
+					vertex.vertex = vertex.vertex + (temp_vec * vertex.radius);
+					tagged.at(i).vertices.push_back(vertex);
+					tagged.at(i).number.push_back(0);
+				}
+				else if(t01 == s02)
+				{
+					Vertex vertex;
+					vertex.vertex = (subdivided.at(j).triangle->vertex0 + subdivided.at(j).triangle->vertex2)/2;
+					vertex.mittelpunkt = (subdivided.at(j).triangle->vertex0_mittelpunkt + subdivided.at(j).triangle->vertex2_mittelpunkt)/2;
+					vertex.radius = (subdivided.at(j).triangle->vertex0_radius + subdivided.at(j).triangle->vertex2_radius)/2;
+					temp_vec =vertex. mittelpunkt - vertex.vertex;
+					D3DXVec3Normalize(&temp_vec, &temp_vec);
+					vertex.vertex = vertex.vertex + (temp_vec * vertex.radius);
+					tagged.at(i).vertices.push_back(vertex);
+					tagged.at(i).number.push_back(0);
+				}
+				else if(t01 == s12)
+				{
+					Vertex vertex;
+					vertex.vertex = (subdivided.at(j).triangle->vertex1 + subdivided.at(j).triangle->vertex2)/2;
+					vertex.mittelpunkt = (subdivided.at(j).triangle->vertex1_mittelpunkt + subdivided.at(j).triangle->vertex2_mittelpunkt)/2;
+					vertex.radius = (subdivided.at(j).triangle->vertex1_radius + subdivided.at(j).triangle->vertex2_radius)/2;
+					temp_vec = vertex.mittelpunkt - vertex.vertex;
+					D3DXVec3Normalize(&temp_vec, &temp_vec);
+					vertex.vertex = vertex.vertex + (temp_vec * vertex.radius);
+					tagged.at(i).vertices.push_back(vertex);
+					tagged.at(i).number.push_back(0);
+				}
+				else if(t02 == s01)
+				{
+					Vertex vertex;
+					vertex.vertex = (subdivided.at(j).triangle->vertex0 + subdivided.at(j).triangle->vertex1)/2;
+					vertex.mittelpunkt = (subdivided.at(j).triangle->vertex0_mittelpunkt + subdivided.at(j).triangle->vertex1_mittelpunkt)/2;
+					vertex.radius = (subdivided.at(j).triangle->vertex0_radius + subdivided.at(j).triangle->vertex1_radius)/2;
+					temp_vec = vertex.mittelpunkt - vertex.vertex;
+					D3DXVec3Normalize(&temp_vec, &temp_vec);
+					vertex.vertex = vertex.vertex + (temp_vec * vertex.radius);
+					tagged.at(i).vertices.push_back(vertex);
+					tagged.at(i).number.push_back(2);
+				}
+				else if(t02 == s02)
+				{
+					Vertex vertex;
+					vertex.vertex = (subdivided.at(j).triangle->vertex0 + subdivided.at(j).triangle->vertex2)/2;
+					vertex.mittelpunkt = (subdivided.at(j).triangle->vertex0_mittelpunkt + subdivided.at(j).triangle->vertex2_mittelpunkt)/2;
+					vertex.radius = (subdivided.at(j).triangle->vertex0_radius + subdivided.at(j).triangle->vertex2_radius)/2;
+					temp_vec = vertex.mittelpunkt - vertex.vertex;
+					D3DXVec3Normalize(&temp_vec, &temp_vec);
+					vertex.vertex = vertex.vertex + (temp_vec * vertex.radius);
+					tagged.at(i).vertices.push_back(vertex);
+					tagged.at(i).number.push_back(2);
+				}
+				else if(t02 == s12)
+				{
+					Vertex vertex;
+					vertex.vertex = (subdivided.at(j).triangle->vertex1 + subdivided.at(j).triangle->vertex2)/2;
+					vertex.mittelpunkt = (subdivided.at(j).triangle->vertex1_mittelpunkt + subdivided.at(j).triangle->vertex2_mittelpunkt)/2;
+					vertex.radius = (subdivided.at(j).triangle->vertex1_radius + subdivided.at(j).triangle->vertex2_radius)/2;
+					temp_vec = mittelpunkt - vertex.vertex;
+					D3DXVec3Normalize(&temp_vec, &temp_vec);
+					vertex.vertex = vertex.vertex + (temp_vec * vertex.radius);
+					tagged.at(i).vertices.push_back(vertex);
+					tagged.at(i).number.push_back(2);
+				}
+				else if(t12 == s01)
+				{
+					Vertex vertex;
+					vertex.vertex = (subdivided.at(j).triangle->vertex0 + subdivided.at(j).triangle->vertex1)/2;
+					vertex.mittelpunkt = (subdivided.at(j).triangle->vertex0_mittelpunkt + subdivided.at(j).triangle->vertex1_mittelpunkt)/2;
+					vertex.radius = (subdivided.at(j).triangle->vertex0_radius + subdivided.at(j).triangle->vertex1_radius)/2;
+					temp_vec = mittelpunkt - vertex.vertex;
+					D3DXVec3Normalize(&temp_vec, &temp_vec);
+					vertex.vertex = vertex.vertex + (temp_vec * vertex.radius);
+					tagged.at(i).vertices.push_back(vertex);
+					tagged.at(i).number.push_back(1);
+				}
+				else if(t12 == s02)
+				{
+					Vertex vertex;
+					vertex.vertex = (subdivided.at(j).triangle->vertex0 + subdivided.at(j).triangle->vertex2)/2;
+					vertex.mittelpunkt = (subdivided.at(j).triangle->vertex0_mittelpunkt + subdivided.at(j).triangle->vertex2_mittelpunkt)/2;
+					vertex.radius = (subdivided.at(j).triangle->vertex0_radius + subdivided.at(j).triangle->vertex2_radius)/2;
+					temp_vec = vertex.mittelpunkt - vertex.vertex;
+					D3DXVec3Normalize(&temp_vec, &temp_vec);
+					vertex.vertex = vertex.vertex + (temp_vec * vertex.radius);
+					tagged.at(i).vertices.push_back(vertex);
+					tagged.at(i).number.push_back(1);
+				}
+				else if(t12 == s12)
+				{
+					Vertex vertex;
+					vertex.vertex = (subdivided.at(j).triangle->vertex1 + subdivided.at(j).triangle->vertex2)/2;
+					vertex.mittelpunkt = (subdivided.at(j).triangle->vertex1_mittelpunkt + subdivided.at(j).triangle->vertex2_mittelpunkt)/2;
+					vertex.radius = (subdivided.at(j).triangle->vertex1_radius + subdivided.at(j).triangle->vertex2_radius)/2;
+					temp_vec = mittelpunkt - vertex.vertex;
+					D3DXVec3Normalize(&temp_vec, &temp_vec);
+					vertex.vertex = vertex.vertex + (temp_vec * vertex.radius);
+					tagged.at(i).vertices.push_back(vertex);
+					tagged.at(i).number.push_back(1);
+				}
+				/*if((tagged.at(i).triangle->vertex0 == subdivided.at(j).triangle->vertex0) && (tagged.at(i).triangle->vertex1 == subdivided.at(j).triangle->vertex1))
 				{
 					D3DXVECTOR3 vertex;
 					vertex = (tagged.at(i).triangle->vertex0 + tagged.at(i).triangle->vertex1) / 2;
 					
 					mittelpunkt = (subdivided.at(j).triangle->vertex0_mittelpunkt + subdivided.at(j).triangle->vertex1_mittelpunkt) / 2;
+				
 					radius = (subdivided.at(j).triangle->vertex0_radius + subdivided.at(j).triangle->vertex1_radius) / 2;
+					
 					temp_vec = mittelpunkt - vertex;
 					D3DXVec3Normalize(&temp_vec,&temp_vec);
 					vertex = vertex + (temp_vec * radius);
@@ -177,6 +302,7 @@ std::vector<Mesh::Triangle> AdaptiveSubdivision:: Subdivide(std::vector<Mesh::Tr
 
 					mittelpunkt = (subdivided.at(j).triangle->vertex0_mittelpunkt + subdivided.at(j).triangle->vertex2_mittelpunkt) / 2;
 					radius = (subdivided.at(j).triangle->vertex0_radius + subdivided.at(j).triangle->vertex2_radius)/2;
+					
 					temp_vec = mittelpunkt - vertex;
 					D3DXVec3Normalize(&temp_vec,&temp_vec);
 					vertex = vertex + (temp_vec * radius);
@@ -191,13 +317,14 @@ std::vector<Mesh::Triangle> AdaptiveSubdivision:: Subdivide(std::vector<Mesh::Tr
 
 					mittelpunkt = (subdivided.at(j).triangle->vertex2_mittelpunkt + subdivided.at(j).triangle->vertex1_mittelpunkt) / 2;
 					radius = (subdivided.at(j).triangle->vertex2_radius + subdivided.at(j).triangle->vertex1_radius) / 2;
+					
 					temp_vec = mittelpunkt - vertex;
 					D3DXVec3Normalize(&temp_vec,&temp_vec);
 					vertex = vertex + (temp_vec * radius);
 
 					tagged.at(i).vertices.push_back(vertex);
 					tagged.at(i).number.push_back(1);
-				}
+				}*/
 			}
 
 			//Hier werden die getaggted Triangles geteilt wenn die Anzahl ihrer Nachbarn nicht 0 ist
@@ -208,46 +335,89 @@ std::vector<Mesh::Triangle> AdaptiveSubdivision:: Subdivide(std::vector<Mesh::Tr
 				{
 					tagged.at(i).geteilt = 1;
 					//counter = counter + 2;
-					if(tagged.at(i).number.at(0) == 0)
+					if(tagged.at(i).number.at(0) == 2)
 					{
 						temp_triangle.vertex0 = tagged.at(i).triangle->vertex0;
 						temp_triangle.vertex1 = tagged.at(i).triangle->vertex1;
-						temp_triangle.vertex2 = tagged.at(i).vertices.at(0);
+						temp_triangle.vertex2 = tagged.at(i).vertices.at(0).vertex;
+
+						temp_triangle.vertex0_mittelpunkt = tagged.at(i).triangle->vertex0_mittelpunkt;
+						temp_triangle.vertex0_radius = tagged.at(i).triangle->vertex0_radius;
+
+						temp_triangle.vertex1_mittelpunkt = tagged.at(i).triangle->vertex1_mittelpunkt;
+						temp_triangle.vertex1_radius = tagged.at(i).triangle->vertex1_radius;
+
+						temp_triangle.vertex2_mittelpunkt= tagged.at(i).vertices.at(0).mittelpunkt;
+						temp_triangle.vertex2_radius = tagged.at(i).vertices.at(0).radius;
+						
+						temp_triangles.push_back(temp_triangle);
+
+						temp_triangle.vertex0 = tagged.at(i).vertices.at(0).vertex;
+						temp_triangle.vertex1 = tagged.at(i).triangle->vertex1;
+						temp_triangle.vertex2 = tagged.at(i).triangle->vertex2;
+
+						temp_triangle.vertex0_mittelpunkt = tagged.at(i).vertices.at(0).mittelpunkt;
+						temp_triangle.vertex0_radius = tagged.at(i).vertices.at(0).radius;
+						temp_triangle.vertex1_mittelpunkt = tagged.at(i).triangle->vertex1_mittelpunkt;
+						temp_triangle.vertex1_radius = tagged.at(i).triangle->vertex1_radius;
+						temp_triangle.vertex2_mittelpunkt = tagged.at(i).triangle->vertex2_mittelpunkt;
+						temp_triangle.vertex2_radius = tagged.at(i).triangle->vertex2_radius;
+
+						temp_triangles.push_back(temp_triangle);
+					}
+					if(tagged.at(i).number.at(0) == 0)
+					{
+					
+						temp_triangle.vertex0 = tagged.at(i).triangle->vertex0;
+						temp_triangle.vertex1 = tagged.at(i).vertices.at(0).vertex;
+						temp_triangle.vertex2 = tagged.at(i).triangle->vertex2;
+
+						temp_triangle.vertex0_mittelpunkt = tagged.at(i).triangle->vertex0_mittelpunkt;
+						temp_triangle.vertex0_radius = tagged.at(i).triangle->vertex0_radius;
+						temp_triangle.vertex1_mittelpunkt = tagged.at(i).vertices.at(0).mittelpunkt;
+						temp_triangle.vertex1_radius = tagged.at(i).vertices.at(0).radius;
+						temp_triangle.vertex2_mittelpunkt = tagged.at(i).triangle->vertex2_mittelpunkt;
+						temp_triangle.vertex2_radius = tagged.at(i).triangle->vertex2_radius;
+					
 
 						temp_triangles.push_back(temp_triangle);
 
-						temp_triangle.vertex0 = tagged.at(i).vertices.at(0);
+						temp_triangle.vertex0 = tagged.at(i).vertices.at(0).vertex;
 						temp_triangle.vertex1 = tagged.at(i).triangle->vertex1;
 						temp_triangle.vertex2 = tagged.at(i).triangle->vertex2;
+
+						temp_triangle.vertex0_mittelpunkt = tagged.at(i).vertices.at(0).mittelpunkt;
+						temp_triangle.vertex0_radius = tagged.at(i).vertices.at(0).radius;
+						temp_triangle.vertex1_mittelpunkt = tagged.at(i).triangle->vertex1_mittelpunkt;
+						temp_triangle.vertex1_radius = tagged.at(i).triangle->vertex1_radius;
+						temp_triangle.vertex2_mittelpunkt = tagged.at(i).triangle->vertex2_mittelpunkt;
+						temp_triangle.vertex2_radius = tagged.at(i).triangle->vertex2_radius;
+			
 
 						temp_triangles.push_back(temp_triangle);
 					}
 					if(tagged.at(i).number.at(0) == 1)
 					{
-					
-						temp_triangle.vertex0 = tagged.at(i).triangle->vertex0;
-						temp_triangle.vertex1 = tagged.at(i).vertices.at(0);
-						temp_triangle.vertex2 = tagged.at(i).triangle->vertex2;
-
-						temp_triangles.push_back(temp_triangle);
-
-						temp_triangle.vertex0 = tagged.at(i).vertices.at(0);
-						temp_triangle.vertex1 = tagged.at(i).triangle->vertex1;
-						temp_triangle.vertex2 = tagged.at(i).triangle->vertex2;
-
-						temp_triangles.push_back(temp_triangle);
-					}
-					if(tagged.at(i).number.at(0) == 2)
-					{
 						temp_triangle.vertex0 = tagged.at(i).triangle->vertex0;
 						temp_triangle.vertex1 = tagged.at(i).triangle->vertex1;
-						temp_triangle.vertex2 = tagged.at(i).vertices.at(0);
+						temp_triangle.vertex2 = tagged.at(i).vertices.at(0).vertex;
 
+						temp_triangle.vertex0_mittelpunkt = tagged.at(i).triangle->vertex0_mittelpunkt;
+						temp_triangle.vertex0_radius = tagged.at(i).triangle->vertex0_radius;
+						temp_triangle.vertex1_mittelpunkt = tagged.at(i).triangle->vertex1_mittelpunkt;
+						temp_triangle.vertex1_radius = tagged.at(i).triangle->vertex1_radius;
+						temp_triangle.vertex2_mittelpunkt = tagged.at(i).vertices.at(0).mittelpunkt;
+						temp_triangle.vertex2_radius = tagged.at(i).vertices.at(0).radius;
 						temp_triangles.push_back(temp_triangle);
 
 						temp_triangle.vertex0 = tagged.at(i).triangle->vertex0;
-						temp_triangle.vertex1 = tagged.at(i).vertices.at(0);
+						temp_triangle.vertex1 = tagged.at(i).vertices.at(0).vertex;
 						temp_triangle.vertex2 = tagged.at(i).triangle->vertex2;
+
+						temp_triangle.vertex0_mittelpunkt = tagged.at(i).triangle->vertex0_mittelpunkt;
+						temp_triangle.vertex0_radius = tagged.at(i).triangle->vertex0_radius;
+						temp_triangle.vertex1_mittelpunkt = tagged.at(i).vertices.at(0).mittelpunkt;
+						temp_triangle.vertex1_radius = tagged.at(i).vertices.at(0).radius;
 
 						temp_triangles.push_back(temp_triangle);
 					
@@ -275,20 +445,44 @@ std::vector<Mesh::Triangle> AdaptiveSubdivision:: Subdivide(std::vector<Mesh::Tr
 						
 					
 							temp_triangle.vertex0 = tagged.at(i).triangle->vertex0;
-							temp_triangle.vertex1 = tagged.at(i).vertices.at(temp_vertex0);
+							temp_triangle.vertex1 = tagged.at(i).vertices.at(temp_vertex0).vertex;
 							temp_triangle.vertex2 = tagged.at(i).triangle->vertex2;
+
+							temp_triangle.vertex0_mittelpunkt = tagged.at(i).triangle->vertex0_mittelpunkt;
+							temp_triangle.vertex1_mittelpunkt = tagged.at(i).vertices.at(temp_vertex0).mittelpunkt;
+							temp_triangle.vertex2_mittelpunkt = tagged.at(i).triangle->vertex2_mittelpunkt;
+
+							temp_triangle.vertex0_radius = tagged.at(i).triangle->vertex0_radius;
+							temp_triangle.vertex1_radius = tagged.at(i).vertices.at(temp_vertex0).radius;
+							temp_triangle.vertex2_radius = tagged.at(i).triangle->vertex2_radius;
 
 							temp_triangles.push_back(temp_triangle);
 
-							temp_triangle.vertex0 = tagged.at(i).vertices.at(temp_vertex0);
-							temp_triangle.vertex1 = tagged.at(i).vertices.at(temp_vertex1);
+							temp_triangle.vertex0 = tagged.at(i).vertices.at(temp_vertex0).vertex;
+							temp_triangle.vertex1 = tagged.at(i).vertices.at(temp_vertex1).vertex;
 							temp_triangle.vertex2 = tagged.at(i).triangle->vertex2;
+
+							temp_triangle.vertex0_mittelpunkt = tagged.at(i).vertices.at(temp_vertex0).mittelpunkt;
+							temp_triangle.vertex1_mittelpunkt = tagged.at(i).vertices.at(temp_vertex1).mittelpunkt;
+							temp_triangle.vertex2_mittelpunkt = tagged.at(i).triangle->vertex2_mittelpunkt;
+
+							temp_triangle.vertex0_radius = tagged.at(i).vertices.at(temp_vertex0).radius;
+							temp_triangle.vertex1_radius = tagged.at(i).vertices.at(temp_vertex1).radius;
+							temp_triangle.vertex2_radius = tagged.at(i).triangle->vertex2_radius;
 
 							temp_triangles.push_back(temp_triangle);
 
-							temp_triangle.vertex0 = tagged.at(i).vertices.at(temp_vertex0);
+							temp_triangle.vertex0 = tagged.at(i).vertices.at(temp_vertex0).vertex;
 							temp_triangle.vertex1 = tagged.at(i).triangle->vertex1;
-							temp_triangle.vertex2 = tagged.at(i).vertices.at(temp_vertex1);
+							temp_triangle.vertex2 = tagged.at(i).vertices.at(temp_vertex1).vertex;
+
+							temp_triangle.vertex0_mittelpunkt = tagged.at(i).vertices.at(temp_vertex0).mittelpunkt;
+							temp_triangle.vertex1_mittelpunkt = tagged.at(i).vertices.at(temp_vertex1).mittelpunkt;
+							temp_triangle.vertex2_mittelpunkt = tagged.at(i).triangle->vertex2_mittelpunkt;
+
+							temp_triangle.vertex0_radius = tagged.at(i).vertices.at(temp_vertex0).radius;
+							temp_triangle.vertex1_radius = tagged.at(i).vertices.at(temp_vertex1).radius;
+							temp_triangle.vertex2_radius = tagged.at(i).triangle->vertex2_radius;
 
 							temp_triangles.push_back(temp_triangle);
 					
@@ -308,25 +502,50 @@ std::vector<Mesh::Triangle> AdaptiveSubdivision:: Subdivide(std::vector<Mesh::Tr
 							}
 
 							temp_triangle.vertex0 = tagged.at(i).triangle->vertex0;
-							temp_triangle.vertex1 = tagged.at(i).vertices.at(temp_vertex0);
-							temp_triangle.vertex2 = tagged.at(i).vertices.at(temp_vertex2);
+							temp_triangle.vertex1 = tagged.at(i).vertices.at(temp_vertex0).vertex;
+							temp_triangle.vertex2 = tagged.at(i).vertices.at(temp_vertex2).vertex;
+
+							temp_triangle.vertex0_mittelpunkt = tagged.at(i).triangle->vertex0_mittelpunkt;
+							temp_triangle.vertex1_mittelpunkt = tagged.at(i).vertices.at(temp_vertex0).mittelpunkt;
+							temp_triangle.vertex2_mittelpunkt = tagged.at(i).vertices.at(temp_vertex2).mittelpunkt;
+
+							temp_triangle.vertex0_radius = tagged.at(i).triangle->vertex0_radius;
+							temp_triangle.vertex1_radius = tagged.at(i).vertices.at(temp_vertex0).radius;
+							temp_triangle.vertex2_radius = tagged.at(i).vertices.at(temp_vertex2).radius;
 
 							temp_triangles.push_back(temp_triangle);
 
-							temp_triangle.vertex0 = tagged.at(i).vertices.at(temp_vertex0);
+							temp_triangle.vertex0 = tagged.at(i).vertices.at(temp_vertex0).vertex;
 							temp_triangle.vertex1 = tagged.at(i).triangle->vertex1;
-							temp_triangle.vertex2 = tagged.at(i).vertices.at(temp_vertex2);
+							temp_triangle.vertex2 = tagged.at(i).vertices.at(temp_vertex2).vertex;
+
+							temp_triangle.vertex0_mittelpunkt = tagged.at(i).vertices.at(temp_vertex0).mittelpunkt;
+							temp_triangle.vertex1_mittelpunkt = tagged.at(i).triangle->vertex1_mittelpunkt;
+							temp_triangle.vertex2_mittelpunkt = tagged.at(i).vertices.at(temp_vertex2).mittelpunkt;
+
+							temp_triangle.vertex0_radius = tagged.at(i).vertices.at(temp_vertex0).radius;
+							temp_triangle.vertex1_radius = tagged.at(i).triangle->vertex1_radius;
+							temp_triangle.vertex2_radius = tagged.at(i).vertices.at(temp_vertex2).radius;
 
 							temp_triangles.push_back(temp_triangle);
 
-							temp_triangle.vertex0 = tagged.at(i).vertices.at(temp_vertex2);
+							temp_triangle.vertex0 = tagged.at(i).vertices.at(temp_vertex2).vertex;
 							temp_triangle.vertex1 = tagged.at(i).triangle->vertex1;
 							temp_triangle.vertex2 = tagged.at(i).triangle->vertex2;
+
+							temp_triangle.vertex0_mittelpunkt = tagged.at(i).vertices.at(temp_vertex2).mittelpunkt;
+							temp_triangle.vertex1_mittelpunkt = tagged.at(i).triangle->vertex1_mittelpunkt;
+							temp_triangle.vertex2_mittelpunkt = tagged.at(i).triangle->vertex2_mittelpunkt;
+
+							temp_triangle.vertex0_radius = tagged.at(i).vertices.at(temp_vertex2).radius;
+							temp_triangle.vertex1_radius = tagged.at(i).triangle->vertex1_radius;
+							temp_triangle.vertex2_radius = tagged.at(i).triangle->vertex2_radius;
+
 
 							temp_triangles.push_back(temp_triangle);
 						}
 
-						if(((tagged.at(i).number.at(0) == 1) && (tagged.at(i).number.at(1) == 2)) || ((tagged.at(i).number.at(0) == 1) && (tagged.at(i).number.at(1) == 0)))
+						if(((tagged.at(i).number.at(0) == 1) && (tagged.at(i).number.at(1) == 2)) || ((tagged.at(i).number.at(0) == 1) && (tagged.at(i).number.at(1) == 2)))
 						{
 							int temp_vertex1, temp_vertex2;
 							if(tagged.at(i).number.at(0) == 1)
@@ -342,19 +561,43 @@ std::vector<Mesh::Triangle> AdaptiveSubdivision:: Subdivide(std::vector<Mesh::Tr
 
 							temp_triangle.vertex0 = tagged.at(i).triangle->vertex0;
 							temp_triangle.vertex1 = tagged.at(i).triangle->vertex1;
-							temp_triangle.vertex2 = tagged.at(i).vertices.at(temp_vertex1);
+							temp_triangle.vertex2 = tagged.at(i).vertices.at(temp_vertex1).vertex;
+
+							temp_triangle.vertex0_mittelpunkt = tagged.at(i).triangle->vertex0_mittelpunkt;
+							temp_triangle.vertex1_mittelpunkt = tagged.at(i).triangle->vertex1_mittelpunkt;
+							temp_triangle.vertex2_mittelpunkt = tagged.at(i).vertices.at(temp_vertex1).mittelpunkt;
+
+							temp_triangle.vertex0_radius = tagged.at(i).triangle->vertex0_radius;
+							temp_triangle.vertex1_radius = tagged.at(i).triangle->vertex1_radius;
+							temp_triangle.vertex2_radius = tagged.at(i).vertices.at(temp_vertex1).radius;
 
 							temp_triangles.push_back(temp_triangle);
 
 							temp_triangle.vertex0 = tagged.at(i).triangle->vertex0;
-							temp_triangle.vertex1 = tagged.at(i).vertices.at(temp_vertex1);
-							temp_triangle.vertex2 = tagged.at(i).vertices.at(temp_vertex2);
+							temp_triangle.vertex1 = tagged.at(i).vertices.at(temp_vertex1).vertex;
+							temp_triangle.vertex2 = tagged.at(i).vertices.at(temp_vertex2).vertex;
+
+							temp_triangle.vertex0_mittelpunkt = tagged.at(i).triangle->vertex0_mittelpunkt;
+							temp_triangle.vertex1_mittelpunkt = tagged.at(i).vertices.at(temp_vertex1).mittelpunkt;
+							temp_triangle.vertex2_mittelpunkt = tagged.at(i).vertices.at(temp_vertex2).mittelpunkt;
+
+							temp_triangle.vertex0_radius = tagged.at(i).triangle->vertex0_radius;
+							temp_triangle.vertex1_radius = tagged.at(i).vertices.at(temp_vertex1).radius;
+							temp_triangle.vertex2_radius = tagged.at(i).vertices.at(temp_vertex2).radius;
 
 							temp_triangles.push_back(temp_triangle);
 
-							temp_triangle.vertex0 = tagged.at(i).vertices.at(temp_vertex2);
-							temp_triangle.vertex1 = tagged.at(i).vertices.at(temp_vertex1);
+							temp_triangle.vertex0 = tagged.at(i).vertices.at(temp_vertex2).vertex;
+							temp_triangle.vertex1 = tagged.at(i).vertices.at(temp_vertex1).vertex;
 							temp_triangle.vertex2 = tagged.at(i).triangle->vertex2;
+
+							temp_triangle.vertex0_mittelpunkt = tagged.at(i).vertices.at(temp_vertex2).mittelpunkt;
+							temp_triangle.vertex1_mittelpunkt = tagged.at(i).vertices.at(temp_vertex1).mittelpunkt;
+							temp_triangle.vertex2_mittelpunkt = tagged.at(i).triangle->vertex2_mittelpunkt;
+
+							temp_triangle.vertex0_radius = tagged.at(i).vertices.at(temp_vertex2).radius;
+							temp_triangle.vertex1_radius = tagged.at(i).vertices.at(temp_vertex1).radius;
+							temp_triangle.vertex2_radius = tagged.at(i).triangle->vertex2_radius;
 
 							temp_triangles.push_back(temp_triangle);
 						}
@@ -364,7 +607,7 @@ std::vector<Mesh::Triangle> AdaptiveSubdivision:: Subdivide(std::vector<Mesh::Tr
 						if(tagged.at(i).number.size() == 3)
 						{
 							//counter = counter + 4;
-							int temp_vertex0, temp_vertex1, temp_vertex2;
+							int temp_vertex0 = 0, temp_vertex1 = 0, temp_vertex2 = 0;
 							for(int k = 0; k < tagged.at(i).number.size(); k++)
 							{
 								if(tagged.at(i).number.at(k) == 0)
@@ -385,26 +628,58 @@ std::vector<Mesh::Triangle> AdaptiveSubdivision:: Subdivide(std::vector<Mesh::Tr
 							}
 
 							temp_triangle.vertex0 = tagged.at(i).triangle->vertex0;
-							temp_triangle.vertex1 = tagged.at(i).vertices.at(temp_vertex0);
-							temp_triangle.vertex2 = tagged.at(i).vertices.at(temp_vertex2);
+							temp_triangle.vertex1 = tagged.at(i).vertices.at(temp_vertex0).vertex;
+							temp_triangle.vertex2 = tagged.at(i).vertices.at(temp_vertex2).vertex;
+
+							temp_triangle.vertex0_mittelpunkt = tagged.at(i).triangle->vertex0_mittelpunkt;
+							temp_triangle.vertex1_mittelpunkt = tagged.at(i).vertices.at(temp_vertex0).mittelpunkt;
+							temp_triangle.vertex2_mittelpunkt = tagged.at(i).vertices.at(temp_vertex2).mittelpunkt;
+
+							temp_triangle.vertex0_radius = tagged.at(i).triangle->vertex0_radius;
+							temp_triangle.vertex1_radius = tagged.at(i).vertices.at(temp_vertex0).radius;
+							temp_triangle.vertex2_radius = tagged.at(i).vertices.at(temp_vertex2).radius;
 
 							temp_triangles.push_back(temp_triangle);
 
-							temp_triangle.vertex0 = tagged.at(i).vertices.at(temp_vertex0);
+							temp_triangle.vertex0 = tagged.at(i).vertices.at(temp_vertex0).vertex;
 							temp_triangle.vertex1 = tagged.at(i).triangle->vertex1;
-							temp_triangle.vertex2 = tagged.at(i).vertices.at(temp_vertex1);
+							temp_triangle.vertex2 = tagged.at(i).vertices.at(temp_vertex1).vertex;
+
+							temp_triangle.vertex0_mittelpunkt = tagged.at(i).vertices.at(temp_vertex0).mittelpunkt;
+							temp_triangle.vertex1_mittelpunkt = tagged.at(i).triangle->vertex1_mittelpunkt;
+							temp_triangle.vertex2_mittelpunkt = tagged.at(i).vertices.at(temp_vertex1).mittelpunkt;
+
+							temp_triangle.vertex0_radius = tagged.at(i).vertices.at(temp_vertex0).radius;
+							temp_triangle.vertex1_radius = tagged.at(i).triangle->vertex1_radius;
+							temp_triangle.vertex2_radius = tagged.at(i).vertices.at(temp_vertex1).radius;
 
 							temp_triangles.push_back(temp_triangle);
 
-							temp_triangle.vertex0 = tagged.at(i).vertices.at(temp_vertex0);
-							temp_triangle.vertex1 = tagged.at(i).vertices.at(temp_vertex1);
+							temp_triangle.vertex0 = tagged.at(i).vertices.at(temp_vertex0).vertex;
+							temp_triangle.vertex1 = tagged.at(i).vertices.at(temp_vertex1).vertex;
 							temp_triangle.vertex2 = tagged.at(i).triangle->vertex2;
+
+							temp_triangle.vertex0_mittelpunkt = tagged.at(i).vertices.at(temp_vertex0).mittelpunkt;
+							temp_triangle.vertex1_mittelpunkt = tagged.at(i).vertices.at(temp_vertex1).mittelpunkt;
+							temp_triangle.vertex2_mittelpunkt = tagged.at(i).triangle->vertex2_mittelpunkt;
+
+							temp_triangle.vertex0_radius = tagged.at(i).vertices.at(temp_vertex0).radius;
+							temp_triangle.vertex1_radius = tagged.at(i).vertices.at(temp_vertex1).radius;
+							temp_triangle.vertex2_radius = tagged.at(i).triangle->vertex2_radius;
 
 							temp_triangles.push_back(temp_triangle);
 
-							temp_triangle.vertex0 = tagged.at(i).vertices.at(temp_vertex2);
-							temp_triangle.vertex1 = tagged.at(i).vertices.at(temp_vertex0);
+							temp_triangle.vertex0 = tagged.at(i).vertices.at(temp_vertex2).vertex;
+							temp_triangle.vertex1 = tagged.at(i).vertices.at(temp_vertex0).vertex;
 							temp_triangle.vertex2 = tagged.at(i).triangle->vertex2;
+
+							temp_triangle.vertex0_mittelpunkt = tagged.at(i).vertices.at(temp_vertex2).mittelpunkt;
+							temp_triangle.vertex1_mittelpunkt = tagged.at(i).vertices.at(temp_vertex0).mittelpunkt;
+							temp_triangle.vertex2_mittelpunkt = tagged.at(i).triangle->vertex2_mittelpunkt;
+
+							temp_triangle.vertex0_radius = tagged.at(i).vertices.at(temp_vertex2).radius;
+							temp_triangle.vertex1_radius = tagged.at(i).vertices.at(temp_vertex0).radius;
+							temp_triangle.vertex2_radius = tagged.at(i).triangle->vertex2_radius;
 
 							temp_triangles.push_back(temp_triangle);
 						}
@@ -417,6 +692,7 @@ std::vector<Mesh::Triangle> AdaptiveSubdivision:: Subdivide(std::vector<Mesh::Tr
 		//jetzt müssen noch die richtigen Triangles in die original TriangleList geschrieben werden -> und dann nochmals aufgerufen werden, wenn in dem Durchgang mindestens ein Triangle geteilt wurde
 		
 		//anzahl = anzahl - 1;
+		//anzahl = 1;
 		if(anzahl != 0)
 		{
 			
@@ -443,6 +719,14 @@ std::vector<Mesh::Triangle> AdaptiveSubdivision:: Subdivide(std::vector<Mesh::Tr
 					tri.vertex0 = tagged.at(i).triangle->vertex0;
 					tri.vertex1 = tagged.at(i).triangle->vertex1;
 					tri.vertex2 = tagged.at(i).triangle->vertex2;
+
+					tri.vertex0_mittelpunkt = tagged.at(i).triangle->vertex0_mittelpunkt;
+					tri.vertex1_mittelpunkt = tagged.at(i).triangle->vertex1_mittelpunkt;
+					tri.vertex2_mittelpunkt = tagged.at(i).triangle->vertex2_mittelpunkt;
+
+					tri.vertex0_radius = tagged.at(i).triangle->vertex0_radius;
+					tri.vertex1_radius = tagged.at(i).triangle->vertex1_radius;
+					tri.vertex2_radius = tagged.at(i).triangle->vertex2_radius;
 					list.push_back(tri);
 				}
 			}
@@ -460,6 +744,7 @@ std::vector<Mesh::Triangle> AdaptiveSubdivision:: Subdivide(std::vector<Mesh::Tr
 			tagged.clear();
 			out << list.size() << "\n";
 			out.close();
+			//return list;
 			return Subdivide(list,treshold,anzahl);
 			
 			

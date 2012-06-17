@@ -18,12 +18,17 @@ public:
 	~AdaptiveSubdivision(void);
 	std::vector<Mesh::Triangle>  AdaptiveSubdivision::Subdivide(std::vector<Mesh::Triangle>, float, int);
 	
-
+	typedef struct Vertex
+	{
+		D3DXVECTOR3 vertex;
+		D3DXVECTOR3 mittelpunkt;
+		float radius;
+	} Vertex;
 	typedef struct Tagged
 	{
 		Mesh::Triangle* triangle;
 
-		std::vector<D3DXVECTOR3> vertices;
+		std::vector<Vertex> vertices;
 		std::vector<int> number;
 		int geteilt;
 
