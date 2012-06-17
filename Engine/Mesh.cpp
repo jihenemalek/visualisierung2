@@ -57,12 +57,15 @@ void Mesh::calculateMesh(Root* root)
 //This function is called for each segment
 void Mesh::calculateDirectionsNormals(Segment* seg)
 {
-	if(seg->startNode != NULL) {
+	if(seg->startNode != NULL) 
+	{
 		D3DXVECTOR3 direction;
 
-		if (seg->points.size() > 0) {
+		if (seg->points.size() > 0) 
+		{
 			direction = seg->points.at(0)->position - seg->startNode->position;
-		} else {
+		} else 
+		{
 			direction = seg->endNode->position - seg->startNode->position;
 		}
 
@@ -71,15 +74,18 @@ void Mesh::calculateDirectionsNormals(Segment* seg)
 		seg->startNode->direction = direction;
 		seg->startNode->normal = direction;
 		
-		if (seg->points.size() > 0) {
+		if (seg->points.size() > 0) 
+		{
 			SegmentPoint* node = seg->points.at(0);
 
 			//Es muss erst mal die direction und Normale für die erste cross-section berechnet werden, weil sich die Normale mit dem Vorgänger zusammensetzt (control point!)
 			D3DXVECTOR3 normal;
 		
-			if (seg->points.size() > 1){
+			if (seg->points.size() > 1)
+			{
 				direction = seg->points.at(1)->position - node->position;
-			} else {
+			} else 
+			{
 				direction = seg->endNode->position - node->position;
 			}
 		 
@@ -94,11 +100,15 @@ void Mesh::calculateDirectionsNormals(Segment* seg)
 			calculateDirNorm(node);
 		}
 
-		if(seg->endNode != NULL) {
+		if(seg->endNode != NULL) 
+		{
 			//calculate Normal + Direction for last cross-section (control point)
-			if (seg->points.size() > 0) {
+			if (seg->points.size() > 0) 
+			{
 				seg->endNode->direction = seg->points.back()->direction;
-			} else {
+			} 
+			else 
+			{
 				seg->endNode->direction = seg->startNode->direction;
 			}
 			
@@ -106,8 +116,10 @@ void Mesh::calculateDirectionsNormals(Segment* seg)
 		}
 	}
 	std::vector<Segment*> seg_list = seg->children;
-	for (unsigned int i = 0; i < seg_list.size(); i++) {
-		if(seg_list.at(i) != NULL) {
+	for (unsigned int i = 0; i < seg_list.size(); i++) 
+	{
+		if(seg_list.at(i) != NULL) 
+		{
 			calculateDirectionsNormals(seg_list.at(i));
 		}
 	}
@@ -240,9 +252,12 @@ void Mesh::calculateUpVectors(Segment* seg)
 {
 	
 		D3DXVECTOR3 anorm = D3DXVECTOR3(0, 0, 1);
-		if (fabs(seg->startNode->direction.x) < fabs(seg->startNode->direction.y)) {
+		if (fabs(seg->startNode->direction.x) < fabs(seg->startNode->direction.y)) 
+		{
 			anorm = D3DXVECTOR3(1, 0, 0);
-		} else if (fabs(seg->startNode->direction.y) < fabs(seg->startNode->direction.z)) {
+		} 
+		else if (fabs(seg->startNode->direction.y) < fabs(seg->startNode->direction.z)) 
+		{
 			anorm = D3DXVECTOR3(0, 1, 0);
 		}
 
@@ -250,7 +265,8 @@ void Mesh::calculateUpVectors(Segment* seg)
 	
 		D3DXVECTOR3 up_vector;
 
-	if(seg->points.size() != 0) {
+	if(seg->points.size() != 0) 
+	{
 		//Über Segment iterieren
 		D3DXVECTOR3 pu, position;
 		pu = seg->startNode->position + seg->startNode->upVector;
@@ -289,7 +305,9 @@ void Mesh::calculateUpVectors(Segment* seg)
 				calculateUpVectors(seg2);
 			}
 		}
-	} else {
+	} 
+	else 
+	{
 		// Calculate up-vector for interpolated segments
 	}
 
@@ -503,22 +521,39 @@ void Mesh::tileTrivially(SegmentPoint *p1, SegmentPoint *p2)
 		D3DXVECTOR3 normal = upVector1 + upVector2;
 		
 		patch[i].vertex0 = p1->position + (p1->radius * upVector1);
+		patch[i].vertex0_mittelpunkt = p1->position;
+		patch[i].vertex0_radius = p1->radius;
 
 		upVector1 = rotateVector(upVector1, p1->direction);
 		patch[i].vertex1 = p1->position + (p1->radius * upVector1);
+		patch[i].vertex1_mittelpunkt = p1->position;
+		patch[i].vertex1_radius = p1->radius;
 
 		patch[i].vertex3 = p2->position + (p2->radius * upVector2);
+		patch[i].vertex3_mittelpunkt = p2->position;
+		patch[i].vertex3_radius = p2->radius;
+
 		upVector2 = rotateVector(upVector2, p2->direction);
 		patch[i].vertex2 = p2->position + (p2->radius * upVector2);
+		patch[i].vertex2_mittelpunkt = p2->position;
+		patch[i].vertex2_radius = p2->radius;
 
 		patch[i].normal = (normal + upVector1 + upVector2) / 4.0;
 	}
 
 	// Last section
 	patch[3].vertex0 = p1->position + (p1->radius * upVector1);
+	patch[3].vertex0_mittelpunkt = p1->position;
+	patch[3].vertex0_radius = p1->radius;
 	patch[3].vertex1 = p1->position + (p1->radius * p1->upVector);
+	patch[3].vertex1_mittelpunkt = p1->position;
+	patch[3].vertex1_radius = p1->radius;
 	patch[3].vertex3 = p2->position + (p2->radius * upVector2);
+	patch[3].vertex3_mittelpunkt = p2->position;
+	patch[3].vertex3_radius = p2->radius;
 	patch[3].vertex2 = p2->position + (p2->radius * p2->upVector);
+	patch[3].vertex2_mittelpunkt = p2->position;
+	patch[3].vertex2_radius = p2->radius;
 	patch[3].normal = (upVector1 + p1->upVector + upVector2 + p2->upVector) / 4.0f;
 	// Any special handling?
 
@@ -575,7 +610,8 @@ void Mesh::tileTrivially(Segment* seg)
 
 void Mesh::tileJoint(std::set<Segment *> segments, D3DXVECTOR3 direction, Segment *caller, D3DXVECTOR3 quadDirection)
 {
-	if (segments.size() == 0) {
+	if (segments.size() == 0) 
+	{
 		// Close this side of the quadrant with a simple patch
 
 		D3DXVECTOR3 upVector[4];
@@ -585,31 +621,51 @@ void Mesh::tileJoint(std::set<Segment *> segments, D3DXVECTOR3 direction, Segmen
 		upVector[2] = this->rotateVector(upVector[1], caller->startNode->direction);
 		upVector[3] = this->rotateVector(upVector[2], caller->startNode->direction);
 
-		if (caller->type == Vesseltree::kSegmentTypeInterpolated || caller->points.size() == 0) {
+		if (caller->type == Vesseltree::kSegmentTypeInterpolated || caller->points.size() == 0) 
+		{
 			pUpVector[0] = caller->endNode->upVector;
 			pUpVector[1] = this->rotateVector(upVector[0], caller->endNode->direction);
 			pUpVector[2] = this->rotateVector(upVector[1], caller->endNode->direction);
 			pUpVector[3] = this->rotateVector(upVector[2], caller->endNode->direction);
-		} else {
+		} 
+		else 
+		{
 			pUpVector[0] = caller->points.front()->upVector;
 			pUpVector[1] = this->rotateVector(pUpVector[0], caller->points.front()->direction);
 			pUpVector[2] = this->rotateVector(pUpVector[1], caller->points.front()->direction);
 			pUpVector[3] = this->rotateVector(pUpVector[2], caller->points.front()->direction);
 		}
 
-		for (unsigned int i = 0; i < 4; i++) {
-			if (D3DXVec3Dot(&quadDirection, &upVector[i]) < 1 && D3DXVec3Dot(&quadDirection, &upVector[(i + 1) % 4])) {
+		for (unsigned int i = 0; i < 4; i++) 
+		{
+			if (D3DXVec3Dot(&quadDirection, &upVector[i]) < 1 && D3DXVec3Dot(&quadDirection, &upVector[(i + 1) % 4])) 
+			{
 				Patch p;
 
 				p.vertex0 = caller->startNode->position + caller->startNode->radius * upVector[i];
+				p.vertex0_mittelpunkt = caller->startNode->position;
+				p.vertex0_radius = caller->startNode->radius;
 				p.vertex1 = caller->startNode->position + caller->startNode->radius * upVector[(i + 1) % 4];
+				p.vertex1_mittelpunkt = caller->startNode->position;
+				p.vertex1_radius = caller->startNode->radius;
 				
-				if (caller->type == Vesseltree::kSegmentTypeInterpolated || caller->points.size() == 0) {
+				if (caller->type == Vesseltree::kSegmentTypeInterpolated || caller->points.size() == 0) 
+				{
 					p.vertex2 = caller->endNode->position + caller->endNode->radius * pUpVector[(i + 1) % 4];
+					p.vertex2_mittelpunkt = caller->endNode->position;
+					p.vertex2_radius = caller->endNode->radius;
 					p.vertex3 = caller->endNode->position + caller->endNode->radius * pUpVector[i];
-				} else {
+					p.vertex3_mittelpunkt = caller->endNode->position;
+					p.vertex3_radius = caller->endNode->radius;
+				} 
+				else 
+				{
 					p.vertex2 = caller->points.front()->position + caller->points.front()->radius * pUpVector[(i + 1) % 4];
+					p.vertex2_mittelpunkt = caller->points.front()->position;
+					p.vertex2_radius = caller->points.front()->radius;
 					p.vertex3 = caller->points.front()->position + caller->points.front()->radius * pUpVector[i];
+					p.vertex3_mittelpunkt = caller->points.front()->position;
+					p.vertex3_radius = caller->points.front()->radius;
 				}
 
 				p.normal = (upVector[i] + upVector[(i + 1) % 4] + pUpVector[i] + pUpVector[(i + 1) % 4]) / 4.0f;
@@ -618,13 +674,17 @@ void Mesh::tileJoint(std::set<Segment *> segments, D3DXVECTOR3 direction, Segmen
 				break;
 			}
 		}
-	} else {
+	} 
+	else 
+	{
 		// Find the closest segment N in the set (smallest angle to direction)
 		Segment *N;
 		float minAngle = FLT_MAX;
-		for (std::set<Segment *>::iterator it = segments.begin(); it != segments.end(); it++) {
+		for (std::set<Segment *>::iterator it = segments.begin(); it != segments.end(); it++) 
+		{
 			float angle = D3DXVec3Dot(&((*it)->startNode->direction), &direction);
-			if (angle < minAngle) {
+			if (angle < minAngle) 
+			{
 				minAngle = angle;
 				N = *it;
 			}
@@ -646,9 +706,12 @@ void Mesh::tileJoint(std::set<Segment *> segments, D3DXVECTOR3 direction, Segmen
 		avgUpVector[1] = (upVector[1] + upVector[2]) / 2.0f;
 		avgUpVector[2] = (upVector[2] + upVector[3]) / 2.0f;
 
-		for (std::set<Segment *>::iterator it = segments.begin(); it != segments.end(); it++) {
-			for (unsigned int i = 0; i < 3; i++) {
-				if (D3DXVec3Dot(&avgUpVector[i], &((*it)->startNode->direction)) < 1) {
+		for (std::set<Segment *>::iterator it = segments.begin(); it != segments.end(); it++) 
+		{
+			for (unsigned int i = 0; i < 3; i++) 
+			{
+				if (D3DXVec3Dot(&avgUpVector[i], &((*it)->startNode->direction)) < 1) 
+				{
 					quadrants[i].insert(*it);
 					break;
 				}
@@ -658,7 +721,8 @@ void Mesh::tileJoint(std::set<Segment *> segments, D3DXVECTOR3 direction, Segmen
 		// Create a transition quadrilateral patch between S and N
 		// TODO: Create patch
 
-		for (unsigned int i = 0; i < 3; i++) {
+		for (unsigned int i = 0; i < 3; i++) 
+		{
 			this->tileJoint(quadrants[i], N->startNode->direction, N, avgUpVector[i]);
 		}
 	}
@@ -714,9 +778,17 @@ void Mesh::generatePatches(Segment* seg)
 		if(seg->startNode->vertices.size() != 0)
 		{
 			temp_patch.vertex0 = seg->startNode->vertices.at(0);
+			temp_patch.vertex0_mittelpunkt = seg->startNode->position;
+			temp_patch.vertex0_radius = seg->startNode->radius;
 			temp_patch.vertex1 = seg->startNode->vertices.at(1);
+			temp_patch.vertex1_mittelpunkt = seg->startNode->position;
+			temp_patch.vertex1_radius = seg->startNode->radius;
 			temp_patch.vertex2 = seg->startNode->vertices.at(2);
+			temp_patch.vertex2_mittelpunkt = seg->startNode->position;
+			temp_patch.vertex2_radius = seg->startNode->radius;
 			temp_patch.vertex3 = seg->startNode->vertices.at(3);
+			temp_patch.vertex3_mittelpunkt = seg->startNode->position;
+			temp_patch.vertex3_radius = seg->startNode->radius;
 
 			patches.push_back(temp_patch);
 
@@ -735,9 +807,17 @@ void Mesh::generatePatchesNonBranching(Segment* seg)
 	if(seg->points.size() != 0)
 	{
 		temp_patch.vertex0 = seg->points.at(0)->vertices.at(0);
+		temp_patch.vertex0_mittelpunkt = seg->points.at(0)->position;
+		temp_patch.vertex0_radius = seg->points.at(0)->radius;
 		temp_patch.vertex1 = seg->points.at(0)->vertices.at(1);
+		temp_patch.vertex1_mittelpunkt = seg->points.at(0)->position;
+		temp_patch.vertex1_radius = seg->points.at(0)->radius;
 		temp_patch.vertex2 = seg->points.at(0)->vertices.at(2);
+		temp_patch.vertex2_mittelpunkt = seg->points.at(0)->position;
+		temp_patch.vertex2_radius = seg->points.at(0)->radius;
 		temp_patch.vertex3 = seg->points.at(0)->vertices.at(3);
+		temp_patch.vertex3_mittelpunkt = seg->points.at(0)->position;
+		temp_patch.vertex3_radius = seg->points.at(0)->radius;
 		patches.push_back(temp_patch);
 
 		if(seg->points.size() > 1)
@@ -919,6 +999,14 @@ void Mesh::triangulate()
 		temp_triangle.vertex1 = patches.at(i).vertex1;
 		temp_triangle.vertex2 = patches.at(i).vertex2;
 		temp_triangle.normal = patches.at(i).normal;
+
+		temp_triangle.vertex0_mittelpunkt = patches.at(i).vertex0_mittelpunkt;
+		temp_triangle.vertex1_mittelpunkt = patches.at(i).vertex1_mittelpunkt;
+		temp_triangle.vertex2_mittelpunkt = patches.at(i).vertex2_mittelpunkt;
+
+		temp_triangle.vertex0_radius = patches.at(i).vertex0_radius;
+		temp_triangle.vertex1_radius = patches.at(i).vertex1_radius;
+		temp_triangle.vertex2_radius = patches.at(i).vertex2_radius;
 		
 		triangles.push_back(temp_triangle);
 
@@ -926,6 +1014,16 @@ void Mesh::triangulate()
 		temp_triangle.vertex1 = patches.at(i).vertex3;
 		temp_triangle.vertex2 = patches.at(i).vertex0; 
 		temp_triangle.normal = patches.at(i).normal;
+
+		temp_triangle.vertex0_mittelpunkt = patches.at(i).vertex2_mittelpunkt;
+		temp_triangle.vertex1_mittelpunkt = patches.at(i).vertex3_mittelpunkt;
+		temp_triangle.vertex2_mittelpunkt = patches.at(i).vertex0_mittelpunkt;
+
+		temp_triangle.vertex0_radius = patches.at(i).vertex2_radius;
+		temp_triangle.vertex1_radius = patches.at(i).vertex3_radius;
+		temp_triangle.vertex2_radius = patches.at(i).vertex0_radius;
+
+
 	
 		triangles.push_back(temp_triangle);
 	}

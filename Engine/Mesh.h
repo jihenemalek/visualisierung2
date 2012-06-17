@@ -49,6 +49,16 @@ public:
 		D3DXVECTOR3 normal2;
 		D3DXVECTOR3 normal3;
 
+		D3DXVECTOR3 vertex0_mittelpunkt;
+		D3DXVECTOR3 vertex1_mittelpunkt;
+		D3DXVECTOR3 vertex2_mittelpunkt;
+		D3DXVECTOR3 vertex3_mittelpunkt;
+
+		float vertex0_radius;
+		float vertex1_radius;
+		float vertex2_radius;
+		float vertex3_radius;
+
 	} Patch;
 	std::vector<Patch> patches;
 	
@@ -59,6 +69,16 @@ public:
 		D3DXVECTOR3 vertex2;
 
 		D3DXVECTOR3 normal;
+
+		D3DXVECTOR3 vertex0_mittelpunkt;
+		D3DXVECTOR3 vertex1_mittelpunkt;
+		D3DXVECTOR3 vertex2_mittelpunkt;
+		D3DXVECTOR3 vertex3_mittelpunkt;
+
+		float vertex0_radius;
+		float vertex1_radius;
+		float vertex2_radius;
+		
 		
 
 	} Trianlge;
