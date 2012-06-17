@@ -26,13 +26,12 @@ void Mesh::calculateMesh(Root* root)
 		
 		//Calculate average normals at the branchings
 
-		averageNormals(seg);
+		//averageNormals(seg);
 
 		
 
 		// Propagate up-vector along the whole tree
 		//first choose up vector perpendicular to direction of first cross section of the first segment
-		seg->startNode->upVector = D3DXVECTOR3(1, 1, 1);
 
 		//Calculate remaining up-Vectors
 		calculateUpVectors(seg);
@@ -58,39 +57,29 @@ void Mesh::calculateMesh(Root* root)
 //This function is called for each segment
 void Mesh::calculateDirectionsNormals(Segment* seg)
 {
-	if(seg->startNode != NULL)
-	{
+	if(seg->startNode != NULL) {
 		D3DXVECTOR3 direction;
 
-		if (seg->points.size() > 0) 
-		{
+		if (seg->points.size() > 0) {
 			direction = seg->points.at(0)->position - seg->startNode->position;
-		} 
-		else 
-		{
+		} else {
 			direction = seg->endNode->position - seg->startNode->position;
 		}
 
 		D3DXVec3Normalize(&direction, &direction);
 
-
-			seg->startNode->direction = direction;
-			seg->startNode->normal = direction;
+		seg->startNode->direction = direction;
+		seg->startNode->normal = direction;
 		
-
-		if (seg->points.size() > 0) 
-		{
+		if (seg->points.size() > 0) {
 			SegmentPoint* node = seg->points.at(0);
 
 			//Es muss erst mal die direction und Normale für die erste cross-section berechnet werden, weil sich die Normale mit dem Vorgänger zusammensetzt (control point!)
 			D3DXVECTOR3 normal;
 		
-			if (seg->points.size() > 1)
-			{
+			if (seg->points.size() > 1){
 				direction = seg->points.at(1)->position - node->position;
-			} 
-			else 
-			{
+			} else {
 				direction = seg->endNode->position - node->position;
 			}
 		 
@@ -105,28 +94,20 @@ void Mesh::calculateDirectionsNormals(Segment* seg)
 			calculateDirNorm(node);
 		}
 
-		if(seg->endNode != NULL)
-		{
+		if(seg->endNode != NULL) {
 			//calculate Normal + Direction for last cross-section (control point)
-			if (seg->points.size() > 0) 
-			{
+			if (seg->points.size() > 0) {
 				seg->endNode->direction = seg->points.back()->direction;
-			} 
-			else 
-			{
+			} else {
 				seg->endNode->direction = seg->startNode->direction;
 			}
 			
-			
 			seg->endNode->normal = seg->endNode->direction;
-
 		}
 	}
 	std::vector<Segment*> seg_list = seg->children;
-	for (unsigned int i = 0; i < seg_list.size(); i++)
-	{
-		if(seg_list.at(i) != NULL)
-		{
+	for (unsigned int i = 0; i < seg_list.size(); i++) {
+		if(seg_list.at(i) != NULL) {
 			calculateDirectionsNormals(seg_list.at(i));
 		}
 	}
@@ -144,9 +125,7 @@ void Mesh::calculateDirNorm(SegmentPoint* seg_point)
 	if(seg_point->child != NULL)
 	{
 		seg_point2 = seg_point->child;
-		direction.x = seg_point2->position.x - seg_point->position.x;
-		direction.y = seg_point2->position.y - seg_point->position.y;
-		direction.z = seg_point2->position.z - seg_point->position.z;
+		direction = seg_point2->position - seg_point->position;
 		D3DXVec3Normalize(&direction,&direction);
 		seg_point->direction = direction;
 	}
@@ -158,9 +137,7 @@ void Mesh::calculateDirNorm(SegmentPoint* seg_point)
 		normal = seg_point1->direction + seg_point->direction;
 		D3DXVec3Normalize(&normal,&normal);
 		seg_point->normal = normal;
-
 	}
-
 	
 	if(seg_point->child != NULL)
 	{
@@ -261,19 +238,28 @@ void Mesh:: classifySegments(Segment* seg)
 //Calculate up-Vector for each segment
 void Mesh::calculateUpVectors(Segment* seg)
 {
-	D3DXVECTOR3 up_vector;
-	if(seg->points.size()!=0)
-	{
+	
+		D3DXVECTOR3 anorm = D3DXVECTOR3(0, 0, 1);
+		if (fabs(seg->startNode->direction.x) < fabs(seg->startNode->direction.y)) {
+			anorm = D3DXVECTOR3(1, 0, 0);
+		} else if (fabs(seg->startNode->direction.y) < fabs(seg->startNode->direction.z)) {
+			anorm = D3DXVECTOR3(0, 1, 0);
+		}
+
+		D3DXVec3Normalize(&seg->startNode->upVector, &anorm);
+	
+		D3DXVECTOR3 up_vector;
+
+	if(seg->points.size() != 0) {
 		//Über Segment iterieren
 		D3DXVECTOR3 pu, position;
 		pu = seg->startNode->position + seg->startNode->upVector;
 		position = seg->points.at(0)->position;
 
-		up_vector = calculateUp(pu,seg->startNode->direction,position,seg->points.at(0)->normal);
+		up_vector = calculateUp(pu, seg->startNode->direction, position, seg->points.at(0)->normal);
 		seg->points.at(0)->upVector = up_vector;
 
-
-		for (unsigned int i = 0; i < (seg->points.size()-1); i++)
+		for (unsigned int i = 0; i < (seg->points.size() - 1); i++)
 		{
 			pu = seg->points.at(i)->position + seg->points.at(i)->upVector;
 			position = seg->points.at(i+1)->position;
@@ -303,7 +289,8 @@ void Mesh::calculateUpVectors(Segment* seg)
 				calculateUpVectors(seg2);
 			}
 		}
-
+	} else {
+		// Calculate up-vector for interpolated segments
 	}
 
 }
@@ -348,14 +335,9 @@ void Mesh::tileTree(Segment* seg)
 	
 	for (std::vector<Segment *>::iterator it = seg->children.begin(); it != seg->children.end(); it++) 
 	{
-		
-		D3DXVec3Normalize(&seg->endNode->direction, &seg->endNode->direction);
-		D3DXVec3Normalize(&(*it)->startNode->direction, &(*it)->startNode->direction);
-		
-
 		float dotProduct = D3DXVec3Dot(&seg->endNode->direction, &(*it)->startNode->direction);
 
-		if (dotProduct > 0) 
+		if (dotProduct < 0) 
 		{
 			backward.insert(*it);
 		} 
@@ -452,9 +434,9 @@ void Mesh::tileTree(Segment* seg)
 		for (std::set<Segment *>::iterator it = forward.begin(); it != forward.end(); it++) 
 		{
 			float angle = D3DXVec3Dot(&((*it)->startNode->direction), &(seg->endNode->direction));
-			if (angle < minAngle) 
+			if (fabs(1 - angle) < minAngle) 
 			{
-				minAngle = angle;
+				minAngle = fabs(1 - angle);
 				S = *it;
 			}
 		}
@@ -498,17 +480,12 @@ void Mesh::tileTree(Segment* seg)
 			this->tileJoint(quadrants[i], S->startNode->direction, S, avgUpVector[i]);
 
 		}
-		
-		if (forward.size() > 1) {
-			S = S;
-		}
 
 		// Recursively generate subtrees for all forward segments
 
-		//this->tileTree(S);		// S was removed from set and must be processed separately
+		this->tileTree(S);		// S was removed from set and must be processed separately
 		for (std::set<Segment *>::iterator it = forward.begin(); it != forward.end(); it++) 
 		{
-
 			this->tileTree(*it);
 		}
 	}

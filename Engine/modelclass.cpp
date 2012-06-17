@@ -36,7 +36,8 @@ bool ModelClass::Initialize(ID3D11Device* device, char* modelFilename, WCHAR* te
 
 	mesh0 = new Mesh;
 	mesh0->calculateMesh(tree0);
-	//AdaptiveSubdivision* subdiv = new AdaptiveSubdivision;
+	AdaptiveSubdivision* subdiv = new AdaptiveSubdivision;
+
 	//mesh0->triangles = subdiv->Subdivide(mesh0->triangles,1,2);
 	
 	// Initialize the vertex and index buffers.
@@ -106,7 +107,7 @@ bool ModelClass::InitializeBuffers(ID3D11Device* device)
 
 	// Create the vertex array.
 	m_vertexCount = mesh0->triangles.size()*3;
-	m_indexCount = m_vertexCount / 3;
+	m_indexCount = m_vertexCount;
 	vertices = new VertexType[m_vertexCount];
 	if(!vertices)
 	{
@@ -126,19 +127,19 @@ bool ModelClass::InitializeBuffers(ID3D11Device* device)
 	//for(i=0; i<m_vertexCount; i++)
 	for(int i = 0; i < mesh0->triangles.size(); i++)
 	{
-		vertices[(i*3)].position = mesh0->triangles.at(i).vertex0;
-		vertices[1+(i*3)].position = mesh0->triangles.at(i).vertex1;
-		vertices[2+(i*3)].position = mesh0->triangles.at(i).vertex2;
-		vertices[(i*3)].normal = mesh0->triangles.at(i).normal;
-		vertices[1+(i*3)].normal = mesh0->triangles.at(i).normal;
-		vertices[2+(i*3)].normal = mesh0->triangles.at(i).normal;
+		vertices[0 + (i*3)].position = mesh0->triangles.at(i).vertex0;
+		vertices[1 + (i*3)].position = mesh0->triangles.at(i).vertex1;
+		vertices[2 + (i*3)].position = mesh0->triangles.at(i).vertex2;
+		vertices[0 + (i*3)].normal = mesh0->triangles.at(i).normal;
+		vertices[1 + (i*3)].normal = mesh0->triangles.at(i).normal;
+		vertices[2 + (i*3)].normal = mesh0->triangles.at(i).normal;
 		//vertices[i].position = D3DXVECTOR3(m_model[i].x, m_model[i].y, m_model[i].z);
 		//vertices[i].texture = D3DXVECTOR2(m_model[i].tu, m_model[i].tv);
 		//vertices[i].normal = D3DXVECTOR3(m_model[i].nx, m_model[i].ny, m_model[i].nz);
-
 		
-
-		indices[i] = i;
+		indices[0 + 3 * i] = 0 + 3 * i;
+		indices[1 + 3 * i] = 1 + 3 * i;
+		indices[2 + 3 * i] = 2 + 3 * i;
 	}
 
 	// Set up the description of the static vertex buffer.

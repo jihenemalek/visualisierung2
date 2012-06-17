@@ -133,12 +133,18 @@ std::vector<Vesseltree::Segment *> Vesseltree::Parser::parseSegments(xmlNode *aN
 			seg->processed = false;
 			std::string type = parseAttributes(currentSegment)["type"];
 			std::map<std::string, std::string> elements = parseElements(currentSegment);
-			
+
 			int startNodeId = strToInt(elements["BeginCPID"]) - 1;
 			int endNodeId = strToInt(elements["EndCPID"]) - 1;
+			
+			ControlPoint *sn = (ControlPoint *)malloc(sizeof(ControlPoint));
+			ControlPoint *en = (ControlPoint *)malloc(sizeof(ControlPoint));
+			
+			memcpy(sn, controlPoints[startNodeId], sizeof(ControlPoint));
+			memcpy(en, controlPoints[endNodeId], sizeof(ControlPoint));
 
-			seg->startNode = controlPoints[startNodeId];
-			seg->endNode = controlPoints[endNodeId];
+			seg->startNode = sn;
+			seg->endNode = en;
 
 			if (strcmp(type.c_str(), "centered") == 0) {
 				seg->type = kSegmentTypeCentered;
