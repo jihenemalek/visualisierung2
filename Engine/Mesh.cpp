@@ -257,18 +257,25 @@ void Mesh:: classifySegments(Segment* seg)
 //Calculate up-Vector for each segment
 void Mesh::calculateUpVectors(Segment* seg)
 {
-	D3DXVECTOR3 anorm = D3DXVECTOR3(0, 0, 1);
-	if (fabs(seg->startNode->direction.x) < fabs(seg->startNode->direction.y)) 
+	if (seg->parents.size() == 0)
 	{
-		anorm = D3DXVECTOR3(1, 0, 0);
-	} 
-	else if (fabs(seg->startNode->direction.y) < fabs(seg->startNode->direction.z)) 
-	{
-		anorm = D3DXVECTOR3(0, 1, 0);
-	}
+		D3DXVECTOR3 anorm = D3DXVECTOR3(0, 0, 1);
+		if (fabs(seg->startNode->direction.x) < fabs(seg->startNode->direction.y)) 
+		{
+			anorm = D3DXVECTOR3(1, 0, 0);
+		} 
+		else if (fabs(seg->startNode->direction.y) < fabs(seg->startNode->direction.z)) 
+		{
+			anorm = D3DXVECTOR3(0, 1, 0);
+		}
 
-	D3DXVec3Cross(&seg->startNode->upVector, &anorm, &seg->startNode->direction);
-	D3DXVec3Normalize(&seg->startNode->upVector, &seg->startNode->upVector);
+		D3DXVec3Cross(&seg->startNode->upVector, &anorm, &seg->startNode->direction);
+		D3DXVec3Normalize(&seg->startNode->upVector, &seg->startNode->upVector);
+	}
+	else
+	{
+		seg->startNode->upVector == seg->parents.front()->endNode->upVector;
+	}
 	
 	D3DXVECTOR3 up_vector;
 
@@ -721,17 +728,17 @@ void Mesh::tileJoint(std::set<Segment *> segments, D3DXVECTOR3 direction, Segmen
 			float d1 = D3DXVec3Dot(&quadDirection, &aNUpVector[i]);
 			float d2 = D3DXVec3Dot(&quadDirection, &aNUpVector[(i + 1) % 4]);
 
-			if (d1 >= 0 && d2 >= 0)
+			if (d1 <= 0 && d2 <= 0)
 			{
 				if (N->points.size() > 0)
 				{
-					v3 = N->points.front()->position + (N->points.front()->radius * aNUpVector[i]);
-					v2 = N->points.front()->position + (N->points.front()->radius * aNUpVector[(i + 1) % 4]);
+					v2 = N->points.front()->position + (N->points.front()->radius * aNUpVector[i]);
+					v3 = N->points.front()->position + (N->points.front()->radius * aNUpVector[(i + 1) % 4]);
 				}
 				else
 				{
-					v3 = N->endNode->position + (N->endNode->radius * aNUpVector[i]);
-					v2 = N->endNode->position + (N->endNode->radius * aNUpVector[(i + 1) % 4]);
+					v2 = N->endNode->position + (N->endNode->radius * aNUpVector[i]);
+					v3 = N->endNode->position + (N->endNode->radius * aNUpVector[(i + 1) % 4]);
 				}
 			}
 		}
@@ -784,7 +791,6 @@ void Mesh::tileJoint(std::set<Segment *> segments, D3DXVECTOR3 direction, Segmen
 //Function to rotate up_vector around direction_vector
 D3DXVECTOR3 Mesh:: rotateVector(D3DXVECTOR3 up_vector, D3DXVECTOR3 direction_vector)
 {
-	
 	FLOAT x = up_vector.x;
 	FLOAT y = up_vector.y;
 	FLOAT z = up_vector.z;
@@ -801,44 +807,6 @@ D3DXVECTOR3 Mesh:: rotateVector(D3DXVECTOR3 up_vector, D3DXVECTOR3 direction_vec
 
 	return rotated_vec;
 }
-
-//void Mesh:: TileJoint(std::vector<Segment*> seg_list, D3DXVECTOR3 direction)
-//{
-//	if(seg_list.size() == 0)
-//	{
-//		//closing patch
-//	}
-//	else
-//	{
-//		FLOAT product;
-//		//take segment with minimal angle to direction
-//		float angle = 400, temp_angle;
-//		FLOAT a, b;
-//		int index = 0;
-//
-//		//calculate segment with minimal angle -> index is calculated
-//		for (unsigned int i = 0; i < seg_list.size(); i++)
-//		{
-//			product = D3DXVec3Dot(&direction,&seg_list.at(i)->startNode->direction);
-//			a = D3DXVec3Length(&direction);
-//			b = D3DXVec3Length(&(seg_list.at(i)->startNode->direction));
-//			temp_angle = product/(a*b);
-//			temp_angle = acos(temp_angle);
-//
-//			if(temp_angle < angle)
-//			{
-//				index = i;
-//			}
-//		}
-//
-//		//classify remaining segments into quadrants of N
-//
-//		//space between C and N is tiled by transition patch
-//
-//		//for the remaining 3 quadrants TileJoint is called
-//		
-//	}
-//}
 
 void Mesh::triangulate()
 {
