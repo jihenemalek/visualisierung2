@@ -20,9 +20,7 @@ std::vector<Mesh::Triangle> AdaptiveSubdivision:: Subdivide(std::vector<Mesh::Tr
 	Mesh::Triangle temp_triangle;
 	Subdivided temp_subdivided;
 	Tagged temp_tagged;
-	int counter = 0;
-	std::ofstream out;
-	out.open("bla2.txt", std::ios::app);
+	
 	
 
 	for(int i = 0; i < triangles.size(); i++)
@@ -126,8 +124,7 @@ std::vector<Mesh::Triangle> AdaptiveSubdivision:: Subdivide(std::vector<Mesh::Tr
 
 				temp_subdivided.triangle = &triangles.at(i);
 				subdivided.push_back(temp_subdivided);
-				counter = counter + 4;
-			
+				
 
 				
 			}
@@ -137,7 +134,7 @@ std::vector<Mesh::Triangle> AdaptiveSubdivision:: Subdivide(std::vector<Mesh::Tr
 				temp_tagged.triangle = &triangles.at(i);
 				temp_tagged.geteilt = 0;
 				tagged.push_back(temp_tagged);
-				//counter = counter + 1;
+				
 				
 			}
 
@@ -145,8 +142,7 @@ std::vector<Mesh::Triangle> AdaptiveSubdivision:: Subdivide(std::vector<Mesh::Tr
 		}
 
 		//Für alle getaggeden Triangles wird geschaut welche nichtgetaggden anliegen ->die Teilungsvetices werden gemerk
-		out<< "ok" << tagged.size();
-		out.close();
+		
 		
 		D3DXVECTOR3 mittelpunkt;
 		float radius;
@@ -279,52 +275,7 @@ std::vector<Mesh::Triangle> AdaptiveSubdivision:: Subdivide(std::vector<Mesh::Tr
 					tagged.at(i).vertices.push_back(vertex);
 					tagged.at(i).number.push_back(1);
 				}
-				/*if((tagged.at(i).triangle->vertex0 == subdivided.at(j).triangle->vertex0) && (tagged.at(i).triangle->vertex1 == subdivided.at(j).triangle->vertex1))
-				{
-					D3DXVECTOR3 vertex;
-					vertex = (tagged.at(i).triangle->vertex0 + tagged.at(i).triangle->vertex1) / 2;
-					
-					mittelpunkt = (subdivided.at(j).triangle->vertex0_mittelpunkt + subdivided.at(j).triangle->vertex1_mittelpunkt) / 2;
 				
-					radius = (subdivided.at(j).triangle->vertex0_radius + subdivided.at(j).triangle->vertex1_radius) / 2;
-					
-					temp_vec = mittelpunkt - vertex;
-					D3DXVec3Normalize(&temp_vec,&temp_vec);
-					vertex = vertex + (temp_vec * radius);
-
-					tagged.at(i).vertices.push_back(vertex);
-					tagged.at(i).number.push_back(0);
-				}
-				if((tagged.at(i).triangle->vertex0 == subdivided.at(j).triangle->vertex0) && (tagged.at(i).triangle->vertex2 == subdivided.at(j).triangle->vertex2))
-				{
-					D3DXVECTOR3 vertex;
-					vertex = (tagged.at(i).triangle->vertex0 + tagged.at(i).triangle->vertex2) / 2;
-
-					mittelpunkt = (subdivided.at(j).triangle->vertex0_mittelpunkt + subdivided.at(j).triangle->vertex2_mittelpunkt) / 2;
-					radius = (subdivided.at(j).triangle->vertex0_radius + subdivided.at(j).triangle->vertex2_radius)/2;
-					
-					temp_vec = mittelpunkt - vertex;
-					D3DXVec3Normalize(&temp_vec,&temp_vec);
-					vertex = vertex + (temp_vec * radius);
-
-					tagged.at(i).vertices.push_back(vertex);
-					tagged.at(i).number.push_back(2);
-				}
-				if((tagged.at(i).triangle->vertex2 == subdivided.at(j).triangle->vertex2) && (tagged.at(i).triangle->vertex1 == subdivided.at(j).triangle->vertex1))
-				{
-					D3DXVECTOR3 vertex;
-					vertex = (tagged.at(i).triangle->vertex2 + tagged.at(i).triangle->vertex1) / 2;
-
-					mittelpunkt = (subdivided.at(j).triangle->vertex2_mittelpunkt + subdivided.at(j).triangle->vertex1_mittelpunkt) / 2;
-					radius = (subdivided.at(j).triangle->vertex2_radius + subdivided.at(j).triangle->vertex1_radius) / 2;
-					
-					temp_vec = mittelpunkt - vertex;
-					D3DXVec3Normalize(&temp_vec,&temp_vec);
-					vertex = vertex + (temp_vec * radius);
-
-					tagged.at(i).vertices.push_back(vertex);
-					tagged.at(i).number.push_back(1);
-				}*/
 			}
 
 			//Hier werden die getaggted Triangles geteilt wenn die Anzahl ihrer Nachbarn nicht 0 ist
@@ -334,7 +285,7 @@ std::vector<Mesh::Triangle> AdaptiveSubdivision:: Subdivide(std::vector<Mesh::Tr
 				if(tagged.at(i).number.size() == 1)
 				{
 					tagged.at(i).geteilt = 1;
-					//counter = counter + 2;
+					
 					if(tagged.at(i).number.at(0) == 2)
 					{
 						temp_triangle.vertex0 = tagged.at(i).triangle->vertex0;
@@ -418,6 +369,8 @@ std::vector<Mesh::Triangle> AdaptiveSubdivision:: Subdivide(std::vector<Mesh::Tr
 						temp_triangle.vertex0_radius = tagged.at(i).triangle->vertex0_radius;
 						temp_triangle.vertex1_mittelpunkt = tagged.at(i).vertices.at(0).mittelpunkt;
 						temp_triangle.vertex1_radius = tagged.at(i).vertices.at(0).radius;
+						temp_triangle.vertex2_mittelpunkt = tagged.at(i).triangle->vertex2_mittelpunkt;
+						temp_triangle.vertex2_radius = tagged.at(i).triangle->vertex2_radius;
 
 						temp_triangles.push_back(temp_triangle);
 					
@@ -428,7 +381,7 @@ std::vector<Mesh::Triangle> AdaptiveSubdivision:: Subdivide(std::vector<Mesh::Tr
 				{
 					if(tagged.at(i).number.size() == 2)
 					{
-						//counter = counter + 3;
+						
 						if (((tagged.at(i).number.at(0) == 0) && (tagged.at(i).number.at(1) == 1)) || ((tagged.at(i).number.at(0) == 1) && (tagged.at(i).number.at(1) == 0)))
 						{
 							int temp_vertex0, temp_vertex1;
@@ -477,12 +430,12 @@ std::vector<Mesh::Triangle> AdaptiveSubdivision:: Subdivide(std::vector<Mesh::Tr
 							temp_triangle.vertex2 = tagged.at(i).vertices.at(temp_vertex1).vertex;
 
 							temp_triangle.vertex0_mittelpunkt = tagged.at(i).vertices.at(temp_vertex0).mittelpunkt;
-							temp_triangle.vertex1_mittelpunkt = tagged.at(i).vertices.at(temp_vertex1).mittelpunkt;
-							temp_triangle.vertex2_mittelpunkt = tagged.at(i).triangle->vertex2_mittelpunkt;
+							temp_triangle.vertex1_mittelpunkt = tagged.at(i).triangle->vertex1_mittelpunkt;
+							temp_triangle.vertex2_mittelpunkt = tagged.at(i).vertices.at(temp_vertex1).mittelpunkt;
 
 							temp_triangle.vertex0_radius = tagged.at(i).vertices.at(temp_vertex0).radius;
-							temp_triangle.vertex1_radius = tagged.at(i).vertices.at(temp_vertex1).radius;
-							temp_triangle.vertex2_radius = tagged.at(i).triangle->vertex2_radius;
+							temp_triangle.vertex1_radius = tagged.at(i).triangle->vertex1_radius;
+							temp_triangle.vertex2_radius = tagged.at(i).vertices.at(temp_vertex1).radius;
 
 							temp_triangles.push_back(temp_triangle);
 					
@@ -606,7 +559,7 @@ std::vector<Mesh::Triangle> AdaptiveSubdivision:: Subdivide(std::vector<Mesh::Tr
 					{
 						if(tagged.at(i).number.size() == 3)
 						{
-							//counter = counter + 4;
+							
 							int temp_vertex0 = 0, temp_vertex1 = 0, temp_vertex2 = 0;
 							for(int k = 0; k < tagged.at(i).number.size(); k++)
 							{
@@ -691,25 +644,10 @@ std::vector<Mesh::Triangle> AdaptiveSubdivision:: Subdivide(std::vector<Mesh::Tr
 
 		//jetzt müssen noch die richtigen Triangles in die original TriangleList geschrieben werden -> und dann nochmals aufgerufen werden, wenn in dem Durchgang mindestens ein Triangle geteilt wurde
 		
-		//anzahl = anzahl - 1;
-		//anzahl = 1;
+		
 		if(anzahl != 0)
 		{
-			
-			
-			for(int k = 0; k < tagged.size(); k++)
-			{
-				if(tagged.at(k).geteilt != 1)
-				{
-					counter = counter + 1;
-				}
-			}
-			out << "neu" << "\n";
-			out << counter << "\n";
-			
-	
-			
-			
+				
 			std::vector<Mesh::Triangle> list;
 			for(int i = 0; i < tagged.size(); i++)
 			{
@@ -742,8 +680,6 @@ std::vector<Mesh::Triangle> AdaptiveSubdivision:: Subdivide(std::vector<Mesh::Tr
 			subdivided.clear();
 
 			tagged.clear();
-			out << list.size() << "\n";
-			out.close();
 			//return list;
 			return Subdivide(list,treshold,anzahl);
 			
