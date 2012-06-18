@@ -12,6 +12,9 @@ using namespace Vesseltree;
 class AdaptiveSubdivision
 {
 
+private:
+
+	float calculateCurvature(Mesh::Triangle triangle);
 	
 public:
 	AdaptiveSubdivision(void);
