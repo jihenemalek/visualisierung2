@@ -36,7 +36,7 @@ bool ModelClass::Initialize(ID3D11Device* device, char* modelFilename, WCHAR* te
 	mesh->calculateMesh(tree);
 	AdaptiveSubdivision* subdiv = new AdaptiveSubdivision;
 
-	//mesh->triangles = subdiv->Subdivide(mesh->triangles, 0.2, 1);
+	mesh->triangles = subdiv->Subdivide(mesh->triangles, 0.05, 2);
 	
 	// Initialize the vertex and index buffers.
 	result = InitializeBuffers(device);
