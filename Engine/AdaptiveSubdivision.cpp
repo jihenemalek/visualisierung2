@@ -55,17 +55,17 @@ std::vector<Mesh::Triangle> AdaptiveSubdivision:: Subdivide(std::vector<Mesh::Tr
 				radiusb = (triangles.at(i).vertex2_radius + triangles.at(i).vertex1_radius) / 2;
 				radiusc = (triangles.at(i).vertex0_radius + triangles.at(i).vertex2_radius) / 2;
 
-				temp_vec = centerlinea - mittelpunkta;
+				temp_vec = mittelpunkta - centerlinea;
 				D3DXVec3Normalize(&temp_vec, &temp_vec);
-				mittelpunkta = mittelpunkta + (temp_vec * radiusa);
+				mittelpunkta = centerlinea + (temp_vec * radiusa);
 
-				temp_vec = centerlineb - mittelpunktb;
+				temp_vec = mittelpunktb - centerlineb;
 				D3DXVec3Normalize(&temp_vec,&temp_vec);
-				mittelpunktb = mittelpunktb + (temp_vec * radiusb);
+				mittelpunktb = centerlineb + (temp_vec * radiusb);
 
-				temp_vec = centerlinec - mittelpunktc;
+				temp_vec = mittelpunktc - centerlinec;
 				D3DXVec3Normalize(&temp_vec,&temp_vec);
-				mittelpunktc = mittelpunktc + (temp_vec * radiusc);
+				mittelpunktc = centerlinec + (temp_vec * radiusc);
 				
 
 				temp_triangle.vertex0 = triangles.at(i).vertex0;
@@ -177,9 +177,9 @@ std::vector<Mesh::Triangle> AdaptiveSubdivision:: Subdivide(std::vector<Mesh::Tr
 					vertex.vertex = (subdivided.at(j).triangle->vertex0 + subdivided.at(j).triangle->vertex1)/2;
 					vertex.mittelpunkt = (subdivided.at(j).triangle->vertex0_mittelpunkt + subdivided.at(j).triangle->vertex1_mittelpunkt)/2;
 					vertex.radius = (subdivided.at(j).triangle->vertex0_radius + subdivided.at(j).triangle->vertex1_radius)/2;
-					temp_vec = vertex.mittelpunkt - vertex.vertex;
+					temp_vec = vertex.vertex - vertex.mittelpunkt;
 					D3DXVec3Normalize(&temp_vec, &temp_vec);
-					vertex.vertex = vertex.vertex + (temp_vec * vertex.radius);
+					vertex.vertex = vertex.mittelpunkt + (temp_vec * vertex.radius);
 					tagged.at(i).vertices.push_back(vertex);
 					tagged.at(i).number.push_back(0);
 				}
@@ -189,9 +189,9 @@ std::vector<Mesh::Triangle> AdaptiveSubdivision:: Subdivide(std::vector<Mesh::Tr
 					vertex.vertex = (subdivided.at(j).triangle->vertex0 + subdivided.at(j).triangle->vertex2)/2;
 					vertex.mittelpunkt = (subdivided.at(j).triangle->vertex0_mittelpunkt + subdivided.at(j).triangle->vertex2_mittelpunkt)/2;
 					vertex.radius = (subdivided.at(j).triangle->vertex0_radius + subdivided.at(j).triangle->vertex2_radius)/2;
-					temp_vec =vertex. mittelpunkt - vertex.vertex;
+					temp_vec =vertex.vertex - vertex.mittelpunkt;
 					D3DXVec3Normalize(&temp_vec, &temp_vec);
-					vertex.vertex = vertex.vertex + (temp_vec * vertex.radius);
+					vertex.vertex = vertex.mittelpunkt + (temp_vec * vertex.radius);
 					tagged.at(i).vertices.push_back(vertex);
 					tagged.at(i).number.push_back(0);
 				}
@@ -201,9 +201,9 @@ std::vector<Mesh::Triangle> AdaptiveSubdivision:: Subdivide(std::vector<Mesh::Tr
 					vertex.vertex = (subdivided.at(j).triangle->vertex1 + subdivided.at(j).triangle->vertex2)/2;
 					vertex.mittelpunkt = (subdivided.at(j).triangle->vertex1_mittelpunkt + subdivided.at(j).triangle->vertex2_mittelpunkt)/2;
 					vertex.radius = (subdivided.at(j).triangle->vertex1_radius + subdivided.at(j).triangle->vertex2_radius)/2;
-					temp_vec = vertex.mittelpunkt - vertex.vertex;
+					temp_vec = vertex.vertex - vertex.mittelpunkt;
 					D3DXVec3Normalize(&temp_vec, &temp_vec);
-					vertex.vertex = vertex.vertex + (temp_vec * vertex.radius);
+					vertex.vertex = vertex.mittelpunkt + (temp_vec * vertex.radius);
 					tagged.at(i).vertices.push_back(vertex);
 					tagged.at(i).number.push_back(0);
 				}
@@ -213,9 +213,9 @@ std::vector<Mesh::Triangle> AdaptiveSubdivision:: Subdivide(std::vector<Mesh::Tr
 					vertex.vertex = (subdivided.at(j).triangle->vertex0 + subdivided.at(j).triangle->vertex1)/2;
 					vertex.mittelpunkt = (subdivided.at(j).triangle->vertex0_mittelpunkt + subdivided.at(j).triangle->vertex1_mittelpunkt)/2;
 					vertex.radius = (subdivided.at(j).triangle->vertex0_radius + subdivided.at(j).triangle->vertex1_radius)/2;
-					temp_vec = vertex.mittelpunkt - vertex.vertex;
+					temp_vec = vertex.vertex - vertex.mittelpunkt;
 					D3DXVec3Normalize(&temp_vec, &temp_vec);
-					vertex.vertex = vertex.vertex + (temp_vec * vertex.radius);
+					vertex.vertex = vertex.mittelpunkt + (temp_vec * vertex.radius);
 					tagged.at(i).vertices.push_back(vertex);
 					tagged.at(i).number.push_back(2);
 				}
@@ -225,9 +225,9 @@ std::vector<Mesh::Triangle> AdaptiveSubdivision:: Subdivide(std::vector<Mesh::Tr
 					vertex.vertex = (subdivided.at(j).triangle->vertex0 + subdivided.at(j).triangle->vertex2)/2;
 					vertex.mittelpunkt = (subdivided.at(j).triangle->vertex0_mittelpunkt + subdivided.at(j).triangle->vertex2_mittelpunkt)/2;
 					vertex.radius = (subdivided.at(j).triangle->vertex0_radius + subdivided.at(j).triangle->vertex2_radius)/2;
-					temp_vec = vertex.mittelpunkt - vertex.vertex;
+					temp_vec = vertex.vertex - vertex.mittelpunkt;
 					D3DXVec3Normalize(&temp_vec, &temp_vec);
-					vertex.vertex = vertex.vertex + (temp_vec * vertex.radius);
+					vertex.vertex = vertex.mittelpunkt + (temp_vec * vertex.radius);
 					tagged.at(i).vertices.push_back(vertex);
 					tagged.at(i).number.push_back(2);
 				}
@@ -237,9 +237,9 @@ std::vector<Mesh::Triangle> AdaptiveSubdivision:: Subdivide(std::vector<Mesh::Tr
 					vertex.vertex = (subdivided.at(j).triangle->vertex1 + subdivided.at(j).triangle->vertex2)/2;
 					vertex.mittelpunkt = (subdivided.at(j).triangle->vertex1_mittelpunkt + subdivided.at(j).triangle->vertex2_mittelpunkt)/2;
 					vertex.radius = (subdivided.at(j).triangle->vertex1_radius + subdivided.at(j).triangle->vertex2_radius)/2;
-					temp_vec = mittelpunkt - vertex.vertex;
+					temp_vec = vertex.vertex - vertex.mittelpunkt;
 					D3DXVec3Normalize(&temp_vec, &temp_vec);
-					vertex.vertex = vertex.vertex + (temp_vec * vertex.radius);
+					vertex.vertex = vertex.mittelpunkt + (temp_vec * vertex.radius);
 					tagged.at(i).vertices.push_back(vertex);
 					tagged.at(i).number.push_back(2);
 				}
@@ -249,9 +249,9 @@ std::vector<Mesh::Triangle> AdaptiveSubdivision:: Subdivide(std::vector<Mesh::Tr
 					vertex.vertex = (subdivided.at(j).triangle->vertex0 + subdivided.at(j).triangle->vertex1)/2;
 					vertex.mittelpunkt = (subdivided.at(j).triangle->vertex0_mittelpunkt + subdivided.at(j).triangle->vertex1_mittelpunkt)/2;
 					vertex.radius = (subdivided.at(j).triangle->vertex0_radius + subdivided.at(j).triangle->vertex1_radius)/2;
-					temp_vec = mittelpunkt - vertex.vertex;
+					temp_vec = vertex.vertex - vertex.mittelpunkt;
 					D3DXVec3Normalize(&temp_vec, &temp_vec);
-					vertex.vertex = vertex.vertex + (temp_vec * vertex.radius);
+					vertex.mittelpunkt = vertex.vertex + (temp_vec * vertex.radius);
 					tagged.at(i).vertices.push_back(vertex);
 					tagged.at(i).number.push_back(1);
 				}
@@ -261,9 +261,9 @@ std::vector<Mesh::Triangle> AdaptiveSubdivision:: Subdivide(std::vector<Mesh::Tr
 					vertex.vertex = (subdivided.at(j).triangle->vertex0 + subdivided.at(j).triangle->vertex2)/2;
 					vertex.mittelpunkt = (subdivided.at(j).triangle->vertex0_mittelpunkt + subdivided.at(j).triangle->vertex2_mittelpunkt)/2;
 					vertex.radius = (subdivided.at(j).triangle->vertex0_radius + subdivided.at(j).triangle->vertex2_radius)/2;
-					temp_vec = vertex.mittelpunkt - vertex.vertex;
+					temp_vec = vertex.vertex - vertex.mittelpunkt;
 					D3DXVec3Normalize(&temp_vec, &temp_vec);
-					vertex.vertex = vertex.vertex + (temp_vec * vertex.radius);
+					vertex.vertex = vertex.mittelpunkt + (temp_vec * vertex.radius);
 					tagged.at(i).vertices.push_back(vertex);
 					tagged.at(i).number.push_back(1);
 				}
@@ -273,9 +273,9 @@ std::vector<Mesh::Triangle> AdaptiveSubdivision:: Subdivide(std::vector<Mesh::Tr
 					vertex.vertex = (subdivided.at(j).triangle->vertex1 + subdivided.at(j).triangle->vertex2)/2;
 					vertex.mittelpunkt = (subdivided.at(j).triangle->vertex1_mittelpunkt + subdivided.at(j).triangle->vertex2_mittelpunkt)/2;
 					vertex.radius = (subdivided.at(j).triangle->vertex1_radius + subdivided.at(j).triangle->vertex2_radius)/2;
-					temp_vec = mittelpunkt - vertex.vertex;
+					temp_vec = vertex.vertex - vertex.mittelpunkt;
 					D3DXVec3Normalize(&temp_vec, &temp_vec);
-					vertex.vertex = vertex.vertex + (temp_vec * vertex.radius);
+					vertex.vertex = vertex.mittelpunkt + (temp_vec * vertex.radius);
 					tagged.at(i).vertices.push_back(vertex);
 					tagged.at(i).number.push_back(1);
 				}

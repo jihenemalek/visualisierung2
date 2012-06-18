@@ -73,7 +73,7 @@ public:
 		D3DXVECTOR3 vertex0_mittelpunkt;
 		D3DXVECTOR3 vertex1_mittelpunkt;
 		D3DXVECTOR3 vertex2_mittelpunkt;
-		D3DXVECTOR3 vertex3_mittelpunkt;
+		
 
 		float vertex0_radius;
 		float vertex1_radius;

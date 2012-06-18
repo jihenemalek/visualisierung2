@@ -31,7 +31,7 @@ bool ModelClass::Initialize(ID3D11Device* device, char* modelFilename, WCHAR* te
 	
 
 	Vesseltree::Root *tree0 = Vesseltree::Parser::parseDocument("Resources/vesselTree5.xml", m_hwnd);
-	//Sampling* sampling0 = new Sampling;
+	Sampling* sampling0 = new Sampling;
 	//sampling0->downsample(tree0, 0.1, 1); 
 
 	mesh0 = new Mesh;
