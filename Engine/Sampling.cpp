@@ -23,71 +23,124 @@ void Sampling::downsampleSegmentRecursive(Vesseltree::Segment *segment, float al
 
 	oldPoints = segment->points;
 
-	if (segment->points.size() > 0) {
-		for (int i = 0, j = segment->points.size() - 1; i <= j; i++, j--) {
-			float fd, bd, fg, bg;
-			if (i == 0) {
-				fd = Sampling::calculateDistance(segment->startNode, segment->points[i]);
-				bd = Sampling::calculateDistance(segment->endNode, segment->points[j]);
-				fg = Sampling::calculateG(segment->points[i], alpha, beta) + Sampling::calculateG(segment->startNode, alpha, beta);
-				bg = Sampling::calculateG(segment->points[j], alpha, beta) + Sampling::calculateG(segment->endNode, alpha, beta);
-			} else {
-				fd = Sampling::calculateDistance(segment->points[i + 1], segment->points[i]);
-				bd = Sampling::calculateDistance(segment->points[j - 1], segment->points[j]);
-				fg = Sampling::calculateG(segment->points[i + 1], alpha, beta) + Sampling::calculateG(segment->points[i], alpha, beta);
-				bg = Sampling::calculateG(segment->points[j - 1], alpha, beta) + Sampling::calculateG(segment->points[j], alpha, beta);
+	if (segment->points.size() > 0) 
+	{
+		int i = 0; 
+		int j = segment->points.size() - 1;
+		while(i < j) 
+		{
+			float fDistance, fWeight;
+			float bDistance, bWeight;
+			
+			if (i == 0) 
+			{
+				fDistance = Sampling::calculateDistance(segment->startNode, segment->points.front());
+				fWeight = Sampling::calculateG(segment->points.front(), alpha, beta) + Sampling::calculateG(segment->startNode, alpha, beta);
+				bDistance = Sampling::calculateDistance(segment->points.back(), segment->endNode);
+				bWeight = Sampling::calculateG(segment->points.back(), alpha, beta) + Sampling::calculateG(segment->endNode, alpha, beta);
+			} 
+			else 
+			{
+				fDistance = Sampling::calculateDistance(segment->points.at(i), segment->points.at(i + 1));
+				fWeight = Sampling::calculateG(segment->points.at(i + 1), alpha, beta) + Sampling::calculateG(segment->points.at(i), alpha, beta);
+				bDistance = Sampling::calculateDistance(segment->points.at(j), segment->points.at(j - 1));
+				bWeight = Sampling::calculateG(segment->points.at(j - 1), alpha, beta) + Sampling::calculateG(segment->points.at(j), alpha, beta);
 			}
-
-			// Sample from front
-			if (fd < fg) {
-				for (i++; i < j; i++) {
-					fd = Sampling::calculateDistance(segment->points[i + 1], segment->points[i]);
-					fg = Sampling::calculateG(segment->points[i + 1], alpha, beta) + Sampling::calculateG(segment->points[i], alpha, beta);
-
-					if (fd >= fg) {
-						newPointsFront.push_back(segment->points[i - 1]->combine(segment->points[i]));
-						break;
-					}
-				}
-			} else {
+			
+			if (fDistance >= fWeight) 
+			{
 				newPointsFront.push_back(segment->points[i]);
-			}
+				i++;
+			} 
+			else if(fWeight < 10000) 
+			{
+				int k = 2;
 
-			// Sample from back
-			if (bd < bg) {
-				for (j--; i < j; j--) {
+				while((i + k) < j) 
+				{
+					fDistance = Sampling::calculateDistance(segment->points.at(i + k), segment->points.at(i));
+					fWeight = Sampling::calculateG(segment->points.at(i + k), alpha, beta) + Sampling::calculateG(segment->points.at(i), alpha, beta);
 
-					bd = Sampling::calculateDistance(segment->points[j - 1], segment->points[j]);
-					bg = Sampling::calculateG(segment->points[j], alpha, beta) + Sampling::calculateG(segment->points[j + 1], alpha, beta);
-
-					if (bd >= bg) {
-						newPointsBack.push_back(segment->points[j]->combine(segment->points[j + 1]));
+					if (fDistance >= fWeight) 
+					{
+						newPointsFront.push_back(segment->points.at(i + k - 1)->combine(segment->points.at(i + k)));
+						break;
+					} 
+					else if(fWeight > 10000) 
+					{
 						break;
 					}
+					k++;
 				}
-			} else {
-				newPointsBack.push_back(segment->points[j]);
+				i += k;
+			} 
+			else 
+			{
+				i++;
 			}
+			
+			if (bDistance >= bWeight) 
+			{
+				newPointsBack.push_back(segment->points[j]);
+				j--;
+			}
+			else if (bWeight < 10000)
+			{
+				int k = 2;
 
-			if (Sampling::calculateDistance(segment->points[i], segment->points[j]) <= Sampling::calculateG(segment->points[i], alpha, beta) + Sampling::calculateG(segment->points[j], alpha, beta)) {
-				break;
+				while((j - k) > i) 
+				{
+					bDistance = Sampling::calculateDistance(segment->points.at(j - k), segment->points.at(j));
+					bWeight = Sampling::calculateG(segment->points.at(j - k), alpha, beta) + Sampling::calculateG(segment->points.at(j), alpha, beta);
+
+					if (bDistance >= bWeight) 
+					{
+						newPointsBack.push_back(segment->points.at(j - k)->combine(segment->points.at(j - k + 1)));
+						break;
+					}
+					k++;
+				}
+				j -= k;
+			}
+			else
+			{
+				j--;
 			}
 		}
 
 		// Merge the two vectors to the new point set
-		for (std::vector<Vesseltree::SegmentPoint *>::iterator it = newPointsFront.begin(); it != newPointsFront.end(); it++) {
+		for (std::vector<Vesseltree::SegmentPoint *>::iterator it = newPointsFront.begin(); it != newPointsFront.end(); it++) 
+		{
+			if (newPoints.size() > 0) 
+			{
+				(*it)->parent = newPoints.back();
+				newPoints.back()->child = (*it);
+			}
 			newPoints.push_back(*it);
 		}
-		for (std::vector<Vesseltree::SegmentPoint *>::reverse_iterator rit = newPointsBack.rbegin(); rit != newPointsBack.rend(); rit++) {
+
+		for (std::vector<Vesseltree::SegmentPoint *>::reverse_iterator rit = newPointsBack.rbegin(); rit != newPointsBack.rend(); rit++) 
+		{
+			if (newPoints.size() > 0) 
+			{
+				(*rit)->parent = newPoints.back();
+				newPoints.back()->child = (*rit);
+			}
 			newPoints.push_back(*rit);
 		}
 
 		// Set new points
+		if (newPoints.size() > 0)
+		{
+			newPoints.front()->parent = segment->startNode;
+			newPoints.back()->child = segment->endNode;
+		}
 		segment->points = newPoints;
 	}
 
 	// Sample rest of the tree
-	for(std::vector<Vesseltree::Segment *>::iterator it = segment->children.begin(); it != segment->children.end(); it++) {
+	for(std::vector<Vesseltree::Segment *>::iterator it = segment->children.begin(); it != segment->children.end(); it++)
+	{
 		Sampling::downsampleSegmentRecursive((*it), alpha, beta);
 	}
 }
@@ -97,7 +150,7 @@ float Sampling::calculateG(Vesseltree::Node *point, float alpha, float beta)
 
 	float kappa = 0;
 
-	if (point->child != NULL && point->parent != NULL) 
+	if (point->child && point->parent) 
 	{
 		D3DXVECTOR3 AB = point->position - point->parent->position;
 		D3DXVECTOR3 BC = point->child->position - point->position;
@@ -107,7 +160,11 @@ float Sampling::calculateG(Vesseltree::Node *point, float alpha, float beta)
 		float c = D3DXVec3Length(&CA);
 		float s = 0.5f * (a + b + c);
 
-		kappa = 4.0f * sqrt(fabs(s * (s - a) * (s - b) * (s - c))) / (a * b * c);
+		if (a == 0 || b == 0 || c == 0) return 10000.0f;
+
+		float x = fabs(s * (s - a) * (s - b) * (s - c));
+
+		kappa = 4.0f * sqrt(x) / (a * b * c);
 	}
 
 
