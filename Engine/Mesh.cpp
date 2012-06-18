@@ -280,7 +280,7 @@ void Mesh::calculateUpVectors(Segment* seg)
 			pu = seg->points.at(i)->position + seg->points.at(i)->upVector;
 			position = seg->points.at(i+1)->position;
 		
-			up_vector = calculateUp(pu,seg->points.at(i)->direction,position,seg->points.at(i+1)->normal);
+			up_vector = calculateUp(pu,seg->points.at(i)->direction, position, seg->points.at(i+1)->normal);
 			seg->points.at(i+1)->upVector = up_vector;
 		}
 
@@ -288,7 +288,7 @@ void Mesh::calculateUpVectors(Segment* seg)
 		pu = seg->points.back()->position + seg->points.back()->upVector;
 		position = seg->endNode->position;
 
-		up_vector = calculateUp(pu,seg->points.back()->direction,position,seg->endNode->normal);
+		up_vector = calculateUp(pu,seg->points.back()->direction, position,seg->endNode->normal);
 		seg->endNode->upVector = up_vector;
 
 		//An jeden StartNode der Children weitergeben und die Funktion nochmals aufrufen
@@ -300,7 +300,7 @@ void Mesh::calculateUpVectors(Segment* seg)
 				pu = seg->endNode->position + seg->endNode->upVector;
 				position = seg2->startNode->position;
 
-				up_vector = calculateUp(pu,seg->endNode->direction,position,seg2->startNode->normal);
+				up_vector = calculateUp(pu,seg->endNode->direction, position, seg2->startNode->normal);
 				seg2->startNode->upVector = up_vector;
 				calculateUpVectors(seg2);
 			}
@@ -466,9 +466,9 @@ void Mesh::tileTree(Segment* seg)
 		D3DXVECTOR3 avgUpVector[4];
 
 		upVector[0] = S->startNode->upVector;
-		upVector[1] = this->rotateVector(upVector[0], S->startNode->direction);
-		upVector[2] = this->rotateVector(upVector[1], S->startNode->direction);
-		upVector[3] = this->rotateVector(upVector[2], S->startNode->direction);
+		upVector[1] = this->rotateVector(upVector[0], S->startNode->normal);
+		upVector[2] = this->rotateVector(upVector[1], S->startNode->normal);
+		upVector[3] = this->rotateVector(upVector[2], S->startNode->normal);
 		
 
 		avgUpVector[0] = (upVector[0] + upVector[1]) / 2.0f;
@@ -480,7 +480,7 @@ void Mesh::tileTree(Segment* seg)
 		{
 			for (unsigned int i = 0; i < 4; i++) 
 			{
-				if (D3DXVec3Dot(&avgUpVector[i], &((*it)->startNode->direction)) < 1) 
+				if (D3DXVec3Dot(&avgUpVector[i], &((*it)->startNode->normal)) < 1) 
 				{
 
 					quadrants[i].insert(*it);
@@ -493,8 +493,7 @@ void Mesh::tileTree(Segment* seg)
 
 		for (unsigned int i = 0; i < 4; i++) 
 		{
-			this->tileJoint(quadrants[i], S->startNode->direction, S, avgUpVector[i]);
-
+			this->tileJoint(quadrants[i], S->startNode->normal, S, avgUpVector[i]);
 		}
 
 		// Recursively generate subtrees for all forward segments
@@ -522,7 +521,7 @@ void Mesh::tileTrivially(SegmentPoint *p1, SegmentPoint *p2)
 		patch[i].vertex0_mittelpunkt = p1->position;
 		patch[i].vertex0_radius = p1->radius;
 
-		upVector1 = rotateVector(upVector1, p1->direction);
+		upVector1 = rotateVector(upVector1, p1->normal);
 		patch[i].vertex1 = p1->position + (p1->radius * upVector1);
 		patch[i].vertex1_mittelpunkt = p1->position;
 		patch[i].vertex1_radius = p1->radius;
@@ -531,7 +530,7 @@ void Mesh::tileTrivially(SegmentPoint *p1, SegmentPoint *p2)
 		patch[i].vertex3_mittelpunkt = p2->position;
 		patch[i].vertex3_radius = p2->radius;
 
-		upVector2 = rotateVector(upVector2, p2->direction);
+		upVector2 = rotateVector(upVector2, p2->normal);
 		patch[i].vertex2 = p2->position + (p2->radius * upVector2);
 		patch[i].vertex2_mittelpunkt = p2->position;
 		patch[i].vertex2_radius = p2->radius;
@@ -562,81 +561,39 @@ void Mesh::tileTrivially(SegmentPoint *p1, SegmentPoint *p2)
 	}
 }
 
-//tile Trivially
-void Mesh::tileTrivially(Segment* seg)
-{
-	D3DXVECTOR3 position, up_vector;
-	float radius;
-	std::vector<D3DXVECTOR3> vertex_list;
-
-	//für segmente ausserhalb der Branchings berechnen
-	if(seg->points.size() != 0)
-	{
-		for (unsigned int i = 0; i < seg->points.size(); i++)
-		{
-			position = seg->points.at(i)->position;
-
-			radius = seg->points.at(i)->radius;
-
-			up_vector = seg->points.at(i)->upVector;
-			
-			vertex_list = tileTrivial(position, radius, up_vector, seg->points.at(i)->direction);
-			seg->points.at(i)->vertices = vertex_list;
-		}
-
-	}
-	if(seg->children.size() != 0)
-	{
-		for (unsigned int i = 0; i < seg->children.size(); i++)
-		{
-			tileTrivially(seg->children.at(i));
-		}
-	}
-	else
-	{
-		position.x = seg->endNode->position.x;
-		position.y = seg->endNode->position.y;
-		position.z = seg->endNode->position.z;
-		
-		radius = seg->endNode->radius;
-		up_vector = seg->endNode->upVector;
-
-		vertex_list = tileTrivial(position,radius,up_vector, seg->endNode->direction);
-		seg->endNode->vertices = vertex_list;
-	}
-}
-
 void Mesh::tileJoint(std::set<Segment *> segments, D3DXVECTOR3 direction, Segment *caller, D3DXVECTOR3 quadDirection)
 {
 	if (segments.size() == 0) 
 	{
 		// Close this side of the quadrant with a simple patch
-
 		D3DXVECTOR3 upVector[4];
 		D3DXVECTOR3 pUpVector[4];
 		upVector[0] = caller->startNode->upVector;
-		upVector[1] = this->rotateVector(upVector[0], caller->startNode->direction);
-		upVector[2] = this->rotateVector(upVector[1], caller->startNode->direction);
-		upVector[3] = this->rotateVector(upVector[2], caller->startNode->direction);
+		upVector[1] = this->rotateVector(upVector[0], caller->startNode->normal);
+		upVector[2] = this->rotateVector(upVector[1], caller->startNode->normal);
+		upVector[3] = this->rotateVector(upVector[2], caller->startNode->normal);
 
 		if (caller->type == Vesseltree::kSegmentTypeInterpolated || caller->points.size() == 0) 
 		{
 			pUpVector[0] = caller->endNode->upVector;
-			pUpVector[1] = this->rotateVector(upVector[0], caller->endNode->direction);
-			pUpVector[2] = this->rotateVector(upVector[1], caller->endNode->direction);
-			pUpVector[3] = this->rotateVector(upVector[2], caller->endNode->direction);
+			pUpVector[1] = this->rotateVector(upVector[0], caller->endNode->normal);
+			pUpVector[2] = this->rotateVector(upVector[1], caller->endNode->normal);
+			pUpVector[3] = this->rotateVector(upVector[2], caller->endNode->normal);
 		} 
 		else 
 		{
 			pUpVector[0] = caller->points.front()->upVector;
-			pUpVector[1] = this->rotateVector(pUpVector[0], caller->points.front()->direction);
-			pUpVector[2] = this->rotateVector(pUpVector[1], caller->points.front()->direction);
-			pUpVector[3] = this->rotateVector(pUpVector[2], caller->points.front()->direction);
+			pUpVector[1] = this->rotateVector(pUpVector[0], caller->points.front()->normal);
+			pUpVector[2] = this->rotateVector(pUpVector[1], caller->points.front()->normal);
+			pUpVector[3] = this->rotateVector(pUpVector[2], caller->points.front()->normal);
 		}
 
 		for (unsigned int i = 0; i < 4; i++) 
 		{
-			if (D3DXVec3Dot(&quadDirection, &upVector[i]) < 1 && D3DXVec3Dot(&quadDirection, &upVector[(i + 1) % 4])) 
+			float d1 = D3DXVec3Dot(&quadDirection, &upVector[i]);
+			float d2 = D3DXVec3Dot(&quadDirection, &upVector[(i + 1) % 4]);
+
+			if (d1 > 0 && d2 > 0) 
 			{
 				Patch p;
 
@@ -717,7 +674,10 @@ void Mesh::tileJoint(std::set<Segment *> segments, D3DXVECTOR3 direction, Segmen
 		}
 		
 		// Create a transition quadrilateral patch between S and N
-		// TODO: Create patch
+		D3DXVECTOR3 v0, v1;
+		for (int i = 0; i < 3; i++) {
+
+		}
 
 		for (unsigned int i = 0; i < 3; i++) 
 		{
@@ -725,28 +685,6 @@ void Mesh::tileJoint(std::set<Segment *> segments, D3DXVECTOR3 direction, Segmen
 		}
 	}
 }
-
-
-//tile trivial ->gives back the vertices of the cross-sections
-std::vector<D3DXVECTOR3> Mesh:: tileTrivial(D3DXVECTOR3 position, float radius, D3DXVECTOR3 up_vector,  D3DXVECTOR3 direction)
-{
-	D3DXVECTOR3 temp_vertex;
-	std::vector<D3DXVECTOR3> vertex_list;
-	temp_vertex = position + (radius * up_vector);
-	vertex_list.push_back(temp_vertex);
-
-	//rotate up_vector to calculate the other 3 vectors
-	for (unsigned int i = 0; i< 3; i++)
-	{
-		up_vector = rotateVector(up_vector,direction);
-		temp_vertex = position + (radius * up_vector);
-		vertex_list.push_back(temp_vertex);
-	}
-	
-
-	return vertex_list;
-}
-
 //Function to rotate up_vector around direction_vector
 D3DXVECTOR3 Mesh:: rotateVector(D3DXVECTOR3 up_vector, D3DXVECTOR3 direction_vector)
 {
@@ -766,188 +704,6 @@ D3DXVECTOR3 Mesh:: rotateVector(D3DXVECTOR3 up_vector, D3DXVECTOR3 direction_vec
 	D3DXVec3Normalize(&rotated_vec,&rotated_vec);
 
 	return rotated_vec;
-}
-
-//generate patches for root section and non-branching sections
-void Mesh::generatePatches(Segment* seg)
-{
-	//Generate patches for root element
-		Patch temp_patch;
-		if(seg->startNode->vertices.size() != 0)
-		{
-			temp_patch.vertex0 = seg->startNode->vertices.at(0);
-			temp_patch.vertex0_mittelpunkt = seg->startNode->position;
-			temp_patch.vertex0_radius = seg->startNode->radius;
-			temp_patch.vertex1 = seg->startNode->vertices.at(1);
-			temp_patch.vertex1_mittelpunkt = seg->startNode->position;
-			temp_patch.vertex1_radius = seg->startNode->radius;
-			temp_patch.vertex2 = seg->startNode->vertices.at(2);
-			temp_patch.vertex2_mittelpunkt = seg->startNode->position;
-			temp_patch.vertex2_radius = seg->startNode->radius;
-			temp_patch.vertex3 = seg->startNode->vertices.at(3);
-			temp_patch.vertex3_mittelpunkt = seg->startNode->position;
-			temp_patch.vertex3_radius = seg->startNode->radius;
-
-			patches.push_back(temp_patch);
-
-			
-			
-		}
-
-		//Generate patches for all non-branching cross sections
-		generatePatchesNonBranching(seg);
-}
-
-//generates patches of non-branching sections and the transition patches between them
-void Mesh::generatePatchesNonBranching(Segment* seg)
-{
-	Patch temp_patch;
-	if(seg->points.size() != 0)
-	{
-		temp_patch.vertex0 = seg->points.at(0)->vertices.at(0);
-		temp_patch.vertex0_mittelpunkt = seg->points.at(0)->position;
-		temp_patch.vertex0_radius = seg->points.at(0)->radius;
-		temp_patch.vertex1 = seg->points.at(0)->vertices.at(1);
-		temp_patch.vertex1_mittelpunkt = seg->points.at(0)->position;
-		temp_patch.vertex1_radius = seg->points.at(0)->radius;
-		temp_patch.vertex2 = seg->points.at(0)->vertices.at(2);
-		temp_patch.vertex2_mittelpunkt = seg->points.at(0)->position;
-		temp_patch.vertex2_radius = seg->points.at(0)->radius;
-		temp_patch.vertex3 = seg->points.at(0)->vertices.at(3);
-		temp_patch.vertex3_mittelpunkt = seg->points.at(0)->position;
-		temp_patch.vertex3_radius = seg->points.at(0)->radius;
-		patches.push_back(temp_patch);
-
-		if(seg->points.size() > 1)
-		{
-			for (unsigned int i = 1; i < seg->points.size(); i++)
-			{
-				/*//create Patch
-				temp_patch.vertex0 = seg->points.at(i)->vertices.at(0);
-				temp_patch.vertex1 = seg->points.at(i)->vertices.at(1);
-				temp_patch.vertex2 = seg->points.at(i)->vertices.at(2);
-				temp_patch.vertex3 = seg->points.at(i)->vertices.at(3);
-				patches.push_back(temp_patch);
-
-				//create 4 sides of the cube between two sections
-				//back side
-				temp_patch.vertex0 = seg->points.at(i-1)->vertices.at(0);
-				temp_patch.vertex1 = seg->points.at(i-1)->vertices.at(1);
-				temp_patch.vertex2 = seg->points.at(i)->vertices.at(1);
-				temp_patch.vertex3 = seg->points.at(i)->vertices.at(0);
-				patches.push_back(temp_patch);
-
-				//left side
-				temp_patch.vertex0 = seg->points.at(i-1)->vertices.at(1);
-				temp_patch.vertex1 = seg->points.at(i-1)->vertices.at(2);
-				temp_patch.vertex2 = seg->points.at(i)->vertices.at(2);
-				temp_patch.vertex3 = seg->points.at(i)->vertices.at(1);
-				patches.push_back(temp_patch);
-
-				//front side
-				temp_patch.vertex0 = seg->points.at(i-1)->vertices.at(3);
-				temp_patch.vertex1 = seg->points.at(i-1)->vertices.at(2);
-				temp_patch.vertex2 = seg->points.at(i)->vertices.at(2);
-				temp_patch.vertex3 = seg->points.at(i)->vertices.at(3);
-				patches.push_back(temp_patch);
-
-				//right side
-				temp_patch.vertex0 = seg->points.at(i-1)->vertices.at(0);
-				temp_patch.vertex1 = seg->points.at(i-1)->vertices.at(3);
-				temp_patch.vertex2 = seg->points.at(i)->vertices.at(3);
-				temp_patch.vertex3 = seg->points.at(i)->vertices.at(0);
-				patches.push_back(temp_patch);*/
-			}
-		}
-	}
-
-	if(seg->children.size() != 0)
-	{
-		for (unsigned int i = 0; i < seg->children.size(); i++)
-		{
-			generatePatchesNonBranching(seg->children.at(i));
-		}
-	}
-	
-}
-
-//process last section
-void Mesh:: processLastSections(Segment* seg)
-{
-	std::vector<int> backward_index;
-	if((seg->endNode != NULL) && (seg->children.size() != 0))
-	{
-		for (unsigned int i = 0; i < seg->children.size(); i++)
-		{
-			if(seg->children.at(i)->classification = 0) //backward
-			{
-				backward_index.push_back(i);
-			}
-		}
-
-		if(backward_index.size() == 0) //if no backward branches exist -> process tile trivial and create the patch of the endNode and the patches between the endNode and the last segment point
-		{
-			std::vector<D3DXVECTOR3> vertex_list;
-			Patch temp_patch;
-		
-			vertex_list = tileTrivial(seg->endNode->position, seg->endNode->radius,seg->endNode->upVector, seg->endNode->direction);
-			seg->endNode->vertices = vertex_list;
-
-			/*//create Patches
-			temp_patch.vertex0 = seg->endNode->vertices.at(0);
-			temp_patch.vertex1 = seg->endNode->vertices.at(1);
-			temp_patch.vertex2 = seg->endNode->vertices.at(2);
-			temp_patch.vertex3 = seg->endNode->vertices.at(3);
-			patches.push_back(temp_patch);*/
-
-			if(seg->points.size() != 0)
-			{
-				/*//back side
-				temp_patch.vertex0 = seg->points.back()->vertices.at(0);
-				temp_patch.vertex1 = seg->points.back()->vertices.at(1);
-				temp_patch.vertex2 = seg->endNode->vertices.at(1);
-				temp_patch.vertex3 = seg->endNode->vertices.at(0);
-				patches.push_back(temp_patch);
-
-				//left side
-				temp_patch.vertex0 = seg->points.back()->vertices.at(1);
-				temp_patch.vertex1 = seg->points.back()->vertices.at(2);
-				temp_patch.vertex2 = seg->endNode->vertices.at(2);
-				temp_patch.vertex3 = seg->endNode->vertices.at(1);
-				patches.push_back(temp_patch);
-
-				//front side
-				temp_patch.vertex0 = seg->points.back()->vertices.at(3);
-				temp_patch.vertex1 = seg->points.back()->vertices.at(2);
-				temp_patch.vertex2 = seg->endNode->vertices.at(2);
-				temp_patch.vertex3 = seg->endNode->vertices.at(3);
-				patches.push_back(temp_patch);
-
-				//right side
-				temp_patch.vertex0 = seg->points.back()->vertices.at(0);
-				temp_patch.vertex1 = seg->points.back()->vertices.at(3);
-				temp_patch.vertex2 = seg->endNode->vertices.at(3);
-				temp_patch.vertex3 = seg->endNode->vertices.at(0);
-				patches.push_back(temp_patch);*/
-			}
-
-
-		}
-		else //here the backward segments have to be processed
-		{
-			//for each quadrant call function TielJoint
-
-		}
-	}
-
-	if(seg->children.size() != 0)
-	{
-		for (unsigned int i = 0; i < seg->children.size(); i++)
-		{
-			processLastSections(seg->children.at(i));
-		}
-	}
-
 }
 
 //void Mesh:: TileJoint(std::vector<Segment*> seg_list, D3DXVECTOR3 direction)

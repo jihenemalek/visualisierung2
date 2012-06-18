@@ -27,12 +27,7 @@ public:
 	void Mesh::tileTrivially(Node *firstPoint, Node *secondPoint);
 	void Mesh::tileJoint(std::set<Segment*> segments, D3DXVECTOR3 direction, Segment *caller, D3DXVECTOR3 quadrantDirection);
 
-	void Mesh::tileTrivially(Segment*);
-	std::vector<D3DXVECTOR3> Mesh:: tileTrivial(D3DXVECTOR3, float, D3DXVECTOR3, D3DXVECTOR3);
 	D3DXVECTOR3 Mesh:: rotateVector(D3DXVECTOR3, D3DXVECTOR3);
-	void Mesh::generatePatches(Segment*);
-	void Mesh::generatePatchesNonBranching(Segment*);
-	void Mesh:: processLastSections(Segment*);
 
 	void Mesh::triangulate(void);
 	typedef struct Patch
