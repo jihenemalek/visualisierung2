@@ -37,7 +37,9 @@ void Mesh::calculateMesh(Root* root)
 		calculateUpVectors(seg);
 
 		// Tile mesh for the first section of the root node
-		this->tileTrivially(root->child->startNode, root->child->points.at(0));
+		if (root->child->points.size() > 0) {
+			this->tileTrivially(root->child->startNode, root->child->points.at(0));
+		}
 		// Tile the rest of the tree
 		this->tileTree(root->child);
 
@@ -336,7 +338,6 @@ void Mesh::tileTree(Segment* seg)
 {
 	if (seg->processed) return;
 
-
 	if (seg->points.size() > 0) 
 	{
 		// For all non-branching sections (all points between startNode and endNode)
@@ -344,7 +345,6 @@ void Mesh::tileTree(Segment* seg)
 		{
 			this->tileTrivially(seg->points.at(i), seg->points.at(i + 1));
 		}
-
 	}
 
 	seg->processed = true;
@@ -353,7 +353,6 @@ void Mesh::tileTree(Segment* seg)
 	std::set<Segment *> forward;
 	std::set<Segment *> backward;
 
-	
 	for (std::vector<Segment *>::iterator it = seg->children.begin(); it != seg->children.end(); it++) 
 	{
 		float dotProduct = D3DXVec3Dot(&seg->endNode->direction, &(*it)->startNode->direction);
@@ -368,12 +367,6 @@ void Mesh::tileTree(Segment* seg)
 		}
 	}
 
-
-	if (seg->children.size() > 1) 
-	{
-		seg = seg;
-	}
-
 	// Assert that the number all forward or backward branches must be equal to the children of the segment
 	assert((forward.size() + backward.size()) == seg->children.size());
 	
@@ -383,14 +376,14 @@ void Mesh::tileTree(Segment* seg)
 		if (seg->points.size() == 0) 
 		{
 			this->tileTrivially(seg->startNode, seg->endNode);
-		} else 
+		} 
+		else 
 		{
 			this->tileTrivially(seg->points.back(), seg->endNode);
 		}
 	} 
 	else 
 	{
-
 		// Process backward pointing branches
 		
 		// Classify backward set into quadrants relative to last section
@@ -413,7 +406,6 @@ void Mesh::tileTree(Segment* seg)
 			upVector[3] = this->rotateVector(upVector[2], seg->points.back()->direction);
 		}
 
-
 		avgUpVector[0] = (upVector[0] + upVector[1]) / 2.0f;
 		avgUpVector[1] = (upVector[1] + upVector[2]) / 2.0f;
 		avgUpVector[2] = (upVector[2] + upVector[3]) / 2.0f;
@@ -425,7 +417,6 @@ void Mesh::tileTree(Segment* seg)
 			{
 				if (D3DXVec3Dot(&avgUpVector[i], &((*it)->startNode->direction)) < 1) 
 				{
-
 					quadrants[i].insert(*it);
 					break;
 				}
@@ -433,11 +424,9 @@ void Mesh::tileTree(Segment* seg)
 		}
 
 		// Join backward segments to last section for each quadrant
-
 		for (unsigned int i = 0; i < 4; i++) 
 		{
 			this->tileJoint(quadrants[i], seg->endNode->direction, seg, avgUpVector[i]);
-
 		}
 
 		// Recursively generate subtrees of all backward segments
@@ -474,7 +463,6 @@ void Mesh::tileTree(Segment* seg)
 		upVector[1] = this->rotateVector(upVector[0], S->startNode->normal);
 		upVector[2] = this->rotateVector(upVector[1], S->startNode->normal);
 		upVector[3] = this->rotateVector(upVector[2], S->startNode->normal);
-		
 
 		avgUpVector[0] = (upVector[0] + upVector[1]) / 2.0f;
 		avgUpVector[1] = (upVector[1] + upVector[2]) / 2.0f;
@@ -487,7 +475,6 @@ void Mesh::tileTree(Segment* seg)
 			{
 				if (D3DXVec3Dot(&avgUpVector[i], &((*it)->startNode->normal)) < 1) 
 				{
-
 					quadrants[i].insert(*it);
 					break;
 				}
@@ -495,14 +482,12 @@ void Mesh::tileTree(Segment* seg)
 		}
 		
 		// Join all segments for each quadrant together
-
 		for (unsigned int i = 0; i < 4; i++) 
 		{
 			this->tileJoint(quadrants[i], S->startNode->normal, S, avgUpVector[i]);
 		}
 
 		// Recursively generate subtrees for all forward segments
-
 		this->tileTree(S);		// S was removed from set and must be processed separately
 		for (std::set<Segment *>::iterator it = forward.begin(); it != forward.end(); it++) 
 		{
@@ -681,54 +666,113 @@ void Mesh::tileJoint(std::set<Segment *> segments, D3DXVECTOR3 direction, Segmen
 		
 		// Create a transition quadrilateral patch between S and N
 		D3DXVECTOR3 v0, v1, v2, v3;
-		if (N->points.size() > 0) {
-			D3DXVECTOR3 aUpVector[4];
+		D3DXVECTOR3 aUpVector[4];
+		if (caller->points.size() > 0) 
+		{
 			aUpVector[0] = caller->points.front()->upVector;
 			aUpVector[1] = this->rotateVector(aUpVector[0], caller->points.front()->normal);
 			aUpVector[2] = this->rotateVector(aUpVector[1], caller->points.front()->normal);
 			aUpVector[3] = this->rotateVector(aUpVector[2], caller->points.front()->normal);
+		}
+		else
+		{
+			aUpVector[0] = caller->endNode->upVector;
+			aUpVector[1] = this->rotateVector(aUpVector[0], caller->endNode->normal);
+			aUpVector[2] = this->rotateVector(aUpVector[1], caller->endNode->normal);
+			aUpVector[3] = this->rotateVector(aUpVector[2], caller->endNode->normal);
+		}
 
-			for (int i = 0; i < 4; i++) {
-				float d1 = D3DXVec3Dot(&quadDirection, &aUpVector[i]);
-				float d2 = D3DXVec3Dot(&quadDirection, &aUpVector[(i + 1) % 4]);
+		for (int i = 0; i < 4; i++) 
+		{
+			float d1 = D3DXVec3Dot(&quadDirection, &aUpVector[i]);
+			float d2 = D3DXVec3Dot(&quadDirection, &aUpVector[(i + 1) % 4]);
 
-				if (d1 >= 0 && d2 >= 0) {
+			if (d1 >= 0 && d2 >= 0) 
+			{
+				if  (caller->points.size() > 0) {
 					v0 = caller->points.front()->position + (caller->points.front()->radius * aUpVector[i]);
 					v1 = caller->points.front()->position + (caller->points.front()->radius * aUpVector[(i + 1) % 4]);
 				}
+				else
+				{
+					v0 = caller->endNode->position + (caller->endNode->radius * aUpVector[i]);
+					v1 = caller->endNode->position + (caller->endNode->radius * aUpVector[(i + 1) % 4]);
+				}
 			}
+		}
 
-			D3DXVECTOR3 aNUpVector[4];
+		D3DXVECTOR3 aNUpVector[4];
+		if (N->points.size() > 0)
+		{
 			aNUpVector[0] = N->points.front()->upVector;
 			aNUpVector[1] = this->rotateVector(aNUpVector[0], N->points.front()->normal);
 			aNUpVector[2] = this->rotateVector(aNUpVector[1], N->points.front()->normal);
 			aNUpVector[3] = this->rotateVector(aNUpVector[2], N->points.front()->normal);
-		
-			for (int i = 0; i < 4; i++) {
-				float d1 = D3DXVec3Dot(&quadDirection, &aNUpVector[i]);
-				float d2 = D3DXVec3Dot(&quadDirection, &aNUpVector[(i + 1) % 4]);
+		}
+		else
+		{
+			aNUpVector[0] = N->endNode->upVector;
+			aNUpVector[1] = this->rotateVector(aNUpVector[0], N->endNode->normal);
+			aNUpVector[2] = this->rotateVector(aNUpVector[1], N->endNode->normal);
+			aNUpVector[3] = this->rotateVector(aNUpVector[2], N->endNode->normal);
+		}
 
-				if (d1 >= 0 && d2 >= 0) {
+		for (int i = 0; i < 4; i++) {
+			float d1 = D3DXVec3Dot(&quadDirection, &aNUpVector[i]);
+			float d2 = D3DXVec3Dot(&quadDirection, &aNUpVector[(i + 1) % 4]);
+
+			if (d1 >= 0 && d2 >= 0)
+			{
+				if (N->points.size() > 0)
+				{
 					v3 = N->points.front()->position + (N->points.front()->radius * aNUpVector[i]);
 					v2 = N->points.front()->position + (N->points.front()->radius * aNUpVector[(i + 1) % 4]);
 				}
+				else
+				{
+					v3 = N->endNode->position + (N->endNode->radius * aNUpVector[i]);
+					v2 = N->endNode->position + (N->endNode->radius * aNUpVector[(i + 1) % 4]);
+				}
 			}
+		}
 	
-			Patch p;
-			p.vertex0 = v0;
+		Patch p;
+		p.vertex0 = v0;
+		p.vertex1 = v1;
+		p.vertex2 = v2;
+		p.vertex3 = v3;
+
+		if (caller->points.size() > 0)
+		{
 			p.vertex0_mittelpunkt = caller->points.front()->position;
 			p.vertex0_radius = caller->points.front()->radius;
-			p.vertex1 = v1;
 			p.vertex1_mittelpunkt = caller->points.front()->position;
 			p.vertex1_radius = caller->points.front()->radius;
-			p.vertex2 = v2;
+		}
+		else
+		{
+			p.vertex0_mittelpunkt = caller->endNode->position;
+			p.vertex0_radius = caller->endNode->radius;
+			p.vertex1_mittelpunkt = caller->endNode->position;
+			p.vertex1_radius = caller->endNode->radius;
+		}
+		
+		if (N->points.size() > 0)
+		{
 			p.vertex2_mittelpunkt = N->points.front()->position;
 			p.vertex2_radius = N->points.front()->radius;
-			p.vertex3 = v3;
 			p.vertex3_mittelpunkt = N->points.front()->position;
 			p.vertex3_radius = N->points.front()->radius;
-			patches.push_back(p);
 		}
+		else
+		{
+			p.vertex2_mittelpunkt = N->endNode->position;
+			p.vertex2_radius = N->endNode->radius;
+			p.vertex3_mittelpunkt = N->endNode->position;
+			p.vertex3_radius = N->endNode->radius;
+		}
+
+		patches.push_back(p);
 
 		// Tile all other branches
 		for (unsigned int i = 0; i < 3; i++) 
