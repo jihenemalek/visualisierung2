@@ -98,7 +98,24 @@ public:
 			return vertex2_radius;
 		}
 
-	} Trianlge;
+		void setVertexAt(int i, D3DXVECTOR3 v) {
+			if ((i % 3) == 0) this->vertex0 = v;
+			if ((i % 3) == 1) this->vertex1 = v;
+			this->vertex2 = v;
+		}
+
+		void setCenterlineAt(int i, D3DXVECTOR3 c) {
+			if ((i % 3) == 0) this->vertex0_mittelpunkt = c;
+			if ((i % 3) == 1) this->vertex1_mittelpunkt = c;
+			this->vertex2_mittelpunkt = c;
+		}
+
+		void setRadiusAt(int i, float r) {
+			if ((i % 3) == 0) this->vertex0_radius = r;
+			if ((i % 3) == 1) this->vertex1_radius = r;
+			this->vertex2_radius = r;
+		}
+	} Triangle;
 
 	std::vector<Triangle> triangles;
 

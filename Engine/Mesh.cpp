@@ -250,20 +250,20 @@ void Mesh:: classifySegments(Segment* seg)
 //Calculate up-Vector for each segment
 void Mesh::calculateUpVectors(Segment* seg)
 {
-	
-		D3DXVECTOR3 anorm = D3DXVECTOR3(0, 0, 1);
-		if (fabs(seg->startNode->direction.x) < fabs(seg->startNode->direction.y)) 
-		{
-			anorm = D3DXVECTOR3(1, 0, 0);
-		} 
-		else if (fabs(seg->startNode->direction.y) < fabs(seg->startNode->direction.z)) 
-		{
-			anorm = D3DXVECTOR3(0, 1, 0);
-		}
+	D3DXVECTOR3 anorm = D3DXVECTOR3(0, 0, 1);
+	if (fabs(seg->startNode->direction.x) < fabs(seg->startNode->direction.y)) 
+	{
+		anorm = D3DXVECTOR3(1, 0, 0);
+	} 
+	else if (fabs(seg->startNode->direction.y) < fabs(seg->startNode->direction.z)) 
+	{
+		anorm = D3DXVECTOR3(0, 1, 0);
+	}
 
-		D3DXVec3Normalize(&seg->startNode->upVector, &anorm);
+	D3DXVec3Cross(&seg->startNode->upVector, &anorm, &seg->startNode->direction);
+	D3DXVec3Normalize(&seg->startNode->upVector, &seg->startNode->upVector);
 	
-		D3DXVECTOR3 up_vector;
+	D3DXVECTOR3 up_vector;
 
 	if(seg->points.size() != 0) 
 	{
@@ -316,14 +316,12 @@ void Mesh::calculateUpVectors(Segment* seg)
 //here the up-vector is calculated
 D3DXVECTOR3 Mesh::calculateUp(D3DXVECTOR3 pu, D3DXVECTOR3 direction, D3DXVECTOR3 position, D3DXVECTOR3 normal)
 {
-	D3DXVECTOR3 temp,up_vector;
-	FLOAT product,product2,s;
-	temp = position-(pu+direction);
-	product = D3DXVec3Dot(&temp, &(normal));
-	product2 = D3DXVec3Dot(&direction,&normal);
-	s = product / product2;
-	temp = (s*direction) + pu;
-	up_vector = temp-position;
+	D3DXVECTOR3 temp = (position - pu);
+
+	float d = D3DXVec3Dot(&temp, &normal) / D3DXVec3Dot(&direction, &normal);
+	D3DXVECTOR3 pn = pu + (d * direction);
+	D3DXVECTOR3 up_vector = pn - position;
+
 	D3DXVec3Normalize(&up_vector,&up_vector);
 	return up_vector;
 }
