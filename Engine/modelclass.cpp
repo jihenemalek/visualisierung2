@@ -28,17 +28,15 @@ bool ModelClass::Initialize(ID3D11Device* device, char* modelFilename, WCHAR* te
 {
 	bool result;
 
+	Vesseltree::Root *tree = Vesseltree::Parser::parseDocument("Resources/vesselTree2.xml", m_hwnd);
+	Sampling* sampling = new Sampling;
+	sampling->downsample(tree, 1.75, 0.25); 
 	
-
-	Vesseltree::Root *tree0 = Vesseltree::Parser::parseDocument("Resources/vesselTree2.xml", m_hwnd);
-	Sampling* sampling0 = new Sampling;
-	sampling0->downsample(tree0, 1.75, 0.25); 
-	
-	mesh0 = new Mesh;
-	mesh0->calculateMesh(tree0);
+	mesh = new Mesh;
+	mesh->calculateMesh(tree);
 	AdaptiveSubdivision* subdiv = new AdaptiveSubdivision;
 
-	//mesh0->triangles = subdiv->Subdivide(mesh0->triangles, 0.1, 1);
+	//mesh->triangles = subdiv->Subdivide(mesh->triangles, 0.1, 1);
 	
 	// Initialize the vertex and index buffers.
 	result = InitializeBuffers(device);
@@ -106,7 +104,7 @@ bool ModelClass::InitializeBuffers(ID3D11Device* device)
 
 
 	// Create the vertex array.
-	m_vertexCount = mesh0->triangles.size()*3;
+	m_vertexCount = mesh->triangles.size() * 3;
 	m_indexCount = m_vertexCount;
 	vertices = new VertexType[m_vertexCount];
 	if(!vertices)
@@ -125,14 +123,14 @@ bool ModelClass::InitializeBuffers(ID3D11Device* device)
 	
 	
 	//for(i=0; i<m_vertexCount; i++)
-	for(int i = 0; i < mesh0->triangles.size(); i++)
+	for(int i = 0; i < mesh->triangles.size(); i++)
 	{
-		vertices[0 + (i*3)].position = mesh0->triangles.at(i).vertex0;
-		vertices[1 + (i*3)].position = mesh0->triangles.at(i).vertex1;
-		vertices[2 + (i*3)].position = mesh0->triangles.at(i).vertex2;
-		vertices[0 + (i*3)].normal = mesh0->triangles.at(i).normal;
-		vertices[1 + (i*3)].normal = mesh0->triangles.at(i).normal;
-		vertices[2 + (i*3)].normal = mesh0->triangles.at(i).normal;
+		vertices[0 + (i*3)].position = mesh->triangles.at(i).vertex0;
+		vertices[1 + (i*3)].position = mesh->triangles.at(i).vertex1;
+		vertices[2 + (i*3)].position = mesh->triangles.at(i).vertex2;
+		vertices[0 + (i*3)].normal = mesh->triangles.at(i).normal;
+		vertices[1 + (i*3)].normal = mesh->triangles.at(i).normal;
+		vertices[2 + (i*3)].normal = mesh->triangles.at(i).normal;
 		//vertices[i].position = D3DXVECTOR3(m_model[i].x, m_model[i].y, m_model[i].z);
 		//vertices[i].texture = D3DXVECTOR2(m_model[i].tu, m_model[i].tv);
 		//vertices[i].normal = D3DXVECTOR3(m_model[i].nx, m_model[i].ny, m_model[i].nz);

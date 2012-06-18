@@ -34,17 +34,20 @@ std::vector<Mesh::Triangle> AdaptiveSubdivision:: Subdivide(std::vector<Mesh::Tr
 	Subdivided temp_subdivided;
 	Tagged temp_tagged;
 	
-	for(std::vector<Mesh::Triangle>::iterator it = triangles.begin(); it != triangles.end(); it++) {
+	for(std::vector<Mesh::Triangle>::iterator it = triangles.begin(); it != triangles.end(); it++) 
+	{
 		Mesh::Triangle cTriangle = (*it);
 
 		kappa = this->calculateCurvature(cTriangle);
 		//Wenn Krümmung größer als ein threshold ->teile das Dreieck in 4 neue Dreiecke
-		if(kappa > threshold) {
+		if(kappa > threshold) 
+		{
 			D3DXVECTOR3 mittelpunkt[3];
 			D3DXVECTOR3 centerline[3];
 			float		radius[3];
 
-			for (int i = 0; i < 3; i++) {
+			for (int i = 0; i < 3; i++) 
+			{
 				mittelpunkt[i]	= (cTriangle.vertexAt(i + 1) + cTriangle.vertexAt(i)) / 2.0f;
 				centerline[i]	= (cTriangle.centerlineAt(i + 1) + cTriangle.centerlineAt(i)) / 2.0f;
 				radius[i]		= (cTriangle.radiusAt(i + 1) + cTriangle.radiusAt(i)) / 2.0f;
@@ -55,7 +58,8 @@ std::vector<Mesh::Triangle> AdaptiveSubdivision:: Subdivide(std::vector<Mesh::Tr
 			}
 
 
-			for (int i = 0; i < 3; i++) {
+			for (int i = 0; i < 3; i++) 
+			{
 				Mesh::Triangle triangle;
 				triangle.setVertexAt(0, cTriangle.vertexAt(i));
 				triangle.setVertexAt(1, mittelpunkt[i]);
@@ -73,7 +77,8 @@ std::vector<Mesh::Triangle> AdaptiveSubdivision:: Subdivide(std::vector<Mesh::Tr
 			}
 
 			Mesh::Triangle triangle;
-			for (int i = 0; i < 3; i++) {
+			for (int i = 0; i < 3; i++) 
+			{
 				triangle.setVertexAt(i, mittelpunkt[i]);
 				triangle.setCenterlineAt(i, centerline[i]);
 				triangle.setRadiusAt(i, radius[i]);
@@ -82,7 +87,10 @@ std::vector<Mesh::Triangle> AdaptiveSubdivision:: Subdivide(std::vector<Mesh::Tr
 
 			temp_subdivided.triangle = &cTriangle;
 			subdivided.push_back(temp_subdivided);
-		} else { //Ansonsten ist es getaggt
+		} 
+		else 
+		{ 
+			//Ansonsten ist es getaggt
 			temp_tagged.triangle = &cTriangle;
 			temp_tagged.geteilt = 0;
 			tagged.push_back(temp_tagged);
@@ -115,23 +123,17 @@ std::vector<Mesh::Triangle> AdaptiveSubdivision:: Subdivide(std::vector<Mesh::Tr
 			s[2] = subdivided.at(j).triangle->vertex2 - subdivided.at(j).triangle->vertex1;
 			D3DXVec3Normalize(&s[2], &s[2]);
 			
-
-			// t[0] == s[0] -> 0 - 1
-			// t[0] == s[1] -> 0 - 2
-			// t[0] == s[2] -> 1 - 2
-			// t[1] == s[0] -> 0 - 1
-			// t[1] == s[1] -> 0 - 2
-			// t[1] == s[2] -> 1 - 2
-			// t[2] == s[0] -> 0 - 1
-			// t[2] == s[1] -> 0 - 2
-			// t[2] == s[2] -> 1 - 2
-			for (int k = 0; i < 3; i++) {
-				for (int l = 0; j < 3; j++) {
-					if (t[k] == s[l]) {
+			for (int k = 0; i < 3; i++) 
+			{
+				for (int l = 0; j < 3; j++) 
+				{
+					if (t[k] == s[l]) 
+					{
 						int v1 = 0;
 						int v2 = l;
 
-						if (l == 2) { 
+						if (l == 2) 
+						{ 
 							v1 = 1;
 							v2 = 2;
 						}
