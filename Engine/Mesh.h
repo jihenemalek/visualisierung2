@@ -58,7 +58,6 @@ public:
 		float vertex1_radius;
 		float vertex2_radius;
 		float vertex3_radius;
-
 	} Patch;
 	std::vector<Patch> patches;
 	
@@ -73,20 +72,36 @@ public:
 		D3DXVECTOR3 vertex0_mittelpunkt;
 		D3DXVECTOR3 vertex1_mittelpunkt;
 		D3DXVECTOR3 vertex2_mittelpunkt;
-		
 
 		float vertex0_radius;
 		float vertex1_radius;
 		float vertex2_radius;
 		
+		D3DXVECTOR3 vertexAt(int i)
+		{ 
+			if ((i % 3) == 0) return vertex0;
+			if ((i % 3) == 1) return vertex1;
+			return vertex2;
+		}
 		
+		D3DXVECTOR3 centerlineAt(int i)
+		{ 
+			if ((i % 3) == 0) return vertex0_mittelpunkt;
+			if ((i % 3) == 1) return vertex1_mittelpunkt;
+			return vertex2_mittelpunkt;
+		}
+		
+		float radiusAt(int i)
+		{ 
+			if ((i % 3) == 0) return vertex0_radius;
+			if ((i % 3) == 1) return vertex1_radius;
+			return vertex2_radius;
+		}
 
 	} Trianlge;
-	std::vector<Triangle> triangles;
-	
 
-		
-	
+	std::vector<Triangle> triangles;
+
 };
 
 #endif
