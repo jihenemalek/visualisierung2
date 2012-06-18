@@ -24,7 +24,7 @@ void Sampling::downsampleSegmentRecursive(Vesseltree::Segment *segment, float al
 	oldPoints = segment->points;
 
 	if (segment->points.size() > 0) {
-		for (unsigned int i = 0, j = segment->points.size() - 1; i <= j; i++, j--) {
+		for (int i = 0, j = segment->points.size() - 1; i <= j; i++, j--) {
 			float fd, bd, fg, bg;
 			if (i == 0) {
 				fd = Sampling::calculateDistance(segment->startNode, segment->points[i]);
@@ -39,12 +39,12 @@ void Sampling::downsampleSegmentRecursive(Vesseltree::Segment *segment, float al
 			}
 
 			// Sample from front
-			if (fd > fg) {
+			if (fd < fg) {
 				for (i++; i < j; i++) {
 					fd = Sampling::calculateDistance(segment->points[i + 1], segment->points[i]);
 					fg = Sampling::calculateG(segment->points[i + 1], alpha, beta) + Sampling::calculateG(segment->points[i], alpha, beta);
 
-					if (fd <= fg) {
+					if (fd >= fg) {
 						newPointsFront.push_back(segment->points[i - 1]->combine(segment->points[i]));
 						break;
 					}
@@ -54,14 +54,14 @@ void Sampling::downsampleSegmentRecursive(Vesseltree::Segment *segment, float al
 			}
 
 			// Sample from back
-			if (bd > bg) {
+			if (bd < bg) {
 				for (j--; i < j; j--) {
 
 					bd = Sampling::calculateDistance(segment->points[j - 1], segment->points[j]);
 					bg = Sampling::calculateG(segment->points[j], alpha, beta) + Sampling::calculateG(segment->points[j + 1], alpha, beta);
 
-					if (bd <= bg) {
-						newPointsFront.push_back(segment->points[j]->combine(segment->points[j + 1]));
+					if (bd >= bg) {
+						newPointsBack.push_back(segment->points[j]->combine(segment->points[j + 1]));
 						break;
 					}
 				}

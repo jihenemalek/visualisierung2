@@ -26,7 +26,7 @@ void Mesh::calculateMesh(Root* root)
 		
 		//Calculate average normals at the branchings
 
-		//averageNormals(seg);
+		averageNormals(seg);
 
 		
 
@@ -59,14 +59,19 @@ void Mesh::calculateDirectionsNormals(Segment* seg)
 {
 	if(seg->startNode != NULL) 
 	{
-		D3DXVECTOR3 direction;
+		D3DXVECTOR3 direction = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+		int i = 0;
 
-		if (seg->points.size() > 0) 
+		while(D3DXVec3Length(&direction) == 0)
 		{
-			direction = seg->points.at(0)->position - seg->startNode->position;
-		} else 
-		{
-			direction = seg->endNode->position - seg->startNode->position;
+			if (i < seg->points.size())
+			{
+				direction = seg->points.at(i)->position - seg->startNode->position;
+			} else 
+			{
+				direction = seg->endNode->position - seg->startNode->position;
+			}
+			i++;
 		}
 
 		D3DXVec3Normalize(&direction, &direction);
@@ -90,11 +95,11 @@ void Mesh::calculateDirectionsNormals(Segment* seg)
 			}
 		 
 			D3DXVec3Normalize(&direction, &direction);
-			seg->points.at(0)->direction = direction;
+			seg->points.front()->direction = direction;
 
-			normal = seg->startNode->direction + seg->points.at(0)->direction;
+			normal = seg->startNode->direction + seg->points.front()->direction;
 			D3DXVec3Normalize(&normal, &normal);
-			seg->points.at(0)->normal = normal;
+			seg->points.front()->normal = normal;
 
 			//jetzt für die anderen:
 			calculateDirNorm(node);
@@ -270,10 +275,10 @@ void Mesh::calculateUpVectors(Segment* seg)
 		//Über Segment iterieren
 		D3DXVECTOR3 pu, position;
 		pu = seg->startNode->position + seg->startNode->upVector;
-		position = seg->points.at(0)->position;
+		position = seg->points.front()->position;
 
-		up_vector = calculateUp(pu, seg->startNode->direction, position, seg->points.at(0)->normal);
-		seg->points.at(0)->upVector = up_vector;
+		up_vector = calculateUp(pu, seg->startNode->direction, position, seg->points.front()->normal);
+		seg->points.front()->upVector = up_vector;
 
 		for (unsigned int i = 0; i < (seg->points.size() - 1); i++)
 		{
@@ -563,11 +568,12 @@ void Mesh::tileTrivially(SegmentPoint *p1, SegmentPoint *p2)
 
 void Mesh::tileJoint(std::set<Segment *> segments, D3DXVECTOR3 direction, Segment *caller, D3DXVECTOR3 quadDirection)
 {
+
 	if (segments.size() == 0) 
 	{
 		// Close this side of the quadrant with a simple patch
+		D3DXVECTOR3 pUpVector[4];	
 		D3DXVECTOR3 upVector[4];
-		D3DXVECTOR3 pUpVector[4];
 		upVector[0] = caller->startNode->upVector;
 		upVector[1] = this->rotateVector(upVector[0], caller->startNode->normal);
 		upVector[2] = this->rotateVector(upVector[1], caller->startNode->normal);
@@ -649,17 +655,17 @@ void Mesh::tileJoint(std::set<Segment *> segments, D3DXVECTOR3 direction, Segmen
 
 		// Classify the remaining segments into quadrants relative to direction N
 		std::set<Segment *> quadrants[3];
-		D3DXVECTOR3 upVector[4];
+		D3DXVECTOR3 NUpVector[4];
 
-		upVector[0] = N->startNode->upVector;
-		upVector[1] = this->rotateVector(upVector[0], N->startNode->direction);
-		upVector[2] = this->rotateVector(upVector[1], N->startNode->direction);
-		upVector[3] = this->rotateVector(upVector[2], N->startNode->direction);
+		NUpVector[0] = N->startNode->upVector;
+		NUpVector[1] = this->rotateVector(NUpVector[0], N->startNode->normal);
+		NUpVector[2] = this->rotateVector(NUpVector[1], N->startNode->normal);
+		NUpVector[3] = this->rotateVector(NUpVector[2], N->startNode->normal);
 
 		D3DXVECTOR3 avgUpVector[3];
-		avgUpVector[0] = (upVector[0] + upVector[1]) / 2.0f;
-		avgUpVector[1] = (upVector[1] + upVector[2]) / 2.0f;
-		avgUpVector[2] = (upVector[2] + upVector[3]) / 2.0f;
+		avgUpVector[0] = (NUpVector[0] + NUpVector[1]) / 2.0f;
+		avgUpVector[1] = (NUpVector[1] + NUpVector[2]) / 2.0f;
+		avgUpVector[2] = (NUpVector[2] + NUpVector[3]) / 2.0f;
 
 		for (std::set<Segment *>::iterator it = segments.begin(); it != segments.end(); it++) 
 		{
@@ -674,11 +680,57 @@ void Mesh::tileJoint(std::set<Segment *> segments, D3DXVECTOR3 direction, Segmen
 		}
 		
 		// Create a transition quadrilateral patch between S and N
-		D3DXVECTOR3 v0, v1;
-		for (int i = 0; i < 3; i++) {
+		D3DXVECTOR3 v0, v1, v2, v3;
+		if (N->points.size() > 0) {
+			D3DXVECTOR3 aUpVector[4];
+			aUpVector[0] = caller->points.front()->upVector;
+			aUpVector[1] = this->rotateVector(aUpVector[0], caller->points.front()->normal);
+			aUpVector[2] = this->rotateVector(aUpVector[1], caller->points.front()->normal);
+			aUpVector[3] = this->rotateVector(aUpVector[2], caller->points.front()->normal);
 
+			for (int i = 0; i < 4; i++) {
+				float d1 = D3DXVec3Dot(&quadDirection, &aUpVector[i]);
+				float d2 = D3DXVec3Dot(&quadDirection, &aUpVector[(i + 1) % 4]);
+
+				if (d1 >= 0 && d2 >= 0) {
+					v0 = caller->points.front()->position + (caller->points.front()->radius * aUpVector[i]);
+					v1 = caller->points.front()->position + (caller->points.front()->radius * aUpVector[(i + 1) % 4]);
+				}
+			}
+
+			D3DXVECTOR3 aNUpVector[4];
+			aNUpVector[0] = N->points.front()->upVector;
+			aNUpVector[1] = this->rotateVector(aNUpVector[0], N->points.front()->normal);
+			aNUpVector[2] = this->rotateVector(aNUpVector[1], N->points.front()->normal);
+			aNUpVector[3] = this->rotateVector(aNUpVector[2], N->points.front()->normal);
+		
+			for (int i = 0; i < 4; i++) {
+				float d1 = D3DXVec3Dot(&quadDirection, &aNUpVector[i]);
+				float d2 = D3DXVec3Dot(&quadDirection, &aNUpVector[(i + 1) % 4]);
+
+				if (d1 >= 0 && d2 >= 0) {
+					v3 = N->points.front()->position + (N->points.front()->radius * aNUpVector[i]);
+					v2 = N->points.front()->position + (N->points.front()->radius * aNUpVector[(i + 1) % 4]);
+				}
+			}
+	
+			Patch p;
+			p.vertex0 = v0;
+			p.vertex0_mittelpunkt = caller->points.front()->position;
+			p.vertex0_radius = caller->points.front()->radius;
+			p.vertex1 = v1;
+			p.vertex1_mittelpunkt = caller->points.front()->position;
+			p.vertex1_radius = caller->points.front()->radius;
+			p.vertex2 = v2;
+			p.vertex2_mittelpunkt = N->points.front()->position;
+			p.vertex2_radius = N->points.front()->radius;
+			p.vertex3 = v3;
+			p.vertex3_mittelpunkt = N->points.front()->position;
+			p.vertex3_radius = N->points.front()->radius;
+			patches.push_back(p);
 		}
 
+		// Tile all other branches
 		for (unsigned int i = 0; i < 3; i++) 
 		{
 			this->tileJoint(quadrants[i], N->startNode->direction, N, avgUpVector[i]);
