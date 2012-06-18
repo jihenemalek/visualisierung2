@@ -40,11 +40,6 @@ namespace Vesseltree
 			node->position = (position + n->position) / 2.0f;
 			node->radius = (radius + n->radius) / 2.0f;
 			node->offset = (offset + n->offset) / 2.0f;
-			node->parent = parent;
-			node->child = n->child;
-			node->direction = (direction + n->direction) / 2.0f;
-			node->normal = (normal + n->normal) / 2.0f;
-			node->upVector = (upVector + n->upVector) / 2.0f;
 
 			return node;
 		};
