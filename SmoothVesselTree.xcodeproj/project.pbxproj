@@ -1,0 +1,266 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		90B3A3D71595BED2005AA691 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 90B3A3D61595BED2005AA691 /* UIKit.framework */; };
+		90B3A3D91595BED2005AA691 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 90B3A3D81595BED2005AA691 /* Foundation.framework */; };
+		90B3A3DB1595BED2005AA691 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 90B3A3DA1595BED2005AA691 /* CoreGraphics.framework */; };
+		90B3A3E11595BED2005AA691 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 90B3A3DF1595BED2005AA691 /* InfoPlist.strings */; };
+		90B3A3E31595BED2005AA691 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 90B3A3E21595BED2005AA691 /* main.m */; };
+		90B3A3E71595BED2005AA691 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 90B3A3E61595BED2005AA691 /* AppDelegate.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		90B3A3D21595BED2005AA691 /* SmoothVesselTree.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SmoothVesselTree.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		90B3A3D61595BED2005AA691 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		90B3A3D81595BED2005AA691 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		90B3A3DA1595BED2005AA691 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		90B3A3DE1595BED2005AA691 /* SmoothVesselTree-Info.plist */ = {isa = PBXFileReference; path = "SmoothVesselTree-Info.plist"; sourceTree = "<group>"; };
+		90B3A3E01595BED2005AA691 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		90B3A3E21595BED2005AA691 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		90B3A3E41595BED2005AA691 /* SmoothVesselTree-Prefix.pch */ = {isa = PBXFileReference; path = "SmoothVesselTree-Prefix.pch"; sourceTree = "<group>"; };
+		90B3A3E51595BED2005AA691 /* AppDelegate.h */ = {isa = PBXFileReference; path = AppDelegate.h; sourceTree = "<group>"; };
+		90B3A3E61595BED2005AA691 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		90B3A3CF1595BED2005AA691 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				90B3A3D71595BED2005AA691 /* UIKit.framework in Frameworks */,
+				90B3A3D91595BED2005AA691 /* Foundation.framework in Frameworks */,
+				90B3A3DB1595BED2005AA691 /* CoreGraphics.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		90B3A3C71595BED1005AA691 = {
+			isa = PBXGroup;
+			children = (
+				90B3A3DC1595BED2005AA691 /* SmoothVesselTree */,
+				90B3A3D51595BED2005AA691 /* Frameworks */,
+				90B3A3D31595BED2005AA691 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		90B3A3D31595BED2005AA691 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				90B3A3D21595BED2005AA691 /* SmoothVesselTree.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		90B3A3D51595BED2005AA691 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				90B3A3D61595BED2005AA691 /* UIKit.framework */,
+				90B3A3D81595BED2005AA691 /* Foundation.framework */,
+				90B3A3DA1595BED2005AA691 /* CoreGraphics.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		90B3A3DC1595BED2005AA691 /* SmoothVesselTree */ = {
+			isa = PBXGroup;
+			children = (
+				90B3A3E51595BED2005AA691 /* AppDelegate.h */,
+				90B3A3E61595BED2005AA691 /* AppDelegate.m */,
+				90B3A3DD1595BED2005AA691 /* Supporting Files */,
+			);
+			path = SmoothVesselTree;
+			sourceTree = "<group>";
+		};
+		90B3A3DD1595BED2005AA691 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				90B3A3DE1595BED2005AA691 /* SmoothVesselTree-Info.plist */,
+				90B3A3DF1595BED2005AA691 /* InfoPlist.strings */,
+				90B3A3E21595BED2005AA691 /* main.m */,
+				90B3A3E41595BED2005AA691 /* SmoothVesselTree-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		90B3A3D11595BED2005AA691 /* SmoothVesselTree */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 90B3A3EA1595BED2005AA691 /* Build configuration list for PBXNativeTarget "SmoothVesselTree" */;
+			buildPhases = (
+				90B3A3CE1595BED2005AA691 /* Sources */,
+				90B3A3CF1595BED2005AA691 /* Frameworks */,
+				90B3A3D01595BED2005AA691 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SmoothVesselTree;
+			productName = SmoothVesselTree;
+			productReference = 90B3A3D21595BED2005AA691 /* SmoothVesselTree.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		90B3A3C91595BED1005AA691 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0430;
+				ORGANIZATIONNAME = "OneBox Media Solutions GmbH";
+			};
+			buildConfigurationList = 90B3A3CC1595BED1005AA691 /* Build configuration list for PBXProject "SmoothVesselTree" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 90B3A3C71595BED1005AA691;
+			productRefGroup = 90B3A3D31595BED2005AA691 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				90B3A3D11595BED2005AA691 /* SmoothVesselTree */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		90B3A3D01595BED2005AA691 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				90B3A3E11595BED2005AA691 /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		90B3A3CE1595BED2005AA691 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				90B3A3E31595BED2005AA691 /* main.m in Sources */,
+				90B3A3E71595BED2005AA691 /* AppDelegate.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		90B3A3DF1595BED2005AA691 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				90B3A3E01595BED2005AA691 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		90B3A3E81595BED2005AA691 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 2;
+			};
+			name = Debug;
+		};
+		90B3A3E91595BED2005AA691 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 2;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		90B3A3EB1595BED2005AA691 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "SmoothVesselTree/SmoothVesselTree-Prefix.pch";
+				INFOPLIST_FILE = "SmoothVesselTree/SmoothVesselTree-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		90B3A3EC1595BED2005AA691 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "SmoothVesselTree/SmoothVesselTree-Prefix.pch";
+				INFOPLIST_FILE = "SmoothVesselTree/SmoothVesselTree-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		90B3A3CC1595BED1005AA691 /* Build configuration list for PBXProject "SmoothVesselTree" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				90B3A3E81595BED2005AA691 /* Debug */,
+				90B3A3E91595BED2005AA691 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		90B3A3EA1595BED2005AA691 /* Build configuration list for PBXNativeTarget "SmoothVesselTree" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				90B3A3EB1595BED2005AA691 /* Debug */,
+				90B3A3EC1595BED2005AA691 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 90B3A3C91595BED1005AA691 /* Project object */;
+}
