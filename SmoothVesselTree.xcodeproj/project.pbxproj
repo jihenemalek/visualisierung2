@@ -7,25 +7,100 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9040203B15976BDA004C580A /* subdivide0.png in Resources */ = {isa = PBXBuildFile; fileRef = 9040203515976BDA004C580A /* subdivide0.png */; };
+		9040203C15976BDA004C580A /* subdivide0@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9040203615976BDA004C580A /* subdivide0@2x.png */; };
+		9040203D15976BDA004C580A /* subdivide1.png in Resources */ = {isa = PBXBuildFile; fileRef = 9040203715976BDA004C580A /* subdivide1.png */; };
+		9040203E15976BDA004C580A /* subdivide1@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9040203815976BDA004C580A /* subdivide1@2x.png */; };
+		9040203F15976BDA004C580A /* subdivide2.png in Resources */ = {isa = PBXBuildFile; fileRef = 9040203915976BDA004C580A /* subdivide2.png */; };
+		9040204015976BDA004C580A /* subdivide2@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9040203A15976BDA004C580A /* subdivide2@2x.png */; };
 		90B3A3D71595BED2005AA691 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 90B3A3D61595BED2005AA691 /* UIKit.framework */; };
 		90B3A3D91595BED2005AA691 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 90B3A3D81595BED2005AA691 /* Foundation.framework */; };
 		90B3A3DB1595BED2005AA691 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 90B3A3DA1595BED2005AA691 /* CoreGraphics.framework */; };
 		90B3A3E11595BED2005AA691 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 90B3A3DF1595BED2005AA691 /* InfoPlist.strings */; };
 		90B3A3E31595BED2005AA691 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 90B3A3E21595BED2005AA691 /* main.m */; };
 		90B3A3E71595BED2005AA691 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 90B3A3E61595BED2005AA691 /* AppDelegate.m */; };
+		90B3A3F41595C000005AA691 /* Segment.m in Sources */ = {isa = PBXBuildFile; fileRef = 90B3A3F31595C000005AA691 /* Segment.m */; };
+		90B3A3F71595C102005AA691 /* SegmentNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 90B3A3F61595C102005AA691 /* SegmentNode.m */; };
+		90B3A3FA1595C11E005AA691 /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 90B3A3F81595C11E005AA691 /* GLKit.framework */; };
+		90B3A3FB1595C11E005AA691 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 90B3A3F91595C11E005AA691 /* OpenGLES.framework */; };
+		90B3A3FE1595C1F4005AA691 /* ControlPoint.m in Sources */ = {isa = PBXBuildFile; fileRef = 90B3A3FD1595C1F4005AA691 /* ControlPoint.m */; };
+		90B3A4021595C4A3005AA691 /* Parser.m in Sources */ = {isa = PBXBuildFile; fileRef = 90B3A4011595C4A3005AA691 /* Parser.m */; };
+		90B3A4041595C4E0005AA691 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 90B3A4031595C4E0005AA691 /* libxml2.dylib */; };
+		90B3A4131595CF03005AA691 /* aneurysm.vesselTree.xml in Resources */ = {isa = PBXBuildFile; fileRef = 90B3A40A1595CF03005AA691 /* aneurysm.vesselTree.xml */; };
+		90B3A4141595CF03005AA691 /* toggleViewMode.png in Resources */ = {isa = PBXBuildFile; fileRef = 90B3A40B1595CF03005AA691 /* toggleViewMode.png */; };
+		90B3A4151595CF03005AA691 /* toggleViewMode@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 90B3A40C1595CF03005AA691 /* toggleViewMode@2x.png */; };
+		90B3A4161595CF03005AA691 /* vesselTree0.xml in Resources */ = {isa = PBXBuildFile; fileRef = 90B3A40D1595CF03005AA691 /* vesselTree0.xml */; };
+		90B3A4171595CF03005AA691 /* vesselTree1.xml in Resources */ = {isa = PBXBuildFile; fileRef = 90B3A40E1595CF03005AA691 /* vesselTree1.xml */; };
+		90B3A4181595CF03005AA691 /* vesselTree2.xml in Resources */ = {isa = PBXBuildFile; fileRef = 90B3A40F1595CF03005AA691 /* vesselTree2.xml */; };
+		90B3A4191595CF03005AA691 /* vesselTree3.xml in Resources */ = {isa = PBXBuildFile; fileRef = 90B3A4101595CF03005AA691 /* vesselTree3.xml */; };
+		90B3A41A1595CF03005AA691 /* vesselTree4.xml in Resources */ = {isa = PBXBuildFile; fileRef = 90B3A4111595CF03005AA691 /* vesselTree4.xml */; };
+		90B3A41B1595CF03005AA691 /* vesselTree5.xml in Resources */ = {isa = PBXBuildFile; fileRef = 90B3A4121595CF03005AA691 /* vesselTree5.xml */; };
+		90B3A41F1595D8CB005AA691 /* SmoothVesselTree.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 90B3A41E1595D8CB005AA691 /* SmoothVesselTree.storyboard */; };
+		90B3A4231595D8F2005AA691 /* OpenGLViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 90B3A4221595D8F2005AA691 /* OpenGLViewController.m */; };
+		90B3A4281595E033005AA691 /* Triangle.m in Sources */ = {isa = PBXBuildFile; fileRef = 90B3A4271595E033005AA691 /* Triangle.m */; };
+		90B3A42C1595ED41005AA691 /* Mesher.m in Sources */ = {isa = PBXBuildFile; fileRef = 90B3A42B1595ED41005AA691 /* Mesher.m */; };
+		90B3A42F1595ED4F005AA691 /* Patch.m in Sources */ = {isa = PBXBuildFile; fileRef = 90B3A42E1595ED4F005AA691 /* Patch.m */; };
+		90B3A43515961501005AA691 /* solid.fsh in Resources */ = {isa = PBXBuildFile; fileRef = 90B3A43115961501005AA691 /* solid.fsh */; };
+		90B3A43615961501005AA691 /* solid.vsh in Resources */ = {isa = PBXBuildFile; fileRef = 90B3A43215961501005AA691 /* solid.vsh */; };
+		90B3A43715961501005AA691 /* wireframe.fsh in Resources */ = {isa = PBXBuildFile; fileRef = 90B3A43315961501005AA691 /* wireframe.fsh */; };
+		90B3A43815961501005AA691 /* wireframe.vsh in Resources */ = {isa = PBXBuildFile; fileRef = 90B3A43415961501005AA691 /* wireframe.vsh */; };
+		90B3A43B15971B7D005AA691 /* Sampler.m in Sources */ = {isa = PBXBuildFile; fileRef = 90B3A43A15971B7D005AA691 /* Sampler.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		9040203515976BDA004C580A /* subdivide0.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = subdivide0.png; sourceTree = "<group>"; };
+		9040203615976BDA004C580A /* subdivide0@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "subdivide0@2x.png"; sourceTree = "<group>"; };
+		9040203715976BDA004C580A /* subdivide1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = subdivide1.png; sourceTree = "<group>"; };
+		9040203815976BDA004C580A /* subdivide1@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "subdivide1@2x.png"; sourceTree = "<group>"; };
+		9040203915976BDA004C580A /* subdivide2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = subdivide2.png; sourceTree = "<group>"; };
+		9040203A15976BDA004C580A /* subdivide2@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "subdivide2@2x.png"; sourceTree = "<group>"; };
 		90B3A3D21595BED2005AA691 /* SmoothVesselTree.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SmoothVesselTree.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		90B3A3D61595BED2005AA691 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		90B3A3D81595BED2005AA691 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		90B3A3DA1595BED2005AA691 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
-		90B3A3DE1595BED2005AA691 /* SmoothVesselTree-Info.plist */ = {isa = PBXFileReference; path = "SmoothVesselTree-Info.plist"; sourceTree = "<group>"; };
+		90B3A3DE1595BED2005AA691 /* SmoothVesselTree-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "SmoothVesselTree-Info.plist"; sourceTree = "<group>"; };
 		90B3A3E01595BED2005AA691 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		90B3A3E21595BED2005AA691 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		90B3A3E41595BED2005AA691 /* SmoothVesselTree-Prefix.pch */ = {isa = PBXFileReference; path = "SmoothVesselTree-Prefix.pch"; sourceTree = "<group>"; };
-		90B3A3E51595BED2005AA691 /* AppDelegate.h */ = {isa = PBXFileReference; path = AppDelegate.h; sourceTree = "<group>"; };
+		90B3A3E41595BED2005AA691 /* SmoothVesselTree-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SmoothVesselTree-Prefix.pch"; sourceTree = "<group>"; };
+		90B3A3E51595BED2005AA691 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		90B3A3E61595BED2005AA691 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		90B3A3F21595C000005AA691 /* Segment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Segment.h; sourceTree = "<group>"; };
+		90B3A3F31595C000005AA691 /* Segment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Segment.m; sourceTree = "<group>"; };
+		90B3A3F51595C102005AA691 /* SegmentNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SegmentNode.h; sourceTree = "<group>"; };
+		90B3A3F61595C102005AA691 /* SegmentNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SegmentNode.m; sourceTree = "<group>"; };
+		90B3A3F81595C11E005AA691 /* GLKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLKit.framework; path = System/Library/Frameworks/GLKit.framework; sourceTree = SDKROOT; };
+		90B3A3F91595C11E005AA691 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
+		90B3A3FC1595C1F4005AA691 /* ControlPoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ControlPoint.h; sourceTree = "<group>"; };
+		90B3A3FD1595C1F4005AA691 /* ControlPoint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ControlPoint.m; sourceTree = "<group>"; };
+		90B3A4001595C4A3005AA691 /* Parser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Parser.h; sourceTree = "<group>"; };
+		90B3A4011595C4A3005AA691 /* Parser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Parser.m; sourceTree = "<group>"; };
+		90B3A4031595C4E0005AA691 /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
+		90B3A4091595C819005AA691 /* Vesseltree.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Vesseltree.h; sourceTree = "<group>"; };
+		90B3A40A1595CF03005AA691 /* aneurysm.vesselTree.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = aneurysm.vesselTree.xml; sourceTree = "<group>"; };
+		90B3A40B1595CF03005AA691 /* toggleViewMode.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = toggleViewMode.png; sourceTree = "<group>"; };
+		90B3A40C1595CF03005AA691 /* toggleViewMode@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "toggleViewMode@2x.png"; sourceTree = "<group>"; };
+		90B3A40D1595CF03005AA691 /* vesselTree0.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = vesselTree0.xml; sourceTree = "<group>"; };
+		90B3A40E1595CF03005AA691 /* vesselTree1.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = vesselTree1.xml; sourceTree = "<group>"; };
+		90B3A40F1595CF03005AA691 /* vesselTree2.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = vesselTree2.xml; sourceTree = "<group>"; };
+		90B3A4101595CF03005AA691 /* vesselTree3.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = vesselTree3.xml; sourceTree = "<group>"; };
+		90B3A4111595CF03005AA691 /* vesselTree4.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = vesselTree4.xml; sourceTree = "<group>"; };
+		90B3A4121595CF03005AA691 /* vesselTree5.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = vesselTree5.xml; sourceTree = "<group>"; };
+		90B3A41E1595D8CB005AA691 /* SmoothVesselTree.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = SmoothVesselTree.storyboard; sourceTree = "<group>"; };
+		90B3A4211595D8F2005AA691 /* OpenGLViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenGLViewController.h; sourceTree = "<group>"; };
+		90B3A4221595D8F2005AA691 /* OpenGLViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OpenGLViewController.m; sourceTree = "<group>"; };
+		90B3A4261595E033005AA691 /* Triangle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Triangle.h; sourceTree = "<group>"; };
+		90B3A4271595E033005AA691 /* Triangle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Triangle.m; sourceTree = "<group>"; };
+		90B3A4291595E1EA005AA691 /* Mesh.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Mesh.h; sourceTree = "<group>"; };
+		90B3A42A1595ED41005AA691 /* Mesher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Mesher.h; sourceTree = "<group>"; };
+		90B3A42B1595ED41005AA691 /* Mesher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Mesher.m; sourceTree = "<group>"; };
+		90B3A42D1595ED4F005AA691 /* Patch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Patch.h; sourceTree = "<group>"; };
+		90B3A42E1595ED4F005AA691 /* Patch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Patch.m; sourceTree = "<group>"; };
+		90B3A43115961501005AA691 /* solid.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = solid.fsh; path = Resources/solid.fsh; sourceTree = SOURCE_ROOT; };
+		90B3A43215961501005AA691 /* solid.vsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = solid.vsh; path = Resources/solid.vsh; sourceTree = SOURCE_ROOT; };
+		90B3A43315961501005AA691 /* wireframe.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = wireframe.fsh; path = Resources/wireframe.fsh; sourceTree = SOURCE_ROOT; };
+		90B3A43415961501005AA691 /* wireframe.vsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = wireframe.vsh; path = Resources/wireframe.vsh; sourceTree = SOURCE_ROOT; };
+		90B3A43915971B7D005AA691 /* Sampler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Sampler.h; sourceTree = "<group>"; };
+		90B3A43A15971B7D005AA691 /* Sampler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Sampler.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -33,6 +108,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				90B3A4041595C4E0005AA691 /* libxml2.dylib in Frameworks */,
+				90B3A3FA1595C11E005AA691 /* GLKit.framework in Frameworks */,
+				90B3A3FB1595C11E005AA691 /* OpenGLES.framework in Frameworks */,
 				90B3A3D71595BED2005AA691 /* UIKit.framework in Frameworks */,
 				90B3A3D91595BED2005AA691 /* Foundation.framework in Frameworks */,
 				90B3A3DB1595BED2005AA691 /* CoreGraphics.framework in Frameworks */,
@@ -45,6 +123,8 @@
 		90B3A3C71595BED1005AA691 = {
 			isa = PBXGroup;
 			children = (
+				90B3A3EF1595BFCC005AA691 /* Code */,
+				90B3A3F01595BFCC005AA691 /* Resources */,
 				90B3A3DC1595BED2005AA691 /* SmoothVesselTree */,
 				90B3A3D51595BED2005AA691 /* Frameworks */,
 				90B3A3D31595BED2005AA691 /* Products */,
@@ -62,6 +142,9 @@
 		90B3A3D51595BED2005AA691 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				90B3A4031595C4E0005AA691 /* libxml2.dylib */,
+				90B3A3F81595C11E005AA691 /* GLKit.framework */,
+				90B3A3F91595C11E005AA691 /* OpenGLES.framework */,
 				90B3A3D61595BED2005AA691 /* UIKit.framework */,
 				90B3A3D81595BED2005AA691 /* Foundation.framework */,
 				90B3A3DA1595BED2005AA691 /* CoreGraphics.framework */,
@@ -88,6 +171,116 @@
 				90B3A3E41595BED2005AA691 /* SmoothVesselTree-Prefix.pch */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		90B3A3EF1595BFCC005AA691 /* Code */ = {
+			isa = PBXGroup;
+			children = (
+				90B3A430159614C8005AA691 /* Shaders */,
+				90B3A3FF1595C497005AA691 /* Processing */,
+				90B3A4251595E024005AA691 /* Mesh */,
+				90B3A3F11595BFE2005AA691 /* Vesseltree */,
+				90B3A4201595D8D2005AA691 /* UI */,
+			);
+			path = Code;
+			sourceTree = "<group>";
+		};
+		90B3A3F01595BFCC005AA691 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				90B3A41C1595CF06005AA691 /* Images */,
+				90B3A41D1595CF10005AA691 /* Vesseltrees */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		90B3A3F11595BFE2005AA691 /* Vesseltree */ = {
+			isa = PBXGroup;
+			children = (
+				90B3A4091595C819005AA691 /* Vesseltree.h */,
+				90B3A3F21595C000005AA691 /* Segment.h */,
+				90B3A3F31595C000005AA691 /* Segment.m */,
+				90B3A3F51595C102005AA691 /* SegmentNode.h */,
+				90B3A3F61595C102005AA691 /* SegmentNode.m */,
+				90B3A3FC1595C1F4005AA691 /* ControlPoint.h */,
+				90B3A3FD1595C1F4005AA691 /* ControlPoint.m */,
+			);
+			path = Vesseltree;
+			sourceTree = "<group>";
+		};
+		90B3A3FF1595C497005AA691 /* Processing */ = {
+			isa = PBXGroup;
+			children = (
+				90B3A4001595C4A3005AA691 /* Parser.h */,
+				90B3A4011595C4A3005AA691 /* Parser.m */,
+				90B3A42A1595ED41005AA691 /* Mesher.h */,
+				90B3A42B1595ED41005AA691 /* Mesher.m */,
+				90B3A43915971B7D005AA691 /* Sampler.h */,
+				90B3A43A15971B7D005AA691 /* Sampler.m */,
+			);
+			name = Processing;
+			sourceTree = "<group>";
+		};
+		90B3A41C1595CF06005AA691 /* Images */ = {
+			isa = PBXGroup;
+			children = (
+				9040203515976BDA004C580A /* subdivide0.png */,
+				9040203615976BDA004C580A /* subdivide0@2x.png */,
+				9040203715976BDA004C580A /* subdivide1.png */,
+				9040203815976BDA004C580A /* subdivide1@2x.png */,
+				9040203915976BDA004C580A /* subdivide2.png */,
+				9040203A15976BDA004C580A /* subdivide2@2x.png */,
+				90B3A40B1595CF03005AA691 /* toggleViewMode.png */,
+				90B3A40C1595CF03005AA691 /* toggleViewMode@2x.png */,
+			);
+			name = Images;
+			sourceTree = "<group>";
+		};
+		90B3A41D1595CF10005AA691 /* Vesseltrees */ = {
+			isa = PBXGroup;
+			children = (
+				90B3A40A1595CF03005AA691 /* aneurysm.vesselTree.xml */,
+				90B3A40D1595CF03005AA691 /* vesselTree0.xml */,
+				90B3A40E1595CF03005AA691 /* vesselTree1.xml */,
+				90B3A40F1595CF03005AA691 /* vesselTree2.xml */,
+				90B3A4101595CF03005AA691 /* vesselTree3.xml */,
+				90B3A4111595CF03005AA691 /* vesselTree4.xml */,
+				90B3A4121595CF03005AA691 /* vesselTree5.xml */,
+			);
+			name = Vesseltrees;
+			sourceTree = "<group>";
+		};
+		90B3A4201595D8D2005AA691 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				90B3A41E1595D8CB005AA691 /* SmoothVesselTree.storyboard */,
+				90B3A4211595D8F2005AA691 /* OpenGLViewController.h */,
+				90B3A4221595D8F2005AA691 /* OpenGLViewController.m */,
+			);
+			name = UI;
+			sourceTree = "<group>";
+		};
+		90B3A4251595E024005AA691 /* Mesh */ = {
+			isa = PBXGroup;
+			children = (
+				90B3A4291595E1EA005AA691 /* Mesh.h */,
+				90B3A4261595E033005AA691 /* Triangle.h */,
+				90B3A4271595E033005AA691 /* Triangle.m */,
+				90B3A42D1595ED4F005AA691 /* Patch.h */,
+				90B3A42E1595ED4F005AA691 /* Patch.m */,
+			);
+			path = Mesh;
+			sourceTree = "<group>";
+		};
+		90B3A430159614C8005AA691 /* Shaders */ = {
+			isa = PBXGroup;
+			children = (
+				90B3A43115961501005AA691 /* solid.fsh */,
+				90B3A43215961501005AA691 /* solid.vsh */,
+				90B3A43315961501005AA691 /* wireframe.fsh */,
+				90B3A43415961501005AA691 /* wireframe.vsh */,
+			);
+			name = Shaders;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -142,6 +335,26 @@
 			buildActionMask = 2147483647;
 			files = (
 				90B3A3E11595BED2005AA691 /* InfoPlist.strings in Resources */,
+				90B3A4131595CF03005AA691 /* aneurysm.vesselTree.xml in Resources */,
+				90B3A4141595CF03005AA691 /* toggleViewMode.png in Resources */,
+				90B3A4151595CF03005AA691 /* toggleViewMode@2x.png in Resources */,
+				90B3A4161595CF03005AA691 /* vesselTree0.xml in Resources */,
+				90B3A4171595CF03005AA691 /* vesselTree1.xml in Resources */,
+				90B3A4181595CF03005AA691 /* vesselTree2.xml in Resources */,
+				90B3A4191595CF03005AA691 /* vesselTree3.xml in Resources */,
+				90B3A41A1595CF03005AA691 /* vesselTree4.xml in Resources */,
+				90B3A41B1595CF03005AA691 /* vesselTree5.xml in Resources */,
+				90B3A41F1595D8CB005AA691 /* SmoothVesselTree.storyboard in Resources */,
+				90B3A43515961501005AA691 /* solid.fsh in Resources */,
+				90B3A43615961501005AA691 /* solid.vsh in Resources */,
+				90B3A43715961501005AA691 /* wireframe.fsh in Resources */,
+				90B3A43815961501005AA691 /* wireframe.vsh in Resources */,
+				9040203B15976BDA004C580A /* subdivide0.png in Resources */,
+				9040203C15976BDA004C580A /* subdivide0@2x.png in Resources */,
+				9040203D15976BDA004C580A /* subdivide1.png in Resources */,
+				9040203E15976BDA004C580A /* subdivide1@2x.png in Resources */,
+				9040203F15976BDA004C580A /* subdivide2.png in Resources */,
+				9040204015976BDA004C580A /* subdivide2@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -154,6 +367,15 @@
 			files = (
 				90B3A3E31595BED2005AA691 /* main.m in Sources */,
 				90B3A3E71595BED2005AA691 /* AppDelegate.m in Sources */,
+				90B3A3F41595C000005AA691 /* Segment.m in Sources */,
+				90B3A3F71595C102005AA691 /* SegmentNode.m in Sources */,
+				90B3A3FE1595C1F4005AA691 /* ControlPoint.m in Sources */,
+				90B3A4021595C4A3005AA691 /* Parser.m in Sources */,
+				90B3A4231595D8F2005AA691 /* OpenGLViewController.m in Sources */,
+				90B3A4281595E033005AA691 /* Triangle.m in Sources */,
+				90B3A42C1595ED41005AA691 /* Mesher.m in Sources */,
+				90B3A42F1595ED4F005AA691 /* Patch.m in Sources */,
+				90B3A43B15971B7D005AA691 /* Sampler.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -191,6 +413,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "$(SDKROOT)/usr/include/libxml2/**";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 2;
@@ -210,6 +433,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "$(SDKROOT)/usr/include/libxml2/**";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				SDKROOT = iphoneos;
@@ -259,6 +483,7 @@
 				90B3A3EC1595BED2005AA691 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
