@@ -31,4 +31,6 @@ typedef enum : NSUInteger
 
 @property        bool           processed;
 
+- (NSUInteger)countPoints;
+
 @end

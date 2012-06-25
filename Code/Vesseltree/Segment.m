@@ -31,4 +31,16 @@
   return self;
 }
 
+- (NSUInteger)countPoints
+{
+  NSUInteger count = 2;
+  count += [self.segmentPoints count];
+  
+  for (Segment *c in self.children) {
+    count += [c countPoints];
+  }
+  
+  return count;
+}
+
 @end

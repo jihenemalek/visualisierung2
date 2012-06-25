@@ -29,9 +29,10 @@ enum {
 };
 
 typedef enum : NSUInteger {
-  kViewModeBoth = 0,
-  kViewModeWireframe = 1,
-  kViewModeSolid = 2
+  kViewModeWireframe = 0,
+  kViewModeSolid = 1,
+  kViewModeBoth = 2,
+  kViewModeTree = 3
 } ViewMode;
 
 typedef struct {
@@ -55,6 +56,24 @@ typedef struct {
 
 - (void)loadVesseltree:(NSString *)name;
 
+// UI Interaction
+- (IBAction)subdivide0ButtonTapped:(id)sender;
+- (IBAction)subdivide1ButtonTapped:(id)sender;
+- (IBAction)subdivide2ButtonTapped:(id)sender;
+
+- (IBAction)vesselTree0ButtonTapped:(id)sender;
+- (IBAction)vesselTree1ButtonTapped:(id)sender;
+- (IBAction)vesselTree2ButtonTapped:(id)sender;
+- (IBAction)vesselTree3ButtonTapped:(id)sender;
+- (IBAction)vesselTree4ButtonTapped:(id)sender;
+- (IBAction)vesselTree5ButtonTapped:(id)sender;
+
+- (IBAction)samplingButtonTapped:(id)sender;
+- (IBAction)viewModeButtonTapped:(id)sender;
+
+@property (weak, nonatomic) IBOutlet UIButton *samplingButton;
+@property (weak, nonatomic) IBOutlet UILabel *samplingLabel;
+
 @end
 
 @implementation OpenGLViewController {
@@ -67,9 +86,11 @@ typedef struct {
   GLuint _solidIndexBuffer;
   GLuint _solidVertexArray;
   GLuint _vertexBuffer;
+  GLuint _treeVertexBuffer;
   GLuint _wireframeIndexBuffer;
   GLuint _wireframeVertexArray;
 
+  GLuint _nodeCount;
   GLuint _indexCount;
   
   GLKVector3 _cameraPosition;
@@ -77,8 +98,11 @@ typedef struct {
   
   ViewMode _currentViewMode;
   
+  BOOL _sampling;
   NSUInteger _quadSubdivisioning;
 }
+@synthesize samplingButton = _samplingButton;
+@synthesize samplingLabel = _samplingLabel;
 
 @synthesize fileLabel = _fileLabel;
 @synthesize loadingLabel = _loadingLabel;
@@ -99,6 +123,7 @@ typedef struct {
   [super viewDidLoad];
   
   _currentViewMode = kViewModeBoth;
+  _sampling = YES;
   
   self.context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
   
@@ -119,6 +144,8 @@ typedef struct {
 {
   [self setFileLabel:nil];
   [self setLoadingLabel:nil];
+  [self setSamplingLabel:nil];
+  [self setSamplingButton:nil];
   [super viewDidUnload];
   
   [self tearDownGL];
@@ -331,6 +358,11 @@ typedef struct {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   if (_currentViewMode == kViewModeBoth || _currentViewMode == kViewModeSolid) {
+    if (_currentViewMode == kViewModeBoth) {
+      glEnable(GL_POLYGON_OFFSET_FILL);
+      glPolygonOffset(0.75, 1.0);
+    }
+    
     glBindBuffer(GL_ARRAY_BUFFER, _vertexBuffer);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _solidIndexBuffer);
     
@@ -342,11 +374,39 @@ typedef struct {
     glUniformMatrix3fv(uniforms[UNIFORM_NORMAL_MATRIX], 1, 0, _normalMatrix.m);
     
     glDrawArrays(GL_TRIANGLES, 0, _indexCount);
+    
+    if (_currentViewMode == kViewModeBoth) {
+      glDisable(GL_POLYGON_OFFSET_FILL);
+      glPolygonOffset(0.0, 0.0);
+    }
   }
-
+  
   if (_currentViewMode == kViewModeBoth || _currentViewMode == kViewModeWireframe) {
     glBindBuffer(GL_ARRAY_BUFFER, _vertexBuffer);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _solidIndexBuffer);
+    
+    glBindVertexArrayOES(_solidVertexArray);
+    
+    glUseProgram(_wireframeProgram);
+    
+    glUniformMatrix4fv(uniforms[UNIFORM_MODELVIEWPROJECTION_MATRIX], 1, 0, _mvpMatrix.m);
+    glUniformMatrix3fv(uniforms[UNIFORM_NORMAL_MATRIX], 1, 0, _normalMatrix.m);
+    
+    if (_currentViewMode != kViewModeBoth) {
+      glDisable(GL_DEPTH_TEST);
+    }
+    
+    for (NSUInteger i = 0; i < _indexCount / 6; i++) {
+      glDrawArrays(GL_LINE_LOOP, 6 * i, 6);
+    }
+    
+    glCullFace(GL_NONE);    
+    glEnable(GL_DEPTH_TEST);
+  }
+  
+  if (_currentViewMode == kViewModeTree) {
+    glBindBuffer(GL_ARRAY_BUFFER, _treeVertexBuffer);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _wireframeIndexBuffer);
     
     glBindVertexArrayOES(_wireframeVertexArray);
     
@@ -355,55 +415,16 @@ typedef struct {
     glUniformMatrix4fv(uniforms[UNIFORM_MODELVIEWPROJECTION_MATRIX], 1, 0, _mvpMatrix.m);
     glUniformMatrix3fv(uniforms[UNIFORM_NORMAL_MATRIX], 1, 0, _normalMatrix.m);
     
-    glDisable(GL_DEPTH_TEST);
-    glCullFace(GL_BACK);
-    
-    for (NSUInteger i = 0; i < _indexCount / 6; i++) {
-      glDrawArrays(GL_LINE_LOOP, 6 * i, 6);
+    if (_currentViewMode != kViewModeBoth) {
+      glDisable(GL_DEPTH_TEST);
     }
-
+    
+    glDrawArrays(GL_POINTS, 0, _nodeCount);
+    
+    glDrawArrays(GL_LINES, 0, _nodeCount);
+    
     glCullFace(GL_NONE);    
     glEnable(GL_DEPTH_TEST);
-  }
-}
-
-#pragma mark - Touch handlers
-
-- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event 
-{
-  NSUInteger numTaps = [[touches anyObject] tapCount];
-  
-  if (numTaps == 1) {
-    CGPoint touchLocation = [[touches anyObject] locationInView:self.view];
-    CGRect switchViewModeArea = CGRectMake(20, 20, 70, 70);
-    
-    if (CGRectContainsPoint(switchViewModeArea, touchLocation)) {
-      // Reset gyro attitude
-      _currentViewMode = (_currentViewMode + 1) % 3;
-      
-      NSLog(@"View mode: %d", _currentViewMode);
-    } else if (CGRectContainsPoint(CGRectMake(20, 698, 125, 50), touchLocation)) {
-      [self loadVesseltree:@"vesselTree0"];
-    } else if (CGRectContainsPoint(CGRectMake(193, 698, 125, 50), touchLocation)) {
-      [self loadVesseltree:@"vesselTree1"];
-    } else if (CGRectContainsPoint(CGRectMake(365, 698, 125, 50), touchLocation)) {
-      [self loadVesseltree:@"vesselTree2"];
-    } else if (CGRectContainsPoint(CGRectMake(536, 698, 125, 50), touchLocation)) {
-      [self loadVesseltree:@"vesselTree3"];
-    } else if (CGRectContainsPoint(CGRectMake(707, 698, 125, 50), touchLocation)) {
-      [self loadVesseltree:@"vesselTree4"];
-    } else if (CGRectContainsPoint(CGRectMake(879, 698, 125, 50), touchLocation)) {
-      [self loadVesseltree:@"vesselTree5"];
-    } else if (CGRectContainsPoint(CGRectMake(777, 20, 70, 70), touchLocation)) {
-      _quadSubdivisioning = 0;
-      [self loadVesseltree:self.fileLabel.text];
-    } else if (CGRectContainsPoint(CGRectMake(855, 20, 70, 70), touchLocation)) {
-      _quadSubdivisioning = 1;
-      [self loadVesseltree:self.fileLabel.text];
-    } else if (CGRectContainsPoint(CGRectMake(933, 20, 70, 70), touchLocation)) {
-      _quadSubdivisioning = 2;
-      [self loadVesseltree:self.fileLabel.text];
-    }
   }
 }
 
@@ -472,18 +493,28 @@ typedef struct {
 
 - (void)loadVesseltree:(NSString *)name
 {
+  if ([self.fileLabel.text isEqualToString:name]) return;
+  
   self.fileLabel.text = name;
   
   [self.view setUserInteractionEnabled:NO];
   [self.loadingLabel setHidden:NO];
+  
+  if ([name isEqualToString:@"vesselTree5"]) {
+    [self.samplingButton setHidden:YES];
+    [self.samplingLabel setHidden:YES];
+  } else {
+    [self.samplingButton setHidden:NO];
+    [self.samplingLabel setHidden:NO];
+  }
   
   dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
     // Read the vessel tree from file 
     Segment *root = [Parser parseDocument:name];
     
     // Sample the vessel tree
-    if (![name isEqualToString:@"vesselTree5"]) {
-      [Sampler sampleVesseltree:root withAlpha:0.5f andBeta:1.5f];
+    if (_sampling && ![name isEqualToString:@"vesselTree5"]) {
+      [Sampler sampleVesseltree:root withAlpha:0.5f andBeta:2.0f];
     }
     
     // Generate base mesh
@@ -498,13 +529,6 @@ typedef struct {
     // Triangulate base mesh
     self.triangles = [Mesher triangulateQuadrilateralMesh:dividedMesh];
     _indexCount = 3 * [self.triangles count];
-    
-//    for (Triangle *t in self.triangles) {
-//      NSLog(@"v0 = (%.2f / %.2f / %.2f)", [t vertexAtIndex:0].x, [t vertexAtIndex:0].y, [t vertexAtIndex:0].z);
-//      NSLog(@"v1 = (%.2f / %.2f / %.2f)", [t vertexAtIndex:1].x, [t vertexAtIndex:1].y, [t vertexAtIndex:1].z);
-//      NSLog(@"v2 = (%.2f / %.2f / %.2f)", [t vertexAtIndex:2].x, [t vertexAtIndex:2].y, [t vertexAtIndex:2].z);
-//      NSLog(@" ");
-//    }
     
     dispatch_async(dispatch_get_main_queue(), ^{
       // Delete old buffers
@@ -568,21 +592,52 @@ typedef struct {
       glBindVertexArrayOES(_wireframeVertexArray);
       
       // Bind general purpose vertex buffer
-      glBindBuffer(GL_ARRAY_BUFFER, _vertexBuffer);
+      glGenBuffers(1, &_treeVertexBuffer);
+      glBindBuffer(GL_ARRAY_BUFFER, _treeVertexBuffer);
+      
+      _nodeCount = [root countPoints];
+      Vertex *treeVertices = (Vertex *)malloc(3 * _nodeCount * sizeof(Vertex));
+      NSMutableArray *currentSegmentList = [NSMutableArray array];
+      Segment *currentSegment = root;
+      SegmentNode *node = root.startNode;
+      NSUInteger i;
+      for (i = 0; i < _nodeCount; i++) {
+        if (i == 0 || !node.prev) {
+          treeVertices[2 * i + 0].Position[0] = node.position.x;
+          treeVertices[2 * i + 0].Position[1] = node.position.y;
+          treeVertices[2 * i + 0].Position[2] = node.position.z;
+        } else if (!node.next) {
+          treeVertices[2 * i - 1].Position[0] = node.position.x;
+          treeVertices[2 * i - 1].Position[1] = node.position.y;
+          treeVertices[2 * i - 1].Position[2] = node.position.z;
+          i--;
+        } else {
+          treeVertices[2 * i - 1].Position[0] = node.position.x;
+          treeVertices[2 * i - 1].Position[1] = node.position.y;
+          treeVertices[2 * i - 1].Position[2] = node.position.z;
+          treeVertices[2 * i].Position[0] = node.position.x;
+          treeVertices[2 * i].Position[1] = node.position.y;
+          treeVertices[2 * i].Position[2] = node.position.z;
+        }
+        
+        if (node.next) {
+          node = node.next;
+        } else {
+          [currentSegmentList addObjectsFromArray:currentSegment.children];
+          if ([currentSegmentList count] > 0) {
+            currentSegment = [currentSegmentList objectAtIndex:0];
+            [currentSegmentList removeObject:currentSegment];
+            node = currentSegment.startNode;
+          } else {
+            break;
+          }
+        }
+      }
+      _nodeCount = 2 * i + 2;
+      glBufferData(GL_ARRAY_BUFFER, _nodeCount * sizeof(Vertex), treeVertices, GL_STATIC_DRAW);
       
       // Create index buffer
       glGenBuffers(1, &_wireframeIndexBuffer);
-      glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _wireframeIndexBuffer);
-      GLubyte *wireframeIndices = (GLubyte *)malloc(2 * _indexCount * sizeof(GLubyte));
-      for (int i = 0; i < (_indexCount / 3); i++) {
-        wireframeIndices[6 * i + 0] = 3 * i + 0;
-        wireframeIndices[6 * i + 1] = 3 * i + 1;
-        wireframeIndices[6 * i + 2] = 3 * i + 1;
-        wireframeIndices[6 * i + 3] = 3 * i + 2;
-        wireframeIndices[6 * i + 4] = 3 * i + 2;
-        wireframeIndices[6 * i + 5] = 3 * i + 0;
-      }
-      glBufferData(GL_ELEMENT_ARRAY_BUFFER, 2 * _indexCount * sizeof(GLubyte), wireframeIndices, GL_STATIC_DRAW);
       
       // Set attribute pointers
       glEnableVertexAttribArray(GLKVertexAttribPosition);
@@ -592,7 +647,6 @@ typedef struct {
       
       // Free malloc'd arrays
       free(solidIndices);
-      free(wireframeIndices);
       
       [self.loadingLabel setHidden:YES];
       [self.view setUserInteractionEnabled:YES];
@@ -600,4 +654,58 @@ typedef struct {
   });
 }
 
+- (IBAction)subdivide0ButtonTapped:(id)sender {
+  _quadSubdivisioning = 0;
+  
+  [self loadVesseltree:self.fileLabel.text];
+}
+
+- (IBAction)subdivide1ButtonTapped:(id)sender {
+  _quadSubdivisioning = 1;
+  
+  [self loadVesseltree:self.fileLabel.text];
+}
+
+- (IBAction)subdivide2ButtonTapped:(id)sender {
+  _quadSubdivisioning = 2;
+  
+  [self loadVesseltree:self.fileLabel.text];
+}
+
+- (IBAction)vesselTree0ButtonTapped:(id)sender {
+  [self loadVesseltree:@"vesselTree0"];
+}
+
+- (IBAction)vesselTree1ButtonTapped:(id)sender {
+  [self loadVesseltree:@"vesselTree1"];
+}
+
+- (IBAction)vesselTree2ButtonTapped:(id)sender {
+  [self loadVesseltree:@"vesselTree2"];
+}
+
+- (IBAction)vesselTree3ButtonTapped:(id)sender {
+  [self loadVesseltree:@"vesselTree3"];
+}
+
+- (IBAction)vesselTree4ButtonTapped:(id)sender {
+  [self loadVesseltree:@"vesselTree4"];  
+}
+
+- (IBAction)vesselTree5ButtonTapped:(id)sender {
+  [self loadVesseltree:@"vesselTree5"];
+}
+
+- (IBAction)samplingButtonTapped:(id)sender {
+  _sampling = !_sampling;
+  
+  if (_sampling) [sender setImage:[UIImage imageNamed:@"samplingOn.png"] forState:UIControlStateNormal];
+  else [sender setImage:[UIImage imageNamed:@"samplingOff.png"] forState:UIControlStateNormal];
+  
+  [self loadVesseltree:self.fileLabel.text];
+}
+
+- (IBAction)viewModeButtonTapped:(id)sender {
+  _currentViewMode = [sender tag];
+}
 @end
