@@ -18,5 +18,6 @@ void main()
     vec3 eyeNormal = normalize(normalMatrix * normal);
     vec3 lightPosition = vec3(0.0, 0.0, 1000.0);
     
+    gl_PointSize = 5.0;
     gl_Position = modelViewProjectionMatrix * vec4(position, 1);
 }
