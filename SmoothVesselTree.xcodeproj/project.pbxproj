@@ -7,6 +7,18 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		902933E21598E3DC00EC0F3A /* samplingOff.png in Resources */ = {isa = PBXBuildFile; fileRef = 902933D61598E3DC00EC0F3A /* samplingOff.png */; };
+		902933E31598E3DC00EC0F3A /* samplingOff@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 902933D71598E3DC00EC0F3A /* samplingOff@2x.png */; };
+		902933E41598E3DC00EC0F3A /* samplingOn.png in Resources */ = {isa = PBXBuildFile; fileRef = 902933D81598E3DC00EC0F3A /* samplingOn.png */; };
+		902933E51598E3DC00EC0F3A /* samplingOn@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 902933D91598E3DC00EC0F3A /* samplingOn@2x.png */; };
+		902933E61598E3DC00EC0F3A /* viewModeBoth.png in Resources */ = {isa = PBXBuildFile; fileRef = 902933DA1598E3DC00EC0F3A /* viewModeBoth.png */; };
+		902933E71598E3DC00EC0F3A /* viewModeBoth@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 902933DB1598E3DC00EC0F3A /* viewModeBoth@2x.png */; };
+		902933E81598E3DC00EC0F3A /* viewModeSolid.png in Resources */ = {isa = PBXBuildFile; fileRef = 902933DC1598E3DC00EC0F3A /* viewModeSolid.png */; };
+		902933E91598E3DC00EC0F3A /* viewModeSolid@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 902933DD1598E3DC00EC0F3A /* viewModeSolid@2x.png */; };
+		902933EA1598E3DC00EC0F3A /* viewModeTree.png in Resources */ = {isa = PBXBuildFile; fileRef = 902933DE1598E3DC00EC0F3A /* viewModeTree.png */; };
+		902933EB1598E3DC00EC0F3A /* viewModeTree@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 902933DF1598E3DC00EC0F3A /* viewModeTree@2x.png */; };
+		902933EC1598E3DC00EC0F3A /* viewModeWireframe.png in Resources */ = {isa = PBXBuildFile; fileRef = 902933E01598E3DC00EC0F3A /* viewModeWireframe.png */; };
+		902933ED1598E3DC00EC0F3A /* viewModeWireframe@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 902933E11598E3DC00EC0F3A /* viewModeWireframe@2x.png */; };
 		9040203B15976BDA004C580A /* subdivide0.png in Resources */ = {isa = PBXBuildFile; fileRef = 9040203515976BDA004C580A /* subdivide0.png */; };
 		9040203C15976BDA004C580A /* subdivide0@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9040203615976BDA004C580A /* subdivide0@2x.png */; };
 		9040203D15976BDA004C580A /* subdivide1.png in Resources */ = {isa = PBXBuildFile; fileRef = 9040203715976BDA004C580A /* subdivide1.png */; };
@@ -27,8 +39,6 @@
 		90B3A4021595C4A3005AA691 /* Parser.m in Sources */ = {isa = PBXBuildFile; fileRef = 90B3A4011595C4A3005AA691 /* Parser.m */; };
 		90B3A4041595C4E0005AA691 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 90B3A4031595C4E0005AA691 /* libxml2.dylib */; };
 		90B3A4131595CF03005AA691 /* aneurysm.vesselTree.xml in Resources */ = {isa = PBXBuildFile; fileRef = 90B3A40A1595CF03005AA691 /* aneurysm.vesselTree.xml */; };
-		90B3A4141595CF03005AA691 /* toggleViewMode.png in Resources */ = {isa = PBXBuildFile; fileRef = 90B3A40B1595CF03005AA691 /* toggleViewMode.png */; };
-		90B3A4151595CF03005AA691 /* toggleViewMode@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 90B3A40C1595CF03005AA691 /* toggleViewMode@2x.png */; };
 		90B3A4161595CF03005AA691 /* vesselTree0.xml in Resources */ = {isa = PBXBuildFile; fileRef = 90B3A40D1595CF03005AA691 /* vesselTree0.xml */; };
 		90B3A4171595CF03005AA691 /* vesselTree1.xml in Resources */ = {isa = PBXBuildFile; fileRef = 90B3A40E1595CF03005AA691 /* vesselTree1.xml */; };
 		90B3A4181595CF03005AA691 /* vesselTree2.xml in Resources */ = {isa = PBXBuildFile; fileRef = 90B3A40F1595CF03005AA691 /* vesselTree2.xml */; };
@@ -48,6 +58,18 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		902933D61598E3DC00EC0F3A /* samplingOff.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = samplingOff.png; sourceTree = "<group>"; };
+		902933D71598E3DC00EC0F3A /* samplingOff@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "samplingOff@2x.png"; sourceTree = "<group>"; };
+		902933D81598E3DC00EC0F3A /* samplingOn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = samplingOn.png; sourceTree = "<group>"; };
+		902933D91598E3DC00EC0F3A /* samplingOn@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "samplingOn@2x.png"; sourceTree = "<group>"; };
+		902933DA1598E3DC00EC0F3A /* viewModeBoth.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = viewModeBoth.png; sourceTree = "<group>"; };
+		902933DB1598E3DC00EC0F3A /* viewModeBoth@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "viewModeBoth@2x.png"; sourceTree = "<group>"; };
+		902933DC1598E3DC00EC0F3A /* viewModeSolid.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = viewModeSolid.png; sourceTree = "<group>"; };
+		902933DD1598E3DC00EC0F3A /* viewModeSolid@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "viewModeSolid@2x.png"; sourceTree = "<group>"; };
+		902933DE1598E3DC00EC0F3A /* viewModeTree.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = viewModeTree.png; sourceTree = "<group>"; };
+		902933DF1598E3DC00EC0F3A /* viewModeTree@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "viewModeTree@2x.png"; sourceTree = "<group>"; };
+		902933E01598E3DC00EC0F3A /* viewModeWireframe.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = viewModeWireframe.png; sourceTree = "<group>"; };
+		902933E11598E3DC00EC0F3A /* viewModeWireframe@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "viewModeWireframe@2x.png"; sourceTree = "<group>"; };
 		9040203515976BDA004C580A /* subdivide0.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = subdivide0.png; sourceTree = "<group>"; };
 		9040203615976BDA004C580A /* subdivide0@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "subdivide0@2x.png"; sourceTree = "<group>"; };
 		9040203715976BDA004C580A /* subdivide1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = subdivide1.png; sourceTree = "<group>"; };
@@ -77,8 +99,6 @@
 		90B3A4031595C4E0005AA691 /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
 		90B3A4091595C819005AA691 /* Vesseltree.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Vesseltree.h; sourceTree = "<group>"; };
 		90B3A40A1595CF03005AA691 /* aneurysm.vesselTree.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = aneurysm.vesselTree.xml; sourceTree = "<group>"; };
-		90B3A40B1595CF03005AA691 /* toggleViewMode.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = toggleViewMode.png; sourceTree = "<group>"; };
-		90B3A40C1595CF03005AA691 /* toggleViewMode@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "toggleViewMode@2x.png"; sourceTree = "<group>"; };
 		90B3A40D1595CF03005AA691 /* vesselTree0.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = vesselTree0.xml; sourceTree = "<group>"; };
 		90B3A40E1595CF03005AA691 /* vesselTree1.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = vesselTree1.xml; sourceTree = "<group>"; };
 		90B3A40F1595CF03005AA691 /* vesselTree2.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = vesselTree2.xml; sourceTree = "<group>"; };
@@ -224,14 +244,24 @@
 		90B3A41C1595CF06005AA691 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				902933D61598E3DC00EC0F3A /* samplingOff.png */,
+				902933D71598E3DC00EC0F3A /* samplingOff@2x.png */,
+				902933D81598E3DC00EC0F3A /* samplingOn.png */,
+				902933D91598E3DC00EC0F3A /* samplingOn@2x.png */,
 				9040203515976BDA004C580A /* subdivide0.png */,
 				9040203615976BDA004C580A /* subdivide0@2x.png */,
 				9040203715976BDA004C580A /* subdivide1.png */,
 				9040203815976BDA004C580A /* subdivide1@2x.png */,
 				9040203915976BDA004C580A /* subdivide2.png */,
 				9040203A15976BDA004C580A /* subdivide2@2x.png */,
-				90B3A40B1595CF03005AA691 /* toggleViewMode.png */,
-				90B3A40C1595CF03005AA691 /* toggleViewMode@2x.png */,
+				902933DA1598E3DC00EC0F3A /* viewModeBoth.png */,
+				902933DB1598E3DC00EC0F3A /* viewModeBoth@2x.png */,
+				902933DC1598E3DC00EC0F3A /* viewModeSolid.png */,
+				902933DD1598E3DC00EC0F3A /* viewModeSolid@2x.png */,
+				902933DE1598E3DC00EC0F3A /* viewModeTree.png */,
+				902933DF1598E3DC00EC0F3A /* viewModeTree@2x.png */,
+				902933E01598E3DC00EC0F3A /* viewModeWireframe.png */,
+				902933E11598E3DC00EC0F3A /* viewModeWireframe@2x.png */,
 			);
 			name = Images;
 			sourceTree = "<group>";
@@ -336,8 +366,6 @@
 			files = (
 				90B3A3E11595BED2005AA691 /* InfoPlist.strings in Resources */,
 				90B3A4131595CF03005AA691 /* aneurysm.vesselTree.xml in Resources */,
-				90B3A4141595CF03005AA691 /* toggleViewMode.png in Resources */,
-				90B3A4151595CF03005AA691 /* toggleViewMode@2x.png in Resources */,
 				90B3A4161595CF03005AA691 /* vesselTree0.xml in Resources */,
 				90B3A4171595CF03005AA691 /* vesselTree1.xml in Resources */,
 				90B3A4181595CF03005AA691 /* vesselTree2.xml in Resources */,
@@ -355,6 +383,18 @@
 				9040203E15976BDA004C580A /* subdivide1@2x.png in Resources */,
 				9040203F15976BDA004C580A /* subdivide2.png in Resources */,
 				9040204015976BDA004C580A /* subdivide2@2x.png in Resources */,
+				902933E21598E3DC00EC0F3A /* samplingOff.png in Resources */,
+				902933E31598E3DC00EC0F3A /* samplingOff@2x.png in Resources */,
+				902933E41598E3DC00EC0F3A /* samplingOn.png in Resources */,
+				902933E51598E3DC00EC0F3A /* samplingOn@2x.png in Resources */,
+				902933E61598E3DC00EC0F3A /* viewModeBoth.png in Resources */,
+				902933E71598E3DC00EC0F3A /* viewModeBoth@2x.png in Resources */,
+				902933E81598E3DC00EC0F3A /* viewModeSolid.png in Resources */,
+				902933E91598E3DC00EC0F3A /* viewModeSolid@2x.png in Resources */,
+				902933EA1598E3DC00EC0F3A /* viewModeTree.png in Resources */,
+				902933EB1598E3DC00EC0F3A /* viewModeTree@2x.png in Resources */,
+				902933EC1598E3DC00EC0F3A /* viewModeWireframe.png in Resources */,
+				902933ED1598E3DC00EC0F3A /* viewModeWireframe@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -448,6 +488,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "SmoothVesselTree/SmoothVesselTree-Prefix.pch";
 				INFOPLIST_FILE = "SmoothVesselTree/SmoothVesselTree-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -459,6 +500,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "SmoothVesselTree/SmoothVesselTree-Prefix.pch";
 				INFOPLIST_FILE = "SmoothVesselTree/SmoothVesselTree-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
