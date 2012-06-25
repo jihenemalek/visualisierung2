@@ -25,7 +25,7 @@
 
 - (void)tileTriviallyBetween:(SegmentNode *)prev and:(SegmentNode *)cur;
 - (void)tileTree:(Segment *)segment;
-- (void)tileJointForQuadrantVector:(GLKVector3)quadrantVector quadrantIndex:(NSUInteger)idx withSegments:(NSArray *)segments andCaller:(Segment *)caller andParentSegment:(Segment *)parent isBackward:(BOOL)backward wasEndNode:(BOOL)wasEndNode;
+- (void)tileJointForQuadrantVector:(GLKVector3)quadrantVector quadrantIndex:(NSUInteger)idx withSegments:(NSMutableArray *)segments andCaller:(Segment *)caller andParentSegment:(Segment *)parent fakePatch:(Patch *)fakePatch;
 
 @end
 
@@ -194,19 +194,19 @@
     segment.startNode.up = [[[segment.parents lastObject] endNode] up];
   }
   
-  NSLog(@"NEW SEGMENT");
-  NSLog(@"Up Vector: %.2f, %.2f, %.2f, Normal: %.2f, %.2f, %.2f", segment.startNode.up.x, segment.startNode.up.y, segment.startNode.up.z, segment.startNode.normal.x, segment.startNode.normal.y, segment.startNode.normal.z);
+  //NSLog(@"NEW SEGMENT");
+  //NSLog(@"Up Vector: %.2f, %.2f, %.2f, Normal: %.2f, %.2f, %.2f", segment.startNode.up.x, segment.startNode.up.y, segment.startNode.up.z, segment.startNode.normal.x, segment.startNode.normal.y, segment.startNode.normal.z);
   
   if ([segment.segmentPoints count] > 0) {
     for (SegmentNode *s in segment.segmentPoints) {
-      NSLog(@"Up Vector: %.2f, %.2f, %.2f, Normal: %.2f, %.2f, %.2f", [self calculateUpVectorForPoint:s].x, [self calculateUpVectorForPoint:s].y, [self calculateUpVectorForPoint:s].z, s.normal.x, s.normal.y, s.normal.z);
+      //NSLog(@"Up Vector: %.2f, %.2f, %.2f, Normal: %.2f, %.2f, %.2f", [self calculateUpVectorForPoint:s].x, [self calculateUpVectorForPoint:s].y, [self calculateUpVectorForPoint:s].z, s.normal.x, s.normal.y, s.normal.z);
       s.up = [self calculateUpVectorForPoint:s];
     }
   }
   
   segment.endNode.up = [self calculateUpVectorForPoint:segment.endNode];
   
-  NSLog(@"Up Vector: %.2f, %.2f, %.2f, Normal: %.2f, %.2f, %.2f", segment.endNode.up.x, segment.endNode.up.y, segment.endNode.up.z, segment.endNode.normal.x, segment.endNode.normal.y, segment.endNode.normal.z);
+  //NSLog(@"Up Vector: %.2f, %.2f, %.2f, Normal: %.2f, %.2f, %.2f", segment.endNode.up.x, segment.endNode.up.y, segment.endNode.up.z, segment.endNode.normal.x, segment.endNode.normal.y, segment.endNode.normal.z);
   
   // Parse the rest of the tree
   for (Segment *s in segment.children) {
@@ -291,14 +291,13 @@
     }
     
     [quadrants enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-      [self tileJointForQuadrantVector:GLKVector3Normalize(GLKVector3DivideScalar(GLKVector3Add([self rotateUpVector:segment.endNode.prev.up aroundAxis:segment.endNode.prev.normal times:idx], 
+      [self tileJointForQuadrantVector:GLKVector3Normalize(GLKVector3DivideScalar(GLKVector3Add([self rotateUpVector:segment.endNode.prev.up aroundAxis:segment.endNode.prev.normal times:idx],
                                                                                                 [self rotateUpVector:segment.endNode.prev.up aroundAxis:segment.endNode.prev.normal times:(idx + 1) % 4]), 2.0f))
                          quadrantIndex:idx
                           withSegments:obj
                              andCaller:segment
                       andParentSegment:segment
-                            isBackward:YES
-                            wasEndNode:YES];
+                             fakePatch:nil];
     }];
     
     for (Segment *s in backward) {
@@ -325,28 +324,65 @@
     
     for (Segment *s in forward) {
       for (NSUInteger i = 0; i < 4; i++) {
-        if (GLKVector3DotProduct([self rotateUpVector:straightest.startNode.up aroundAxis:segment.startNode.normal times:i], s.startNode.direction) > 0.0f &&
-            GLKVector3DotProduct([self rotateUpVector:straightest.startNode.up aroundAxis:segment.startNode.normal times:(i + 1) % 4], s.startNode.direction) > 0.0f) {
+        if (GLKVector3DotProduct([self rotateUpVector:straightest.startNode.up aroundAxis:straightest.startNode.normal times:i], s.startNode.direction) > 0.0f &&
+            GLKVector3DotProduct([self rotateUpVector:straightest.startNode.up aroundAxis:straightest.startNode.normal times:(i + 1) % 4], s.startNode.direction) > 0.0f) {
           [[quadrants objectAtIndex:i] addObject:s];
           break;
         }
       }
     }
     
-    [quadrants enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-      [self tileJointForQuadrantVector:GLKVector3Normalize(GLKVector3DivideScalar(GLKVector3Add([self rotateUpVector:segment.endNode.prev.up aroundAxis:segment.endNode.prev.normal times:idx], 
-                                                                                                [self rotateUpVector:segment.endNode.prev.up aroundAxis:segment.endNode.prev.normal times:(idx + 1) % 4]), 2.0f))
+    [quadrants enumerateObjectsUsingBlock:^(id quadrantSegments, NSUInteger idx, BOOL *stop) {
+      GLKVector3 quadrantDirection = GLKVector3Normalize(GLKVector3DivideScalar(GLKVector3Add([self rotateUpVector:straightest.startNode.prev.up aroundAxis:segment.startNode.prev.normal times:idx], 
+                                                                                              [self rotateUpVector:straightest.startNode.prev.up aroundAxis:segment.startNode.prev.normal times:(idx + 1) % 4]), 2.0f));
+      
+      SegmentNode *prev = segment.endNode;
+      SegmentNode *cur = straightest.startNode.next;
+      
+      Patch *fp = [Patch new];
+      
+      [fp setVertex:GLKVector3Add(prev.position, GLKVector3MultiplyScalar([self rotateUpVector:prev.up aroundAxis:prev.normal times:idx], prev.radius)) atIndex:0];
+      [fp setVertex:GLKVector3Add(prev.position, GLKVector3MultiplyScalar([self rotateUpVector:prev.up aroundAxis:prev.normal times:(idx + 1) % 4], prev.radius)) atIndex:1];
+      [fp setVertex:GLKVector3Add(cur.position, GLKVector3MultiplyScalar([self rotateUpVector:cur.up aroundAxis:cur.normal times:(idx + 1) % 4], cur.radius)) atIndex:2];
+      [fp setVertex:GLKVector3Add(cur.position, GLKVector3MultiplyScalar([self rotateUpVector:cur.up aroundAxis:cur.normal times:idx], cur.radius)) atIndex:3];
+      
+      [fp setRadius:prev.radius atIndex:0];
+      [fp setRadius:prev.radius atIndex:1];
+      [fp setRadius:cur.radius atIndex:2];
+      [fp setRadius:cur.radius atIndex:3];
+      
+      [fp setCenter:prev.position atIndex:0];
+      [fp setCenter:prev.position atIndex:1];
+      [fp setCenter:cur.position atIndex:2];
+      [fp setCenter:cur.position atIndex:3];
+      
+//    if ([prev.patches count] == 4) {
+//      [fp setNeighbor:[prev.patches objectAtIndex:idx] atIndex:1];
+//    }
+//    
+//    if ([cur.patches count] > 0) {
+//      [fp setNeighbor:[cur.patches objectAtIndex:[cur.patches count] - 1] atIndex:0];
+//      [[cur.patches objectAtIndex:[cur.patches count] - 1] setNeighbor:fp atIndex:2];
+//    }
+//    
+//    [cur.patches addObject:p];
+//    
+//    if ([cur.patches count] == 4) {
+//      [fp setNeighbor:[cur.patches objectAtIndex:0] atIndex:2];
+//      [[cur.patches objectAtIndex:0] setNeighbor:fp atIndex:0];
+//    }
+      
+      [self tileJointForQuadrantVector:quadrantDirection
                          quadrantIndex:idx
-                          withSegments:obj
+                          withSegments:quadrantSegments
                              andCaller:straightest
                       andParentSegment:segment
-                            isBackward:NO
-                            wasEndNode:YES];
+                             fakePatch:fp];
     }];
     
     [self tileTree:straightest];
     for (Segment *s in forward) {
-      //[self tileTree:s];
+      [self tileTree:s];
     }
   }
 }
@@ -391,48 +427,74 @@
   [self.generatedObjects addObjectsFromArray:patches];
 }
 
-- (void)tileJointForQuadrantVector:(GLKVector3)quadrantVector quadrantIndex:(NSUInteger)idx withSegments:(NSArray *)segments andCaller:(Segment *)caller andParentSegment:(Segment *)parent isBackward:(BOOL)backward wasEndNode:(BOOL)wasEndNode
+
+
+- (void)tileJointForQuadrantVector:(GLKVector3)quadrantVector 
+                     quadrantIndex:(NSUInteger)idx 
+                      withSegments:(NSMutableArray *)segments
+                         andCaller:(Segment *)caller
+                  andParentSegment:(Segment *)parent
+                         fakePatch:(Patch *)fakePatch
 {
   if ([segments count] == 0) {
-    Patch *p = [Patch new];
-    
-    SegmentNode *prev = parent.startNode;
-    if (wasEndNode) prev = parent.endNode;
-    
-    SegmentNode *cur = caller.startNode.next;
-    
-    [p setVertex:GLKVector3Add(prev.position, GLKVector3MultiplyScalar([self rotateUpVector:prev.up aroundAxis:prev.normal times:idx], prev.radius)) atIndex:0];
-    [p setVertex:GLKVector3Add(prev.position, GLKVector3MultiplyScalar([self rotateUpVector:prev.up aroundAxis:prev.normal times:(idx + 1) % 4], prev.radius)) atIndex:1];
-    [p setVertex:GLKVector3Add(cur.position, GLKVector3MultiplyScalar([self rotateUpVector:cur.up aroundAxis:cur.normal times:(idx + 1) % 4], cur.radius)) atIndex:2];
-    [p setVertex:GLKVector3Add(cur.position, GLKVector3MultiplyScalar([self rotateUpVector:cur.up aroundAxis:cur.normal times:idx], cur.radius)) atIndex:3];
-    
-    [p setRadius:prev.radius atIndex:0];
-    [p setRadius:prev.radius atIndex:1];
-    [p setRadius:cur.radius atIndex:2];
-    [p setRadius:cur.radius atIndex:3];
-    
-    [p setCenter:prev.position atIndex:0];
-    [p setCenter:prev.position atIndex:1];
-    [p setCenter:cur.position atIndex:2];
-    [p setCenter:cur.position atIndex:3];
-    
-    if ([prev.patches count] == 4) {
-      [p setNeighbor:[prev.patches objectAtIndex:idx] atIndex:1];
+    if (fakePatch) [self.generatedObjects addObject:fakePatch];
+  } else {
+    Segment *N;
+    float minAngle = FLT_MAX;
+    for (Segment *s in segments) {
+      float angle = GLKVector3DotProduct(caller.startNode.direction, s.startNode.direction);
+      if (fabsf(1 - angle) < minAngle) {
+        minAngle = fabsf(1 - angle);
+        N = s;
+      }
     }
     
-    if ([cur.patches count] > 0) {
-      [p setNeighbor:[cur.patches objectAtIndex:[cur.patches count] - 1] atIndex:0];
-      [[cur.patches objectAtIndex:[cur.patches count] - 1] setNeighbor:p atIndex:2];
+    [segments removeObject:N];
+    
+    NSMutableArray *quadrants = [NSMutableArray arrayWithCapacity:4];
+    for (NSUInteger i = 0; i < 4; i++) [quadrants addObject:[NSMutableArray array]];
+    
+    for (Segment *s in segments) {
+      for (NSUInteger i = 0; i < 4; i++) {
+        if (GLKVector3DotProduct([self rotateUpVector:N.startNode.up aroundAxis:N.startNode.normal times:i], s.startNode.direction) > 0.0f &&
+            GLKVector3DotProduct([self rotateUpVector:N.startNode.up aroundAxis:N.startNode.normal times:(i + 1) % 4], s.startNode.direction) > 0.0f) {
+          [[quadrants objectAtIndex:i] addObject:s];
+          break;
+        }
+      }
     }
     
-    [cur.patches addObject:p];
-    
-    if ([cur.patches count] == 4) {
-      [p setNeighbor:[cur.patches objectAtIndex:0] atIndex:2];
-      [[cur.patches objectAtIndex:0] setNeighbor:p atIndex:0];
-    }
-    
-    [self.generatedObjects addObject:p];
+    [quadrants enumerateObjectsUsingBlock:^(id obj, NSUInteger aIdx, BOOL *stop) {
+      GLKVector3 quadrantDirection = GLKVector3Normalize(GLKVector3DivideScalar(GLKVector3Add([self rotateUpVector:N.startNode.next.up aroundAxis:N.startNode.next.normal times:aIdx], 
+                                                                                              [self rotateUpVector:N.startNode.next.up aroundAxis:N.startNode.next.normal times:(aIdx + 1) % 4]), 2.0f));
+      
+      // Create a fake patch for preserving the point info more easily
+      Patch *fp = [Patch new];
+      
+      [fp setVertex:[fakePatch vertexAtIndex:aIdx] atIndex:0];
+      [fp setVertex:[fakePatch vertexAtIndex:(aIdx + 1) % 4] atIndex:1];
+      [fp setVertex:GLKVector3Add(N.startNode.next.position, GLKVector3MultiplyScalar([self rotateUpVector:N.startNode.next.up aroundAxis:N.startNode.next.normal times:(aIdx + 1) % 4], N.startNode.next.radius)) atIndex:2];
+      [fp setVertex:GLKVector3Add(N.startNode.next.position, GLKVector3MultiplyScalar([self rotateUpVector:N.startNode.next.up aroundAxis:N.startNode.next.normal times:aIdx], N.startNode.next.radius)) atIndex:3];
+      
+      [fp setRadius:[fakePatch radiusAtIndex:aIdx] atIndex:0];
+      [fp setRadius:[fakePatch radiusAtIndex:(aIdx + 1) % 4] atIndex:1];
+      [fp setRadius:N.startNode.next.radius atIndex:2];
+      [fp setRadius:N.startNode.next.radius atIndex:3];
+      
+      [fp setCenter:[fakePatch centerAtIndex:aIdx] atIndex:0];
+      [fp setCenter:[fakePatch centerAtIndex:(aIdx + 1) % 4] atIndex:1];
+      [fp setCenter:N.startNode.next.position atIndex:2];
+      [fp setCenter:N.startNode.next.position atIndex:3];
+      
+      // TODO: Add neighborship info for this fake patch if possible
+      
+      [self tileJointForQuadrantVector:quadrantDirection
+                         quadrantIndex:idx
+                          withSegments:obj
+                             andCaller:N
+                      andParentSegment:caller
+                             fakePatch:fp];
+    }];
   }
 }
 
