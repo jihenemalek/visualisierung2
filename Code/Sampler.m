@@ -12,8 +12,8 @@
 
 @interface Sampler ()
 
-@property float alpha;
-@property float beta;
+@property (assign) float alpha;
+@property (assign) float beta;
 
 - (void)setAlpha:(float)alpha andBeta:(float)beta;
 - (void)sampleVesseltree:(Segment *)segment;

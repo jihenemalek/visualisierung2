@@ -10,8 +10,7 @@
 
 @class ControlPoint;
 
-typedef enum : NSUInteger
-{
+typedef enum {
   kSegmentTypeTracked      = 0,
   kSegmentTypeCentered     = 1,
   kSegmentTypeInterpolated = 2
@@ -22,14 +21,14 @@ typedef enum : NSUInteger
 @property (copy) ControlPoint   *startNode;
 @property (copy) ControlPoint   *endNode;
 
-@property        NSArray        *segmentPoints;
+@property (strong) NSArray        *segmentPoints;
 
-@property        SegmentType    type;
+@property (assign) SegmentType    type;
 
-@property        NSMutableArray *parents;
-@property        NSMutableArray *children;
+@property (strong) NSMutableArray *parents;
+@property (strong) NSMutableArray *children;
 
-@property        bool           processed;
+@property (assign) bool           processed;
 
 - (NSUInteger)countPoints;
 

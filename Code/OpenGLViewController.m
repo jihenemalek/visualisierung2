@@ -28,7 +28,7 @@ enum {
   NUM_ATTRIBS
 };
 
-typedef enum : NSUInteger {
+typedef enum {
   kViewModeWireframe = 0,
   kViewModeSolid = 1,
   kViewModeBoth = 2,

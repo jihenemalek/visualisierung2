@@ -17,8 +17,8 @@
 @property (nonatomic, strong) ControlPoint        *currentControlPoint;
 @property (nonatomic, strong) SegmentNode         *currentSegmentNode;
 
-@property (nonatomic)         BOOL                accumulatingText;
-@property (nonatomic)         BOOL                processingControlPoint;
+@property (nonatomic, assign) BOOL                accumulatingText;
+@property (nonatomic, assign) BOOL                processingControlPoint;
 
 @property (nonatomic, strong) NSMutableArray      *accumulatedSegments;
 @property (nonatomic, strong) NSMutableDictionary *accumulatedControlPoints;
@@ -26,9 +26,9 @@
 @property (nonatomic, strong) NSMutableArray      *currentParsedBatch;
 @property (nonatomic, strong) NSMutableString     *currentParsedText;
 
-@property (nonatomic)         float               currentX;
-@property (nonatomic)         float               currentY;
-@property (nonatomic)         float               currentZ;
+@property (nonatomic, assign) float               currentX;
+@property (nonatomic, assign) float               currentY;
+@property (nonatomic, assign) float               currentZ;
 
 @end
 
