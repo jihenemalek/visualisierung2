@@ -528,8 +528,6 @@ typedef struct {
 }
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
-  NSLog(@"Class touched: %@", [touch.view class]);
-  
   if ([touch.view isKindOfClass:[UISlider class]] || [touch.view isKindOfClass:[UIButton class]]) {
     return NO;
   }
