@@ -10,6 +10,10 @@
 
 @interface Triangle : NSObject
 
+@property (assign) BOOL tagged;
+
+@property (nonatomic, strong) NSArray *subtriangles;
+
 - (GLKVector3)vertexAtIndex:(NSUInteger)idx;
 - (void)setVertex:(GLKVector3)vertex atIndex:(NSUInteger)idx;
 
@@ -26,5 +30,8 @@
 
 - (__weak Triangle *)neighborAtIndex:(NSUInteger)idx;
 - (void)setNeighbor:(__weak Triangle *)neighbor atIndex:(NSUInteger)idx;
+
+- (NSArray *)subdivide2;
+- (NSArray *)subdivide4;
 
 @end

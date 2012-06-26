@@ -356,6 +356,11 @@
       [fp setCenter:cur.position atIndex:2];
       [fp setCenter:cur.position atIndex:3];
       
+      [fp setCurvature:prev.curvature atIndex:0];
+      [fp setCurvature:prev.curvature atIndex:1];
+      [fp setCurvature:cur.curvature atIndex:2];
+      [fp setCurvature:cur.curvature atIndex:3];
+      
 //    if ([prev.patches count] == 4) {
 //      [fp setNeighbor:[prev.patches objectAtIndex:idx] atIndex:1];
 //    }
@@ -408,6 +413,11 @@
     [p setCenter:prev.position atIndex:1];
     [p setCenter:cur.position atIndex:2];
     [p setCenter:cur.position atIndex:3];
+    
+    [p setCurvature:prev.curvature atIndex:0];
+    [p setCurvature:prev.curvature atIndex:1];
+    [p setCurvature:cur.curvature atIndex:2];
+    [p setCurvature:cur.curvature atIndex:3];
     
     [patches addObject:p];
   }
@@ -471,20 +481,25 @@
       // Create a fake patch for preserving the point info more easily
       Patch *fp = [Patch new];
       
-      [fp setVertex:[fakePatch vertexAtIndex:aIdx] atIndex:1];
       [fp setVertex:[fakePatch vertexAtIndex:(aIdx - 1) % 4] atIndex:0];
+      [fp setVertex:[fakePatch vertexAtIndex:aIdx] atIndex:1];
       [fp setVertex:GLKVector3Add(N.startNode.next.position, GLKVector3MultiplyScalar([self rotateUpVector:N.startNode.next.up aroundAxis:N.startNode.next.normal times:(aIdx + 1) % 4], N.startNode.next.radius)) atIndex:2];
       [fp setVertex:GLKVector3Add(N.startNode.next.position, GLKVector3MultiplyScalar([self rotateUpVector:N.startNode.next.up aroundAxis:N.startNode.next.normal times:aIdx], N.startNode.next.radius)) atIndex:3];
       
-      [fp setRadius:[fakePatch radiusAtIndex:aIdx] atIndex:1];
       [fp setRadius:[fakePatch radiusAtIndex:(aIdx - 1) % 4] atIndex:0];
+      [fp setRadius:[fakePatch radiusAtIndex:aIdx] atIndex:1];
       [fp setRadius:N.startNode.next.radius atIndex:2];
       [fp setRadius:N.startNode.next.radius atIndex:3];
       
-      [fp setCenter:[fakePatch centerAtIndex:aIdx] atIndex:1];
       [fp setCenter:[fakePatch centerAtIndex:(aIdx - 1) % 4] atIndex:0];
+      [fp setCenter:[fakePatch centerAtIndex:aIdx] atIndex:1];
       [fp setCenter:N.startNode.next.position atIndex:2];
       [fp setCenter:N.startNode.next.position atIndex:3];
+      
+      [fp setCurvature:[fakePatch curvatureAtIndex:(aIdx - 1) % 4] atIndex:0];
+      [fp setCurvature:[fakePatch curvatureAtIndex:aIdx] atIndex:1];
+      [fp setCurvature:N.startNode.next.curvature atIndex:2];
+      [fp setCurvature:N.startNode.next.curvature atIndex:3];
       
       // TODO: Add neighborship info for this fake patch if possible
       

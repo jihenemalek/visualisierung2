@@ -570,6 +570,8 @@ typedef struct {
     // Sample the vessel tree
     if (_sampling && ![name isEqualToString:@"vesselTree5"]) {
       [Sampler sampleVesseltree:root withAlpha:_currentAlphaValue andBeta:_currentBetaValue];
+    } else {
+      [Sampler sampleVesseltree:root withAlpha:0.0f andBeta:0.0f];
     }
     
     // Generate base mesh
@@ -612,11 +614,11 @@ typedef struct {
         for (int j = 0; j < 3; j++) {
           vertices[i].Position[j] = [t vertexAtIndex:(i % 3)].v[j];
           vertices[i].Normal[j]   = [t normalAtIndex:(i % 3)].v[j];
-          vertices[i].Color[j]    = [t curvatureAtIndex:(i % 3)];
+          vertices[i].Color[j]   = 0.0f;
         }
         
-        UIColor *color = [UIColor colorWithHue:[t curvatureAtIndex:(i % 3)] saturation:1 brightness:1 alpha:1];
-        
+        UIColor *color = [UIColor colorWithHue:0.66f + [t curvatureAtIndex:(i % 3)] saturation:1.0f brightness:1.0f alpha:1.0f];
+                
         [color getRed:&vertices[i].Color[0] green:&vertices[i].Color[1] blue:&vertices[i].Color[2] alpha:&vertices[i].Color[3]];
       }
       glBufferData(GL_ARRAY_BUFFER, _indexCount * sizeof(Vertex), vertices, GL_STATIC_DRAW);

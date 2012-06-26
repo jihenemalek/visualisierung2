@@ -19,6 +19,7 @@
 		902933EB1598E3DC00EC0F3A /* viewModeTree@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 902933DF1598E3DC00EC0F3A /* viewModeTree@2x.png */; };
 		902933EC1598E3DC00EC0F3A /* viewModeWireframe.png in Resources */ = {isa = PBXBuildFile; fileRef = 902933E01598E3DC00EC0F3A /* viewModeWireframe.png */; };
 		902933ED1598E3DC00EC0F3A /* viewModeWireframe@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 902933E11598E3DC00EC0F3A /* viewModeWireframe@2x.png */; };
+		903BA81F1599E990005C541E /* AdaptiveSubdivider.m in Sources */ = {isa = PBXBuildFile; fileRef = 903BA81E1599E990005C541E /* AdaptiveSubdivider.m */; };
 		9040203B15976BDA004C580A /* subdivide0.png in Resources */ = {isa = PBXBuildFile; fileRef = 9040203515976BDA004C580A /* subdivide0.png */; };
 		9040203C15976BDA004C580A /* subdivide0@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9040203615976BDA004C580A /* subdivide0@2x.png */; };
 		9040203D15976BDA004C580A /* subdivide1.png in Resources */ = {isa = PBXBuildFile; fileRef = 9040203715976BDA004C580A /* subdivide1.png */; };
@@ -55,6 +56,7 @@
 		90B3A43715961501005AA691 /* wireframe.fsh in Resources */ = {isa = PBXBuildFile; fileRef = 90B3A43315961501005AA691 /* wireframe.fsh */; };
 		90B3A43815961501005AA691 /* wireframe.vsh in Resources */ = {isa = PBXBuildFile; fileRef = 90B3A43415961501005AA691 /* wireframe.vsh */; };
 		90B3A43B15971B7D005AA691 /* Sampler.m in Sources */ = {isa = PBXBuildFile; fileRef = 90B3A43A15971B7D005AA691 /* Sampler.m */; };
+		90C0EE2E159A07F9001FBED4 /* Vertex.m in Sources */ = {isa = PBXBuildFile; fileRef = 90C0EE2D159A07F9001FBED4 /* Vertex.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -70,6 +72,8 @@
 		902933DF1598E3DC00EC0F3A /* viewModeTree@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "viewModeTree@2x.png"; sourceTree = "<group>"; };
 		902933E01598E3DC00EC0F3A /* viewModeWireframe.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = viewModeWireframe.png; sourceTree = "<group>"; };
 		902933E11598E3DC00EC0F3A /* viewModeWireframe@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "viewModeWireframe@2x.png"; sourceTree = "<group>"; };
+		903BA81D1599E990005C541E /* AdaptiveSubdivider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AdaptiveSubdivider.h; sourceTree = "<group>"; };
+		903BA81E1599E990005C541E /* AdaptiveSubdivider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AdaptiveSubdivider.m; sourceTree = "<group>"; };
 		9040203515976BDA004C580A /* subdivide0.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = subdivide0.png; sourceTree = "<group>"; };
 		9040203615976BDA004C580A /* subdivide0@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "subdivide0@2x.png"; sourceTree = "<group>"; };
 		9040203715976BDA004C580A /* subdivide1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = subdivide1.png; sourceTree = "<group>"; };
@@ -121,6 +125,8 @@
 		90B3A43415961501005AA691 /* wireframe.vsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = wireframe.vsh; path = Resources/wireframe.vsh; sourceTree = SOURCE_ROOT; };
 		90B3A43915971B7D005AA691 /* Sampler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Sampler.h; sourceTree = "<group>"; };
 		90B3A43A15971B7D005AA691 /* Sampler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Sampler.m; sourceTree = "<group>"; };
+		90C0EE2C159A07F9001FBED4 /* Vertex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Vertex.h; sourceTree = "<group>"; };
+		90C0EE2D159A07F9001FBED4 /* Vertex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Vertex.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -237,6 +243,8 @@
 				90B3A42B1595ED41005AA691 /* Mesher.m */,
 				90B3A43915971B7D005AA691 /* Sampler.h */,
 				90B3A43A15971B7D005AA691 /* Sampler.m */,
+				903BA81D1599E990005C541E /* AdaptiveSubdivider.h */,
+				903BA81E1599E990005C541E /* AdaptiveSubdivider.m */,
 			);
 			name = Processing;
 			sourceTree = "<group>";
@@ -298,6 +306,8 @@
 				90B3A4271595E033005AA691 /* Triangle.m */,
 				90B3A42D1595ED4F005AA691 /* Patch.h */,
 				90B3A42E1595ED4F005AA691 /* Patch.m */,
+				90C0EE2C159A07F9001FBED4 /* Vertex.h */,
+				90C0EE2D159A07F9001FBED4 /* Vertex.m */,
 			);
 			path = Mesh;
 			sourceTree = "<group>";
@@ -416,6 +426,8 @@
 				90B3A42C1595ED41005AA691 /* Mesher.m in Sources */,
 				90B3A42F1595ED4F005AA691 /* Patch.m in Sources */,
 				90B3A43B15971B7D005AA691 /* Sampler.m in Sources */,
+				903BA81F1599E990005C541E /* AdaptiveSubdivider.m in Sources */,
+				90C0EE2E159A07F9001FBED4 /* Vertex.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

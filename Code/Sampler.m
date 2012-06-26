@@ -15,11 +15,12 @@
 @property (assign) float alpha;
 @property (assign) float beta;
 
-- (void)setAlpha:(float)alpha andBeta:(float)beta;
-- (void)sampleVesseltree:(Segment *)segment;
-
+- (float)calculateCurvatureForPoint:(SegmentNode *)point;
 - (float)calculateDistanceBetween:(SegmentNode *)firstPoint and:(SegmentNode *)secondPoint;
 - (float)calculateWeightForPoint:(SegmentNode *)point;
+
+- (void)sampleVesseltree:(Segment *)segment;
+- (void)setAlpha:(float)alpha andBeta:(float)beta;
 
 @end
 
@@ -51,105 +52,109 @@
   NSMutableArray *sampledBack = [NSMutableArray array];
   
   if ([segment.segmentPoints count] > 0) {
-    NSUInteger i = 0;
-    NSUInteger j = [segment.segmentPoints count] - 1;
-    
-    while (i < j) {
-      float frontDistance, frontWeight;
-      float backDistance, backWeight;
+    if (self.alpha > 0 && self.beta > 0) {
+      NSUInteger i = 0;
+      NSUInteger j = [segment.segmentPoints count] - 1;
       
-      SegmentNode *pAtI = [segment.segmentPoints objectAtIndex:i];
-      frontDistance = [self calculateDistanceBetween:pAtI.prev and:pAtI];
-      frontWeight = [self calculateWeightForPoint:pAtI.prev] + [self calculateWeightForPoint:pAtI];
-      
-      SegmentNode *pAtj = [segment.segmentPoints objectAtIndex:j];
-      backDistance = [self calculateDistanceBetween:pAtj and:pAtj.next];
-      backWeight = [self calculateWeightForPoint:pAtj];
-      
-      // Sample from front
-      if (frontDistance >= frontWeight) {
-        [sampledFront addObject:pAtI];
-        i++;
-      } else {
-        if (frontWeight > 10000.0f) {
+      while (i < j) {
+        float frontDistance, frontWeight;
+        float backDistance, backWeight;
+        
+        SegmentNode *pAtI = [segment.segmentPoints objectAtIndex:i];
+        frontDistance = [self calculateDistanceBetween:pAtI.prev and:pAtI];
+        frontWeight = [self calculateWeightForPoint:pAtI.prev] + [self calculateWeightForPoint:pAtI];
+        
+        SegmentNode *pAtj = [segment.segmentPoints objectAtIndex:j];
+        backDistance = [self calculateDistanceBetween:pAtj and:pAtj.next];
+        backWeight = [self calculateWeightForPoint:pAtj];
+        
+        // Sample from front
+        if (frontDistance >= frontWeight) {
+          [sampledFront addObject:pAtI];
           i++;
         } else {
-          int k = 1;
-          
-          while ((i + k) < j) {
-            SegmentNode *pAtk = [segment.segmentPoints objectAtIndex:i + k];
-            frontDistance = [self calculateDistanceBetween:pAtI.prev and:pAtk];
-            frontWeight = [self calculateWeightForPoint:pAtI.prev] + [self calculateWeightForPoint:pAtk];
+          if (frontWeight > 10000.0f) {
+            i++;
+          } else {
+            int k = 1;
             
-            if (frontDistance >= frontWeight) {
-              [sampledFront addObject:[pAtk.prev combineWithNode:pAtk]];
-              break;
-            } else if (frontWeight > 10000.0f) {
-              break;
+            while ((i + k) < j) {
+              SegmentNode *pAtk = [segment.segmentPoints objectAtIndex:i + k];
+              frontDistance = [self calculateDistanceBetween:pAtI.prev and:pAtk];
+              frontWeight = [self calculateWeightForPoint:pAtI.prev] + [self calculateWeightForPoint:pAtk];
+              
+              if (frontDistance >= frontWeight) {
+                [sampledFront addObject:[pAtk.prev combineWithNode:pAtk]];
+                break;
+              } else if (frontWeight > 10000.0f) {
+                break;
+              }
+              
+              k++;
             }
             
-            k++;
+            i += k;
           }
-          
-          i += k;
+        }
+        
+        // Sample from back
+        if (backDistance >= backWeight) {
+          [sampledBack addObject:pAtI];
+          i++;
+        } else {
+          if (backWeight > 10000.0f) {
+            i++;
+          } else {
+            int k = 1;
+            
+            while ((j - k) > i) {
+              SegmentNode *pAtk = [segment.segmentPoints objectAtIndex:j - k];
+              backDistance = [self calculateDistanceBetween:pAtk and:pAtj.next];
+              backWeight = [self calculateWeightForPoint:pAtj.next] + [self calculateWeightForPoint:pAtk];
+              
+              if (backDistance >= backWeight) {
+                [sampledBack addObject:[pAtk combineWithNode:pAtk.next]];
+                break;
+              } else if (backWeight > 10000.0f) {
+                break;
+              }
+              
+              k++;
+            }
+            
+            j -= k;
+          }
         }
       }
       
-      // Sample from back
-      if (backDistance >= backWeight) {
-        [sampledBack addObject:pAtI];
-        i++;
-      } else {
-        if (backWeight > 10000.0f) {
-          i++;
-        } else {
-          int k = 1;
-          
-          while ((j - k) > i) {
-            SegmentNode *pAtk = [segment.segmentPoints objectAtIndex:j - k];
-            backDistance = [self calculateDistanceBetween:pAtk and:pAtj.next];
-            backWeight = [self calculateWeightForPoint:pAtj.next] + [self calculateWeightForPoint:pAtk];
-            
-            if (backDistance >= backWeight) {
-              [sampledBack addObject:[pAtk combineWithNode:pAtk.next]];
-              break;
-            } else if (backWeight > 10000.0f) {
-              break;
-            }
-            
-            k++;
-          }
-          
-          j -= k;
-        }
-      }
+      // Merge the two arrays together
+      [sampledPoints addObjectsFromArray:sampledFront];
+      [sampledPoints addObjectsFromArray:[[sampledBack reverseObjectEnumerator] allObjects]];
+      
+      segment.segmentPoints = sampledPoints;
     }
     
-    // Merge the two arrays together
-    [sampledPoints addObjectsFromArray:sampledFront];
-    [sampledPoints addObjectsFromArray:[[sampledBack reverseObjectEnumerator] allObjects]];
-    
     // Recreate linked list
-    [sampledPoints enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+    [segment.segmentPoints enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
       SegmentNode *p = obj;
       
-      if (obj != [sampledPoints lastObject]) {
-        p.next = [sampledPoints objectAtIndex:(idx + 1)];
+      if (obj != [segment.segmentPoints lastObject]) {
+        p.next = [segment.segmentPoints objectAtIndex:(idx + 1)];
       } else {
         p.next = segment.endNode;
       }
       
-      if (obj != [sampledPoints objectAtIndex:0]) {
-        p.prev = [sampledPoints objectAtIndex:(idx - 1)];
+      if (obj != [segment.segmentPoints objectAtIndex:0]) {
+        p.prev = [segment.segmentPoints objectAtIndex:(idx - 1)];
       } else {
         p.prev = segment.startNode;
       }
+     
+      p.curvature = [self calculateCurvatureForPoint:p];
     }];
     
-    segment.startNode.next = [sampledPoints objectAtIndex:0];
-    segment.endNode.prev = [sampledPoints lastObject];
-    
-    segment.segmentPoints = sampledPoints;
+    segment.startNode.next = [segment.segmentPoints objectAtIndex:0];
+    segment.endNode.prev = [segment.segmentPoints lastObject];
   }
   
   // Parse the rest of the tree
@@ -165,6 +170,13 @@
 
 - (float)calculateWeightForPoint:(SegmentNode *)point
 {
+  float kappa = [self calculateCurvatureForPoint:point];
+  
+  return (self.alpha * point.radius) / (1.0f + self.beta * kappa);
+}
+
+- (float)calculateCurvatureForPoint:(SegmentNode *)point
+{
   float kappa = 0.0f;
   
   if (point.prev && point.next) {
@@ -178,9 +190,11 @@
     float x = fabsf(s * (s - a) * (s - b) * (s - c));
     
     kappa = 4.0f * sqrtf(x) / (a * b * c);
+  } else if (point.prev.curvature > 0) {
+    kappa = point.prev.curvature;
   }
   
-  return (self.alpha * point.radius) / (1.0f + self.beta * kappa);
+  return 10.0f * kappa;
 }
 
 @end

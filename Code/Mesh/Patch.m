@@ -23,6 +23,18 @@
 @synthesize triangles = _triangles;
 @synthesize subpatches = _subpatches;
 
+- (id)init
+{
+  self = [super init];
+  if (self) {
+    curvature[0] = 0.0f;
+    curvature[1] = 0.0f;
+    curvature[2] = 0.0f;
+    curvature[3] = 0.0f;
+  }
+  return self;
+}
+
 - (GLKVector3)vertexAtIndex:(NSUInteger)idx
 {
   return vertex[idx % 4];
@@ -99,6 +111,8 @@
         [p1 setRadius:[patch radiusAtIndex:j] atIndex:j];
         [p0 setVertex:[patch vertexAtIndex:j] atIndex:j];
         [p1 setVertex:[patch vertexAtIndex:j] atIndex:j];
+        [p0 setCurvature:[patch curvatureAtIndex:j] atIndex:j];
+        [p1 setCurvature:[patch curvatureAtIndex:j] atIndex:j];
       }
       
       [p0 setRadius:(([patch radiusAtIndex:0] + [patch radiusAtIndex:1]) / 2.0f) atIndex:1];
@@ -116,6 +130,11 @@
       
       [p1 setVertex:[p0 vertexAtIndex:1] atIndex:0];
       [p1 setVertex:[p0 vertexAtIndex:2] atIndex:3];
+      
+      [p0 setCurvature:([patch curvatureAtIndex:0] + [patch curvatureAtIndex:1]) / 2.0 atIndex:1];
+      [p0 setCurvature:([patch curvatureAtIndex:2] + [patch curvatureAtIndex:3]) / 2.0 atIndex:2];
+      [p1 setCurvature:[p0 curvatureAtIndex:1] atIndex:0];
+      [p1 setCurvature:[p0 curvatureAtIndex:2] atIndex:3];
       
       // Set neighbor info
       [p0 setNeighbor:[patch neighborAtIndex:0] atIndex:0];
@@ -159,12 +178,14 @@
     [t0 setVertex:[self vertexAtIndex:i] atIndex:i];
     [t0 setCenter:[self centerAtIndex:i] atIndex:i];
     [t0 setRadius:[self radiusAtIndex:i] atIndex:i];
+    [t0 setCurvature:[self curvatureAtIndex:i] atIndex:i];
   }
   
   for (NSUInteger i = 2; i < 5; i++) {
     [t1 setVertex:[self vertexAtIndex:i] atIndex:i];
     [t1 setCenter:[self centerAtIndex:i] atIndex:i];
     [t1 setRadius:[self radiusAtIndex:i] atIndex:i];
+    [t1 setCurvature:[self curvatureAtIndex:i] atIndex:i];
   }
   
   [t0 setNeighbor:t1 atIndex:2];
