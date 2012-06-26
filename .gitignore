@@ -4,7 +4,7 @@
 
 build/
 
-*.xcuserdatad/
+xcuserdata/
 *.pbxuser
 *.perspective
 *.perspectivev3
