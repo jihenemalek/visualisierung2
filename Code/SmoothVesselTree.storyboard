@@ -11,7 +11,7 @@
             <objects>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="vhf-id-kuV" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <glkViewController autoresizesArchivedViewToFullSize="NO" preferredFramesPerSecond="30" id="6Nf-I2-5nZ" customClass="OpenGLViewController" sceneMemberID="viewController">
-                    <glkView key="view" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" drawableDepthFormat="24" id="atj-0F-oU9">
+                    <glkView key="view" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="center" drawableDepthFormat="24" id="atj-0F-oU9">
                         <rect key="frame" x="0.0" y="0.0" width="1024" height="768"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
@@ -36,7 +36,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" adjustsImageWhenHighlighted="NO" adjustsImageWhenDisabled="NO" lineBreakMode="middleTruncation" id="lRF-hg-z5s" userLabel="Switch ViewType Button">
-                                        <rect key="frame" x="777" y="20" width="70" height="70"/>
+                                        <rect key="frame" x="778" y="20" width="70" height="70"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
                                         <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
@@ -48,11 +48,11 @@
                                             <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
                                         <connections>
-                                            <action selector="subdivide0ButtonTapped:" destination="6Nf-I2-5nZ" eventType="touchUpInside" id="jIu-2C-R86"/>
+                                            <action selector="subdivideButtonTapped:" destination="6Nf-I2-5nZ" eventType="touchUpInside" id="T1u-OD-NvT"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" adjustsImageWhenHighlighted="NO" adjustsImageWhenDisabled="NO" lineBreakMode="middleTruncation" id="48l-Ot-4IP" userLabel="Switch ViewType Button">
-                                        <rect key="frame" x="855" y="20" width="70" height="70"/>
+                                    <button opaque="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" adjustsImageWhenHighlighted="NO" adjustsImageWhenDisabled="NO" lineBreakMode="middleTruncation" id="48l-Ot-4IP" userLabel="Switch ViewType Button">
+                                        <rect key="frame" x="856" y="20" width="70" height="70"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
                                         <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
@@ -64,11 +64,11 @@
                                             <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
                                         <connections>
-                                            <action selector="subdivide1ButtonTapped:" destination="6Nf-I2-5nZ" eventType="touchUpInside" id="0p1-VV-znt"/>
+                                            <action selector="subdivideButtonTapped:" destination="6Nf-I2-5nZ" eventType="touchUpInside" id="qqK-zr-OXk"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" adjustsImageWhenHighlighted="NO" adjustsImageWhenDisabled="NO" lineBreakMode="middleTruncation" id="byD-uY-fYf" userLabel="Switch ViewType Button">
-                                        <rect key="frame" x="933" y="20" width="70" height="70"/>
+                                    <button opaque="NO" tag="2" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" adjustsImageWhenHighlighted="NO" adjustsImageWhenDisabled="NO" lineBreakMode="middleTruncation" id="byD-uY-fYf" userLabel="Switch ViewType Button">
+                                        <rect key="frame" x="934" y="20" width="70" height="70"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
                                         <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
@@ -80,7 +80,7 @@
                                             <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
                                         <connections>
-                                            <action selector="subdivide2ButtonTapped:" destination="6Nf-I2-5nZ" eventType="touchUpInside" id="amV-DP-tOQ"/>
+                                            <action selector="subdivideButtonTapped:" destination="6Nf-I2-5nZ" eventType="touchUpInside" id="VfF-Z1-zab"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" alpha="0.65000000000000002" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" adjustsImageWhenHighlighted="NO" adjustsImageWhenDisabled="NO" lineBreakMode="middleTruncation" id="aM1-kp-HGf">
@@ -180,7 +180,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" adjustsImageWhenHighlighted="NO" adjustsImageWhenDisabled="NO" lineBreakMode="middleTruncation" id="zbF-cV-PMM" userLabel="Switch ViewType Button">
-                                        <rect key="frame" x="933" y="127" width="70" height="70"/>
+                                        <rect key="frame" x="934" y="417" width="70" height="70"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
                                         <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
@@ -258,7 +258,7 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Quad subdivision" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="gjM-Jd-bKg">
-                                        <rect key="frame" x="777" y="98" width="226" height="21"/>
+                                        <rect key="frame" x="778" y="98" width="226" height="21"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" name="EuphemiaUCAS" family="Euphemia UCAS" pointSize="14"/>
                                         <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
@@ -271,8 +271,52 @@
                                         <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                         <nil key="highlightedColor"/>
                                     </label>
+                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Beta" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="nz9-3c-dwq">
+                                        <rect key="frame" x="802" y="578" width="38" height="21"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" name="EuphemiaUCAS" family="Euphemia UCAS" pointSize="14"/>
+                                        <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Alpha" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="lCQ-UA-rXp">
+                                        <rect key="frame" x="800" y="524" width="39" height="21"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" name="EuphemiaUCAS" family="Euphemia UCAS" pointSize="14"/>
+                                        <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
                                     <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Sampling" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="qUl-8B-jAc">
-                                        <rect key="frame" x="933" y="205" width="70" height="21"/>
+                                        <rect key="frame" x="932" y="495" width="70" height="21"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" name="EuphemiaUCAS" family="Euphemia UCAS" pointSize="14"/>
+                                        <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="1" minValue="0.5" maxValue="2.5" continuous="NO" id="STR-H5-Y35">
+                                        <rect key="frame" x="798" y="548" width="204" height="23"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <color key="minimumTrackTintColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                        <connections>
+                                            <action selector="alphaValueChanged:" destination="6Nf-I2-5nZ" eventType="valueChanged" id="RLI-bM-AG0"/>
+                                        </connections>
+                                    </slider>
+                                    <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="1" minValue="0.0" maxValue="2.5" continuous="NO" id="cqF-vj-wiq">
+                                        <rect key="frame" x="800" y="602" width="204" height="23"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <color key="minimumTrackTintColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                        <connections>
+                                            <action selector="betaValueChanged:" destination="6Nf-I2-5nZ" eventType="valueChanged" id="GVy-z0-nky"/>
+                                        </connections>
+                                    </slider>
+                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="1.00" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="0kD-9n-I2p">
+                                        <rect key="frame" x="969" y="524" width="31" height="21"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" name="EuphemiaUCAS" family="Euphemia UCAS" pointSize="14"/>
+                                        <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="1.00" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="RDP-5a-oA8">
+                                        <rect key="frame" x="971" y="578" width="31" height="21"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" name="EuphemiaUCAS" family="Euphemia UCAS" pointSize="14"/>
                                         <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
@@ -299,6 +343,12 @@
                     <nil key="simulatedTopBarMetrics"/>
                     <nil key="simulatedBottomBarMetrics"/>
                     <connections>
+                        <outlet property="alphaLabel" destination="lCQ-UA-rXp" id="6IG-xD-vQ6"/>
+                        <outlet property="alphaSlider" destination="STR-H5-Y35" id="dch-Qv-Srh"/>
+                        <outlet property="alphaValue" destination="0kD-9n-I2p" id="Ozc-iO-zf5"/>
+                        <outlet property="betaLabel" destination="nz9-3c-dwq" id="Xgs-DM-Mnf"/>
+                        <outlet property="betaSlider" destination="cqF-vj-wiq" id="F1m-j2-Ps8"/>
+                        <outlet property="betaValue" destination="RDP-5a-oA8" id="UCF-vY-fLA"/>
                         <outlet property="fileLabel" destination="JAL-b2-vM9" id="RUs-kK-viF"/>
                         <outlet property="loadingLabel" destination="zzp-te-0kO" id="oP6-gM-Asb"/>
                         <outlet property="samplingButton" destination="zbF-cV-PMM" id="vNY-aa-pSC"/>
@@ -308,31 +358,37 @@
                 <tapGestureRecognizer numberOfTapsRequired="3" id="ZmQ-QO-MaS">
                     <connections>
                         <action selector="handleTap:" destination="6Nf-I2-5nZ" id="8w5-1N-1bQ"/>
+                        <outlet property="delegate" destination="6Nf-I2-5nZ" id="gV5-KO-3jK"/>
                     </connections>
                 </tapGestureRecognizer>
                 <tapGestureRecognizer delaysTouchesBegan="YES" numberOfTapsRequired="2" id="Qor-dk-E3q" userLabel="Zoom In Gesture Recognizer">
                     <connections>
                         <action selector="handleZoomIn:" destination="6Nf-I2-5nZ" id="ogy-CQ-bWg"/>
+                        <outlet property="delegate" destination="6Nf-I2-5nZ" id="CqM-Yw-qF8"/>
                     </connections>
                 </tapGestureRecognizer>
                 <tapGestureRecognizer delaysTouchesBegan="YES" numberOfTapsRequired="2" numberOfTouchesRequired="2" id="Nq9-mO-bpK" userLabel="Zoom Out Gesture Recognizer">
                     <connections>
                         <action selector="handleZoomOut:" destination="6Nf-I2-5nZ" id="Hg6-Qj-9AA"/>
+                        <outlet property="delegate" destination="6Nf-I2-5nZ" id="cjA-2z-n2l"/>
                     </connections>
                 </tapGestureRecognizer>
                 <pinchGestureRecognizer id="5RY-kG-HaD">
                     <connections>
                         <action selector="handlePinch:" destination="6Nf-I2-5nZ" id="WUo-fS-9sE"/>
+                        <outlet property="delegate" destination="6Nf-I2-5nZ" id="ySM-JS-ofB"/>
                     </connections>
                 </pinchGestureRecognizer>
                 <panGestureRecognizer minimumNumberOfTouches="1" maximumNumberOfTouches="1" id="W2I-Gw-iCe">
                     <connections>
                         <action selector="handlePan:" destination="6Nf-I2-5nZ" id="9iA-3e-Uom"/>
+                        <outlet property="delegate" destination="6Nf-I2-5nZ" id="BDk-JH-vn5"/>
                     </connections>
                 </panGestureRecognizer>
                 <panGestureRecognizer minimumNumberOfTouches="2" maximumNumberOfTouches="2" id="zwk-x1-Jc7" userLabel="Rotate Gesture Recognizer">
                     <connections>
                         <action selector="handleRotation:" destination="6Nf-I2-5nZ" id="rKZ-Bt-kGU"/>
+                        <outlet property="delegate" destination="6Nf-I2-5nZ" id="ext-pk-dT4"/>
                     </connections>
                 </panGestureRecognizer>
             </objects>
@@ -349,28 +405,6 @@
         <image name="viewModeTree.png" width="70" height="70"/>
         <image name="viewModeWireframe.png" width="70" height="70"/>
     </resources>
-    <classes>
-        <class className="OpenGLViewController" superclassName="GLKViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/OpenGLViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="samplingButtonTapped:"/>
-                <relationship kind="action" name="subdivide0ButtonTapped:"/>
-                <relationship kind="action" name="subdivide1ButtonTapped:"/>
-                <relationship kind="action" name="subdivide2ButtonTapped:"/>
-                <relationship kind="action" name="vesselTree0ButtonTapped:"/>
-                <relationship kind="action" name="vesselTree1ButtonTapped:"/>
-                <relationship kind="action" name="vesselTree2ButtonTapped:"/>
-                <relationship kind="action" name="vesselTree3ButtonTapped:"/>
-                <relationship kind="action" name="vesselTree4ButtonTapped:"/>
-                <relationship kind="action" name="vesselTree5ButtonTapped:"/>
-                <relationship kind="action" name="viewModeButtonTapped:"/>
-                <relationship kind="outlet" name="fileLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="loadingLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="samplingButton" candidateClass="UIButton"/>
-                <relationship kind="outlet" name="samplingLabel" candidateClass="UILabel"/>
-            </relationships>
-        </class>
-    </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <nil key="statusBar"/>
         <simulatedOrientationMetrics key="orientation" orientation="landscapeRight"/>

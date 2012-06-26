@@ -97,27 +97,24 @@
         [p0 setRadius:[patch radiusAtIndex:j] atIndex:j];
         [p1 setCenter:[patch centerAtIndex:j] atIndex:j];
         [p1 setRadius:[patch radiusAtIndex:j] atIndex:j];
+        [p0 setVertex:[patch vertexAtIndex:j] atIndex:j];
+        [p1 setVertex:[patch vertexAtIndex:j] atIndex:j];
       }
       
-      [p0 setVertex:[patch vertexAtIndex:0] atIndex:0];
-      [p0 setVertex:GLKVector3Add([self centerAtIndex:1], 
-                                  GLKVector3MultiplyScalar(GLKVector3Normalize(GLKVector3Subtract(GLKVector3DivideScalar(GLKVector3Add(
-                                                                                                                                       [patch vertexAtIndex:0], 
-                                                                                                                                       [patch vertexAtIndex:1]), 
-                                                                                                                         2.0f), 
-                                                                                                  [patch centerAtIndex:1])), 
-                                                           [p0 radiusAtIndex:1])) atIndex:1];
-      [p0 setVertex:GLKVector3Add([patch centerAtIndex:2], 
-                                  GLKVector3MultiplyScalar(GLKVector3Normalize(GLKVector3Subtract(GLKVector3DivideScalar(GLKVector3Add([patch vertexAtIndex:2], 
-                                                                                                                                       [patch vertexAtIndex:3]), 
-                                                                                                                         2.0f), 
-                                                                                                  [patch centerAtIndex:2])),
-                                                           [p0 radiusAtIndex:3])) atIndex:2];
-      [p0 setVertex:[patch vertexAtIndex:3] atIndex:3];
+      [p0 setRadius:(([patch radiusAtIndex:0] + [patch radiusAtIndex:1]) / 2.0f) atIndex:1];
+      [p0 setRadius:(([patch radiusAtIndex:2] + [patch radiusAtIndex:3]) / 2.0f) atIndex:2];
+      [p1 setRadius:[p0 radiusAtIndex:1] atIndex:0];
+      [p1 setRadius:[p0 radiusAtIndex:2] atIndex:3];
+      
+      [p0 setCenter:GLKVector3DivideScalar(GLKVector3Add([patch centerAtIndex:0], [patch centerAtIndex:1]), 2.0f) atIndex:1];
+      [p0 setCenter:GLKVector3DivideScalar(GLKVector3Add([patch centerAtIndex:2], [patch centerAtIndex:3]), 2.0f) atIndex:2];
+      [p1 setCenter:[p0 centerAtIndex:1] atIndex:0];
+      [p1 setCenter:[p0 centerAtIndex:2] atIndex:3];
+      
+      [p0 setVertex:GLKVector3Add([p0 centerAtIndex:1], GLKVector3MultiplyScalar(GLKVector3Normalize(GLKVector3Subtract(GLKVector3DivideScalar(GLKVector3Add([patch vertexAtIndex:0], [patch vertexAtIndex:1]), 2.0f), [p0 centerAtIndex:1])), [p0 radiusAtIndex:1])) atIndex:1];
+      [p0 setVertex:GLKVector3Add([p0 centerAtIndex:2], GLKVector3MultiplyScalar(GLKVector3Normalize(GLKVector3Subtract(GLKVector3DivideScalar(GLKVector3Add([patch vertexAtIndex:2], [patch vertexAtIndex:3]), 2.0f), [p0 centerAtIndex:2])), [p0 radiusAtIndex:2])) atIndex:2];
       
       [p1 setVertex:[p0 vertexAtIndex:1] atIndex:0];
-      [p1 setVertex:[patch vertexAtIndex:1] atIndex:1];
-      [p1 setVertex:[patch vertexAtIndex:2] atIndex:2];
       [p1 setVertex:[p0 vertexAtIndex:2] atIndex:3];
       
       // Set neighbor info

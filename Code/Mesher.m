@@ -471,18 +471,18 @@
       // Create a fake patch for preserving the point info more easily
       Patch *fp = [Patch new];
       
-      [fp setVertex:[fakePatch vertexAtIndex:aIdx] atIndex:0];
-      [fp setVertex:[fakePatch vertexAtIndex:(aIdx + 1) % 4] atIndex:1];
+      [fp setVertex:[fakePatch vertexAtIndex:aIdx] atIndex:1];
+      [fp setVertex:[fakePatch vertexAtIndex:(aIdx - 1) % 4] atIndex:0];
       [fp setVertex:GLKVector3Add(N.startNode.next.position, GLKVector3MultiplyScalar([self rotateUpVector:N.startNode.next.up aroundAxis:N.startNode.next.normal times:(aIdx + 1) % 4], N.startNode.next.radius)) atIndex:2];
       [fp setVertex:GLKVector3Add(N.startNode.next.position, GLKVector3MultiplyScalar([self rotateUpVector:N.startNode.next.up aroundAxis:N.startNode.next.normal times:aIdx], N.startNode.next.radius)) atIndex:3];
       
-      [fp setRadius:[fakePatch radiusAtIndex:aIdx] atIndex:0];
-      [fp setRadius:[fakePatch radiusAtIndex:(aIdx + 1) % 4] atIndex:1];
+      [fp setRadius:[fakePatch radiusAtIndex:aIdx] atIndex:1];
+      [fp setRadius:[fakePatch radiusAtIndex:(aIdx - 1) % 4] atIndex:0];
       [fp setRadius:N.startNode.next.radius atIndex:2];
       [fp setRadius:N.startNode.next.radius atIndex:3];
       
-      [fp setCenter:[fakePatch centerAtIndex:aIdx] atIndex:0];
-      [fp setCenter:[fakePatch centerAtIndex:(aIdx + 1) % 4] atIndex:1];
+      [fp setCenter:[fakePatch centerAtIndex:aIdx] atIndex:1];
+      [fp setCenter:[fakePatch centerAtIndex:(aIdx - 1) % 4] atIndex:0];
       [fp setCenter:N.startNode.next.position atIndex:2];
       [fp setCenter:N.startNode.next.position atIndex:3];
       

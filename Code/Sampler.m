@@ -146,6 +146,9 @@
       }
     }];
     
+    segment.startNode.next = [sampledPoints objectAtIndex:0];
+    segment.endNode.prev = [sampledPoints lastObject];
+    
     segment.segmentPoints = sampledPoints;
   }
   

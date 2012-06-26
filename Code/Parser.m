@@ -30,6 +30,8 @@
 @property (nonatomic, assign) float               currentY;
 @property (nonatomic, assign) float               currentZ;
 
+- (Segment *)parseDocument:(NSString *)documentName;
+
 @end
 
 @implementation Parser

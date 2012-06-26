@@ -11,9 +11,9 @@
 @class ControlPoint;
 
 typedef enum {
-  kSegmentTypeTracked      = 0,
-  kSegmentTypeCentered     = 1,
-  kSegmentTypeInterpolated = 2
+  kSegmentTypeTracked,
+  kSegmentTypeCentered,
+  kSegmentTypeInterpolated
 } SegmentType;
 
 @interface Segment : NSObject

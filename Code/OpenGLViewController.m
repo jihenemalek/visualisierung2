@@ -41,7 +41,7 @@ typedef struct {
   float Color[4];
 } Vertex;
 
-@interface OpenGLViewController ()
+@interface OpenGLViewController () <UIGestureRecognizerDelegate>
 
 @property (weak, nonatomic) IBOutlet UILabel *fileLabel;
 @property (weak, nonatomic) IBOutlet UILabel *loadingLabel;
@@ -56,10 +56,11 @@ typedef struct {
 
 - (void)loadVesseltree:(NSString *)name;
 
+- (BOOL)compileShader:(GLuint *)shader type:(GLenum)type file:(NSString *)file;
+- (BOOL)linkProgram:(GLuint)prog;
+
 // UI Interaction
-- (IBAction)subdivide0ButtonTapped:(id)sender;
-- (IBAction)subdivide1ButtonTapped:(id)sender;
-- (IBAction)subdivide2ButtonTapped:(id)sender;
+- (IBAction)subdivideButtonTapped:(id)sender;
 
 - (IBAction)vesselTree0ButtonTapped:(id)sender;
 - (IBAction)vesselTree1ButtonTapped:(id)sender;
@@ -71,8 +72,25 @@ typedef struct {
 - (IBAction)samplingButtonTapped:(id)sender;
 - (IBAction)viewModeButtonTapped:(id)sender;
 
+- (IBAction)handleRotation:(UIPanGestureRecognizer *)recognizer;
+- (IBAction)handlePan:(UIPanGestureRecognizer *)recognizer;
+- (IBAction)handlePinch:(UIPinchGestureRecognizer *)recognizer;
+- (IBAction)handleTap:(UITapGestureRecognizer *)recognizer;
+- (IBAction)handleZoomIn:(UITapGestureRecognizer *)recognizer;
+- (IBAction)handleZoomOut:(UITapGestureRecognizer *)recognizer;
+
+- (IBAction)alphaValueChanged:(id)sender;
+- (IBAction)betaValueChanged:(id)sender;
+
 @property (weak, nonatomic) IBOutlet UIButton *samplingButton;
 @property (weak, nonatomic) IBOutlet UILabel *samplingLabel;
+
+@property (weak, nonatomic) IBOutlet UILabel *alphaValue;
+@property (weak, nonatomic) IBOutlet UISlider *alphaSlider;
+@property (weak, nonatomic) IBOutlet UILabel *alphaLabel;
+@property (weak, nonatomic) IBOutlet UILabel *betaValue;
+@property (weak, nonatomic) IBOutlet UISlider *betaSlider;
+@property (weak, nonatomic) IBOutlet UILabel *betaLabel;
 
 @end
 
@@ -100,9 +118,18 @@ typedef struct {
   
   BOOL _sampling;
   NSUInteger _quadSubdivisioning;
+  
+  float _currentAlphaValue;
+  float _currentBetaValue;
 }
 @synthesize samplingButton = _samplingButton;
 @synthesize samplingLabel = _samplingLabel;
+@synthesize alphaValue = _alphaValue;
+@synthesize betaValue = _betaValue;
+@synthesize alphaSlider = _alphaSlider;
+@synthesize betaSlider = _betaSlider;
+@synthesize alphaLabel = _alphaLabel;
+@synthesize betaLabel = _betaLabel;
 
 @synthesize fileLabel = _fileLabel;
 @synthesize loadingLabel = _loadingLabel;
@@ -124,6 +151,8 @@ typedef struct {
   
   _currentViewMode = kViewModeBoth;
   _sampling = YES;
+  _currentAlphaValue = 1.0f;
+  _currentBetaValue = 1.0f;
   
   self.context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
   
@@ -146,6 +175,12 @@ typedef struct {
   [self setLoadingLabel:nil];
   [self setSamplingLabel:nil];
   [self setSamplingButton:nil];
+  [self setAlphaValue:nil];
+  [self setBetaValue:nil];
+  [self setAlphaSlider:nil];
+  [self setBetaSlider:nil];
+  [self setAlphaLabel:nil];
+  [self setBetaLabel:nil];
   [super viewDidUnload];
   
   [self tearDownGL];
@@ -221,8 +256,11 @@ typedef struct {
   glAttachShader(*program, fragShader);
 
   glBindAttribLocation(*program, GLKVertexAttribPosition, "position");
-  glBindAttribLocation(*program, GLKVertexAttribNormal, "normal");
-  glBindAttribLocation(*program, GLKVertexAttribColor, "color");
+  
+  if ([shaderName isEqualToString:@"solid"]) {
+    glBindAttribLocation(*program, GLKVertexAttribNormal, "normal");
+    glBindAttribLocation(*program, GLKVertexAttribColor, "color");
+  }
 
   if (![self linkProgram:*program]) {
     NSLog(@"Failed to link program: %d", *program);
@@ -489,12 +527,19 @@ typedef struct {
   _cameraPosition = GLKVector3Add(_cameraPosition, GLKVector3MultiplyScalar(GLKVector3Normalize(GLKVector3Subtract(_cameraPosition, _lookAtCenter)), 50.0f));
 }
 
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
+  NSLog(@"Class touched: %@", [touch.view class]);
+  
+  if ([touch.view isKindOfClass:[UISlider class]] || [touch.view isKindOfClass:[UIButton class]]) {
+    return NO;
+  }
+  return YES;
+}
+
 # pragma mark - Vesseltree loading
 
 - (void)loadVesseltree:(NSString *)name
 {
-  if ([self.fileLabel.text isEqualToString:name]) return;
-  
   self.fileLabel.text = name;
   
   [self.view setUserInteractionEnabled:NO];
@@ -503,9 +548,21 @@ typedef struct {
   if ([name isEqualToString:@"vesselTree5"]) {
     [self.samplingButton setHidden:YES];
     [self.samplingLabel setHidden:YES];
+    [self.alphaValue setHidden:YES];
+    [self.alphaSlider setHidden:YES];
+    [self.alphaLabel setHidden:YES];
+    [self.betaValue setHidden:YES];
+    [self.betaSlider setHidden:YES];
+    [self.betaLabel setHidden:YES];
   } else {
     [self.samplingButton setHidden:NO];
     [self.samplingLabel setHidden:NO];
+    [self.alphaValue setHidden:NO];
+    [self.alphaSlider setHidden:NO];
+    [self.alphaLabel setHidden:NO];
+    [self.betaValue setHidden:NO];
+    [self.betaSlider setHidden:NO];
+    [self.betaLabel setHidden:NO];
   }
   
   dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -514,7 +571,7 @@ typedef struct {
     
     // Sample the vessel tree
     if (_sampling && ![name isEqualToString:@"vesselTree5"]) {
-      [Sampler sampleVesseltree:root withAlpha:0.5f andBeta:2.0f];
+      [Sampler sampleVesseltree:root withAlpha:_currentAlphaValue andBeta:_currentBetaValue];
     }
     
     // Generate base mesh
@@ -654,45 +711,45 @@ typedef struct {
   });
 }
 
-- (IBAction)subdivide0ButtonTapped:(id)sender {
-  _quadSubdivisioning = 0;
-  
-  [self loadVesseltree:self.fileLabel.text];
-}
-
-- (IBAction)subdivide1ButtonTapped:(id)sender {
-  _quadSubdivisioning = 1;
-  
-  [self loadVesseltree:self.fileLabel.text];
-}
-
-- (IBAction)subdivide2ButtonTapped:(id)sender {
-  _quadSubdivisioning = 2;
+- (IBAction)subdivideButtonTapped:(id)sender {
+  _quadSubdivisioning = [sender tag];
   
   [self loadVesseltree:self.fileLabel.text];
 }
 
 - (IBAction)vesselTree0ButtonTapped:(id)sender {
+  if ([self.fileLabel.text isEqualToString:@"vesselTree0"]) return;
+  
   [self loadVesseltree:@"vesselTree0"];
 }
 
 - (IBAction)vesselTree1ButtonTapped:(id)sender {
+  if ([self.fileLabel.text isEqualToString:@"vesselTree1"]) return;
+  
   [self loadVesseltree:@"vesselTree1"];
 }
 
 - (IBAction)vesselTree2ButtonTapped:(id)sender {
+  if ([self.fileLabel.text isEqualToString:@"vesselTree2"]) return;
+  
   [self loadVesseltree:@"vesselTree2"];
 }
 
 - (IBAction)vesselTree3ButtonTapped:(id)sender {
+  if ([self.fileLabel.text isEqualToString:@"vesselTree3"]) return;
+
   [self loadVesseltree:@"vesselTree3"];
 }
 
 - (IBAction)vesselTree4ButtonTapped:(id)sender {
+  if ([self.fileLabel.text isEqualToString:@"vesselTree4"]) return;
+  
   [self loadVesseltree:@"vesselTree4"];  
 }
 
 - (IBAction)vesselTree5ButtonTapped:(id)sender {
+  if ([self.fileLabel.text isEqualToString:@"vesselTree5"]) return;
+  
   [self loadVesseltree:@"vesselTree5"];
 }
 
@@ -708,4 +765,21 @@ typedef struct {
 - (IBAction)viewModeButtonTapped:(id)sender {
   _currentViewMode = [sender tag];
 }
+
+- (IBAction)alphaValueChanged:(id)sender {
+  _currentAlphaValue = ((UISlider *)sender).value;
+  
+  self.alphaValue.text = [NSString stringWithFormat:@"%.2f", _currentAlphaValue];
+  
+  [self loadVesseltree:self.fileLabel.text];
+}
+
+- (IBAction)betaValueChanged:(id)sender {
+  _currentBetaValue = ((UISlider *)sender).value;
+  
+  self.betaValue.text = [NSString stringWithFormat:@"%.2f", _currentBetaValue];
+  
+  [self loadVesseltree:self.fileLabel.text];
+}
+
 @end
