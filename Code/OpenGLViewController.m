@@ -2,9 +2,6 @@
 //  OpenGLViewController.m
 //  SmoothVesselTree
 //
-//  Created by Markus Mühlberger on 23.06.12.
-//  Copyright (c) 2012 OneBox Media Solutions GmbH. All rights reserved.
-//
 
 #import "OpenGLViewController.h"
 
@@ -487,11 +484,11 @@ typedef struct {
   GLKVector3 rightVector = GLKVector3Normalize(GLKVector3CrossProduct(GLKVector3Make(0, 1, 0), GLKVector3Subtract(_cameraPosition, _lookAtCenter)));
   GLKVector3 upVector = GLKVector3Normalize(GLKVector3CrossProduct(GLKVector3Subtract(_cameraPosition, _lookAtCenter), rightVector));
   
-  _cameraPosition = GLKVector3Add(_cameraPosition, GLKVector3MultiplyScalar(upVector, 0.001 * velocity.y));
-  _cameraPosition = GLKVector3Add(_cameraPosition, GLKVector3MultiplyScalar(rightVector, -0.001 * (1024.0f/768.0f) * velocity.x));
+  _cameraPosition = GLKVector3Add(_cameraPosition, GLKVector3MultiplyScalar(upVector, 0.005 * velocity.y));
+  _cameraPosition = GLKVector3Add(_cameraPosition, GLKVector3MultiplyScalar(rightVector, -0.005 * (1024.0f/768.0f) * velocity.x));
   
-  _lookAtCenter = GLKVector3Add(_lookAtCenter, GLKVector3MultiplyScalar(upVector, 0.001 * velocity.y));
-  _lookAtCenter = GLKVector3Add(_lookAtCenter, GLKVector3MultiplyScalar(rightVector, -0.001 * (1024.0f/768.0f) * velocity.x));
+  _lookAtCenter = GLKVector3Add(_lookAtCenter, GLKVector3MultiplyScalar(upVector, 0.005 * velocity.y));
+  _lookAtCenter = GLKVector3Add(_lookAtCenter, GLKVector3MultiplyScalar(rightVector, -0.005 * (1024.0f/768.0f) * velocity.x));
 }
 
 - (IBAction)handlePinch:(UIPinchGestureRecognizer *)recognizer
@@ -519,12 +516,16 @@ typedef struct {
 {
   if (GLKVector3Length(GLKVector3Subtract(_cameraPosition, _lookAtCenter)) < 60.0f) return;
   
-  _cameraPosition = GLKVector3Subtract(_cameraPosition, GLKVector3MultiplyScalar(GLKVector3Normalize(GLKVector3Subtract(_cameraPosition, _lookAtCenter)), 50.0f));
+  GLKVector3 moveVector = GLKVector3MultiplyScalar(GLKVector3Normalize(GLKVector3Subtract(_cameraPosition, _lookAtCenter)), 50.0f);
+  _cameraPosition = GLKVector3Subtract(_cameraPosition, moveVector);
+  _lookAtCenter = GLKVector3Subtract(_lookAtCenter, moveVector);
 }
 
 - (IBAction)handleZoomOut:(UITapGestureRecognizer *)recognizer
 {
-  _cameraPosition = GLKVector3Add(_cameraPosition, GLKVector3MultiplyScalar(GLKVector3Normalize(GLKVector3Subtract(_cameraPosition, _lookAtCenter)), 50.0f));
+  GLKVector3 moveVector = GLKVector3MultiplyScalar(GLKVector3Normalize(GLKVector3Subtract(_cameraPosition, _lookAtCenter)), 50.0f);
+  _cameraPosition = GLKVector3Add(_cameraPosition, moveVector);
+  _lookAtCenter = GLKVector3Add(_lookAtCenter, moveVector);
 }
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {

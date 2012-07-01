@@ -2,9 +2,6 @@
 //  Mesher.m
 //  SmoothVesselTree
 //
-//  Created by Markus Mühlberger on 23.06.12.
-//  Copyright (c) 2012 OneBox Media Solutions GmbH. All rights reserved.
-//
 
 #import "Mesher.h"
 
@@ -141,6 +138,7 @@
   if ([segment.segmentPoints count] > 0) {
     for (SegmentNode *s in segment.segmentPoints) {
       // TODO: Find out, why the normals are sometimes not correct
+      
       s.normal = GLKVector3Normalize(GLKVector3Add(s.direction, s.prev.direction));
     }
   }
@@ -199,9 +197,13 @@
   
   if ([segment.segmentPoints count] > 0) {
     for (SegmentNode *s in segment.segmentPoints) {
-      //NSLog(@"Up Vector: %.2f, %.2f, %.2f, Normal: %.2f, %.2f, %.2f", [self calculateUpVectorForPoint:s].x, [self calculateUpVectorForPoint:s].y, [self calculateUpVectorForPoint:s].z, s.normal.x, s.normal.y, s.normal.z);
       s.up = [self calculateUpVectorForPoint:s];
+      
+      if (GLKVector3DotProduct(s.prev.up, s.up) < 0 && s.prev != segment.startNode) {
+        s.up = GLKVector3Negate(s.up);
+      }
     }
+    NSLog(@" ");
   }
   
   segment.endNode.up = [self calculateUpVectorForPoint:segment.endNode];
